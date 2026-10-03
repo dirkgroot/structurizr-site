@@ -1,5 +1,5 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "sortPackageJson": false,
-  "ignorePatterns": []
+  "ignorePatterns": ["src/shared/workspace/schema.d.ts", "src/shared/workspace/structurizr.yaml"]
 }

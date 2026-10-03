@@ -29,6 +29,7 @@ Short `term - meaning` lines describing this project's domain language. Keep add
 - **Serve** - CLI command that generates the build output and serves it over HTTP for local preview (port 8080).
 - **Web app** - the browser app that fetches the workspace JSON and renders the site client-side.
 - **Workspace JSON** - the Structurizr JSON export of the workspace; the web app's runtime data source.
+- **Workspace types** - TypeScript types over the workspace JSON, generated from Structurizr's OpenAPI spec; see [architecture/workspace-types.md](architecture/workspace-types.md).
 - **Diagram asset** - a pre-rendered diagram file emitted by the CLI and referenced by the web app.
 - **Drill-down link** - an SVG anchor on a diagram element that navigates to a more detailed view.
 - **Link injection** - setting an element's `url` in the workspace JSON so the Structurizr exporter emits a PlantUML link that renders as an SVG anchor.

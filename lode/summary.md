@@ -16,6 +16,7 @@ web app routing decided (see [architecture/repository-layout.md](architecture/re
 [architecture/routing.md](architecture/routing.md)); the web app shell uses shadcn/ui on Base UI with Tailwind v4
 (see [architecture/ui.md](architecture/ui.md)). A minimal scaffold exists: the CLI emits a `build/` directory
 containing the prebuilt web app. Structurizr functionality is not implemented yet — component details and scope are still
-open. See [plans/roadmap.md](plans/roadmap.md).
+open. See [plans/roadmap.md](plans/roadmap.md). Structurizr workspace JSON types are generated from the vendored
+OpenAPI spec (see [architecture/workspace-types.md](architecture/workspace-types.md)).
 
 **Source of truth:** code once it exists; until then, the project owner's stated decisions.

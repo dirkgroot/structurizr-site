@@ -36,6 +36,8 @@ export default defineConfig({
       exclude: [
         "src/**/*.test.{ts,tsx}",
         "src/web/vite-env.d.ts",
+        // Generated from the Structurizr OpenAPI spec; type-only.
+        "src/shared/workspace/schema.d.ts",
         // Vendored shadcn/ui components and generated hooks are not unit tested;
         // see lode/architecture/ui.md.
         "src/web/components/ui/**",

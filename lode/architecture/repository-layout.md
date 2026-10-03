@@ -40,7 +40,7 @@ structurizr-site/
 ├── .claude/skills/              # procedural skills (run/verify)
 ├── src/
 │   ├── shared/                  # contracts imported by cli + web
-│   │   ├── workspace/           # Structurizr JSON types
+│   │   ├── workspace/           # generated Structurizr JSON types + vendored spec
 │   │   ├── routes/              # normalize(), drill-down rules
 │   │   └── config/              # generatr.* keys + defaults
 │   ├── cli/

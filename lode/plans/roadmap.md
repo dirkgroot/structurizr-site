@@ -31,6 +31,8 @@ Current state and next steps. Update in place; this is not a changelog.
   [../architecture/testing.md](../architecture/testing.md).
 - Web app shell in place: shadcn/ui on Base UI with Tailwind v4, using the `sidebar-01` block (sidebar nav + inset
   content). Navigation is placeholder until the workspace loader lands. See [../architecture/ui.md](../architecture/ui.md).
+- Structurizr workspace JSON types generated from the vendored OpenAPI spec (`openapi-typescript`), gated in CI. See
+  [../architecture/workspace-types.md](../architecture/workspace-types.md).
 
 ## Next
 

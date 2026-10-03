@@ -38,6 +38,7 @@
     "lint:fix": "oxlint --fix",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
+    "generate:workspace-types": "npx --yes openapi-typescript@7.13.0 src/shared/workspace/structurizr.yaml -o src/shared/workspace/schema.d.ts",
     "clean": "rm -rf dist build",
     "changelog": "git cliff --output CHANGELOG.md",
     "changelog:release": "git cliff --tag \"v$(node -p \"require('./package.json').version\")\" --output CHANGELOG.md",

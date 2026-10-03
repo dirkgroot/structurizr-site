@@ -78,6 +78,7 @@ project:
   optional parameter (default `spaBundleDir`); the test copies real temp directories with `mkdtemp`.
 - **Do not test constants tautologically.** Shared constants in `src/shared/site.ts` are covered through behavior:
   `App.test.tsx` asserts the rendered `SITE_NAME`, `generate-site.test.ts` asserts the resolved `DEFAULT_OUTPUT_DIR`.
+  Generated code (`src/shared/workspace/schema.d.ts`) has no test; it is type-only and exercised by compilation.
 - **Entrypoints with top-level side effects** (`bin.ts`, `web/main.tsx`) are tested with `vi.resetModules()` plus a
   dynamic `await import(...)` per test.
 
