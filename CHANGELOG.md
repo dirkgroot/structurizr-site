@@ -5,11 +5,28 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.0-pre-alpha.3] - 2026-10-03
+
+### Features
+
+- Generate workspace JSON types from the Structurizr OpenAPI spec
+- Export the workspace JSON via the Structurizr backend
+- Derive the site name from the loaded workspace
+- Serve the workspace JSON from the Vite dev server
+- Reload the dev page when the workspace file changes
+
+### Refactoring
+
+- Rename the spa component to web
 
 ### Documentation
 
 - Stop tracking the current version in the lode
+- Document the workspace name slice and refresh the lode
+
+### Miscellaneous Tasks
+
+- Add watch script for the web dev server
 
 ## [0.2.0-pre-alpha.2] - 2026-10-03
 
