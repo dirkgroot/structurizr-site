@@ -58,10 +58,15 @@ flowchart LR
 - **D11 — Vendored UI is exempt from the lint and coverage gates.** Generated components are excluded from
   `react/only-export-components` / `react/set-state-in-effect` and from coverage; our own layout code is not. See
   [ui.md](ui.md).
+- **D12 — The workspace JSON is the CLI/web contract, typed from Structurizr's OpenAPI spec.** `generate-site -w` exports
+  it via the Structurizr backend; the web app fetches it at load and derives the site name from the workspace name. Types
+  are generated with `openapi-typescript` from a vendored spec. See [workspace-types.md](workspace-types.md) and
+  [workspace-loading.md](workspace-loading.md).
 
 ## Known constraints
 
-- Consumes a Structurizr DSL workspace (optionally a Git repository with multiple branches).
+- Consumes a Structurizr DSL workspace (optionally a Git repository with multiple branches). `generate-site` requires
+  `-w/--workspace-file` to export `workspace.json`; without it, it emits the web app only.
 - Exposes two commands: `generate-site` emits the deployable directory; `serve` generates and serves it over HTTP
   (port 8080 by default). Watch + live rebuild are not implemented yet.
 - Behavior matches the reference tool unless the owner decides otherwise. The reference tool's output behavior
@@ -93,6 +98,9 @@ flowchart LR
 - **D9** — captured 2026-10-03: `serve` is a static preview server (generate + serve, port 8080, no watch/rebuild yet).
 - **D10–D11** — captured 2026-10-03 from owner direction: shadcn/ui on Base UI with Tailwind v4 (vendored components,
   build-time only), and the vendored-UI lint/coverage exemption. See [ui.md](ui.md).
+- **D12** — captured 2026-10-03: workspace JSON types generated from Structurizr's OpenAPI spec; `generate-site -w`
+  exports `workspace.json`; the web app derives the site name from the workspace. See
+  [workspace-types.md](workspace-types.md) and [workspace-loading.md](workspace-loading.md).
 - vNext pipeline verified 2026-10-03 against `structurizr` 2026.09.19 / libraries 6.2.3; see
   [distribution.md](distribution.md).
 - Diagram link mechanism and TS pipeline verified 2026-10-03; see [diagrams.md](diagrams.md).

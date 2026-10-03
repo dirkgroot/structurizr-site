@@ -23,12 +23,15 @@ Short `term - meaning` lines describing this project's domain language. Keep add
 ## Generated site
 
 - **Workspace file** - the input `.dsl` file (`--workspace-file` / `-w`).
+- **Structurizr backend** - the external Structurizr command the CLI invokes (see Domain). Defaults to `structurizr` on
+  `PATH`; overridden with `--structurizr <command>`.
 - **Assets directory** - directory of static assets (logos, favicon, custom CSS, ADR/doc images) (`--assets-dir` / `-a`).
 - **Build output** - the deployable directory emitted by the CLI, containing the web app bundle, rendered diagram assets,
   and the exported workspace JSON. `./build` by default.
 - **Serve** - CLI command that generates the build output and serves it over HTTP for local preview (port 8080).
 - **Web app** - the browser app that fetches the workspace JSON and renders the site client-side.
 - **Workspace JSON** - the Structurizr JSON export of the workspace; the web app's runtime data source.
+- **Site name** - the name shown for the site: the workspace name when a workspace is loaded, otherwise the placeholder `Structurizr Site`; see [architecture/workspace-loading.md](architecture/workspace-loading.md).
 - **Workspace types** - TypeScript types over the workspace JSON, generated from Structurizr's OpenAPI spec; see [architecture/workspace-types.md](architecture/workspace-types.md).
 - **Diagram asset** - a pre-rendered diagram file emitted by the CLI and referenced by the web app.
 - **Drill-down link** - an SVG anchor on a diagram element that navigates to a more detailed view.

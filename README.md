@@ -44,16 +44,26 @@ Unit tests use Vitest; React components are tested with React Testing Library. T
 ## Generate a site
 
 ```sh
-npm run generate-site            # writes ./build
-node dist/cli/bin.js generate-site --output path/to/out
+npm run generate-site                                   # writes ./build (web app only)
+node dist/cli/bin.js generate-site -w workspace.dsl     # + exported workspace.json
+node dist/cli/bin.js generate-site -w workspace.dsl --output path/to/out
 ```
 
-`build/` contains the prebuilt web app and is deployable to any static host. It is git-ignored.
+With `-w/--workspace-file`, the CLI exports the workspace as `workspace.json` into the output directory after assembling
+the web app. The web app reads it at load time and derives the site name from the workspace name; without it the site
+falls back to a placeholder name.
+
+The Structurizr backend defaults to `structurizr` on `PATH`. Override it with `--structurizr <command>` (for example
+`--structurizr "java -jar structurizr.war"`).
+
+`build/` contains the prebuilt web app (and `workspace.json` when a workspace file is given) and is deployable to any
+static host. It is git-ignored.
 
 ## Preview a site
 
 ```sh
 node dist/cli/bin.js serve                    # http://localhost:8080
+node dist/cli/bin.js serve -w workspace.dsl   # export workspace.json, then serve
 node dist/cli/bin.js serve -o path/to/out -p 9000
 ```
 

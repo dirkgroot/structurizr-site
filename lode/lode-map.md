@@ -15,6 +15,7 @@ Hierarchical index of all lode files. Read this first; it is the entry point to 
 - [architecture/distribution.md](architecture/distribution.md) - self-contained Bun binaries, CI/release workflows, and the Homebrew formula; Structurizr as an external dependency.
 - [architecture/repository-layout.md](architecture/repository-layout.md) - single-package source tree and build/packaging layout.
 - [architecture/workspace-types.md](architecture/workspace-types.md) - Structurizr workspace JSON types generated from the vendored OpenAPI spec.
+- [architecture/workspace-loading.md](architecture/workspace-loading.md) - DSL -> workspace.json -> web app; the site name slice.
 - [architecture/routing.md](architecture/routing.md) - web app hash routes: static patterns plus a model-derived index.
 - [architecture/ui.md](architecture/ui.md) - web app visual layer: shadcn/ui on Base UI, Tailwind v4, sidebar shell, gate exemptions.
 - [architecture/testing.md](architecture/testing.md) - Vitest projects (node + jsdom), React Testing Library, test layout, coverage, CI gate.

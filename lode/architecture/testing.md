@@ -13,6 +13,8 @@ How the project is unit tested. Related: [repository-layout.md](repository-layou
   - `web` — `environment: "jsdom"`, React plugin enabled, covers `src/web/**`.
 - **Unit tests are colocated** with the module under test: `<module>.test.ts` / `.test.tsx`. Shared fixtures and e2e
   live under `test/` (see [repository-layout.md](repository-layout.md)).
+- **E2E tests live under `test/e2e/`** and are part of the `node` Vitest project. They exercise the real Structurizr
+  backend and are `describe.skipIf`-gated on its presence, so the suite stays hermetic where it is absent (CI verify).
 - **No globals.** Tests import `describe`/`it`/`expect`/`vi` from `vitest` explicitly.
 
 ```mermaid
@@ -35,7 +37,7 @@ export default defineConfig({
         test: {
           name: "node",
           environment: "node",
-          include: ["src/cli/**/*.test.ts", "src/shared/**/*.test.ts"],
+          include: ["src/cli/**/*.test.ts", "src/shared/**/*.test.ts", "test/e2e/**/*.test.ts"],
         },
       },
       {

@@ -40,18 +40,20 @@ structurizr-site/
 ├── .claude/skills/              # procedural skills (run/verify)
 ├── src/
 │   ├── shared/                  # contracts imported by cli + web
-│   │   ├── workspace/           # generated Structurizr JSON types + vendored spec
+│   │   ├── workspace/           # Structurizr JSON types + vendored OpenAPI spec
 │   │   ├── routes/              # normalize(), drill-down rules
 │   │   └── config/              # generatr.* keys + defaults
 │   ├── cli/
 │   │   ├── bin.ts               # -> dist/cli/bin.js
 │   │   ├── commands/            # generate-site, serve
 │   │   ├── backend/             # Structurizr resolution + spawn
+│   │   │   ├── resolve.ts       # --structurizr override, else structurizr on PATH
+│   │   │   └── run.ts           # spawn wrapper (injectable seam)
 │   │   ├── pipeline/            # exportJson, injectLinks, exportPuml,
 │   │   │                        #   renderSvg, stripOrigin
 │   │   ├── assembly/            # output dir; copy dist/web + assets
 │   │   ├── config/              # CLI args, generatr.* mapping
-│   │   └── serve/               # watch + live rebuild
+│   │   └── serve/               # static HTTP preview
 │   └── web/
 │       ├── index.html
 │       ├── main.tsx
@@ -88,11 +90,13 @@ structurizr-site/
 - **`src/shared/`** holds the contracts both sides import: Structurizr JSON types, `normalize()` and the drill-down
   route rules, and the `generatr.*` keys/defaults. It stays **runtime-agnostic** — pure functions and types only, no
   `fs`, no `window` — so it compiles into both the Node CLI and the browser bundle.
-- **`src/cli/`** is the generator. `pipeline/` mirrors the six pipeline steps one-to-one (see [diagrams.md](diagrams.md));
-  `backend/` isolates the Structurizr resolution order (see [distribution.md](distribution.md)).
-- **`src/web/`** is the React + Vite app. `app/` owns the router and App shell, `components/` holds layout and vendored
-  shadcn/ui primitives, `diagram/` owns SVG embedding and the pan/zoom click-vs-drag model, `data/` owns the workspace
-  JSON loader and selectors. Routing is defined in [routing.md](routing.md); the UI stack in [ui.md](ui.md).
+- **`src/cli/`** is the generator. `pipeline/` mirrors the pipeline steps one-to-one (see [diagrams.md](diagrams.md));
+  only `exportJson` exists so far. `backend/` resolves and spawns the Structurizr command; the resolution order is
+  partial (override + PATH). See [workspace-loading.md](workspace-loading.md).
+- **`src/web/`** is the React + Vite app. `app/` owns the App shell (router to come), `components/` holds layout and
+  vendored shadcn/ui primitives, `data/` owns the workspace JSON loader and selectors, `diagram/` owns SVG embedding and
+  the pan/zoom click-vs-drag model (to come). Routing is defined in [routing.md](routing.md); the UI stack in
+  [ui.md](ui.md); workspace loading in [workspace-loading.md](workspace-loading.md).
 - **Unit tests are colocated** as `<module>.test.ts(x)` next to the source, split into a Node and a jsdom Vitest project.
   **`test/setup/`** holds shared Vitest setup; **`test/fixtures/`** holds sample `.dsl` workspaces; **`test/e2e/`** runs
   the full pipeline and encodes the manually verified behavior from [diagrams.md](diagrams.md). See

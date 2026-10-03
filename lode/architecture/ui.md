@@ -58,8 +58,10 @@ src/web/
 ## Shell
 
 The `sidebar-01` block supplies the app shell: a collapsible sidebar (brand header, grouped navigation, rail) and an
-inset content area (trigger, separator, breadcrumb). `App.tsx` composes it; `app-sidebar.tsx` holds the navigation,
-currently placeholder links that the model-derived route index will replace (see [routing.md](routing.md)).
+inset content area (trigger, separator, breadcrumb). `App.tsx` composes it and takes the loaded workspace; the site name
+(when present) flows into the sidebar header and headings. `app-sidebar.tsx` holds the navigation, currently placeholder
+links that the model-derived route index will replace (see [routing.md](routing.md) and
+[workspace-loading.md](workspace-loading.md)).
 
 ```mermaid
 flowchart TD
@@ -71,6 +73,9 @@ flowchart TD
     SI --> HDR[SidebarTrigger + Breadcrumb]
     SI --> MAIN[page content]
 ```
+
+`main.tsx` loads the workspace before rendering and passes it (or `undefined`) to `App`; the site name derives from it via
+`siteName()` in `src/shared/site.ts`. See [workspace-loading.md](workspace-loading.md).
 
 ## Theming
 
