@@ -11,6 +11,7 @@ Hierarchical index of all lode files. Read this first; it is the entry point to 
 ## architecture/
 
 - [architecture/summary.md](architecture/summary.md) - top-level shape (CLI + SPA + Structurizr JSON) and decisions; component details still open.
+- [architecture/diagrams.md](architecture/diagrams.md) - diagram rendering pipeline and clickable SVG links (drill-down rules, hash routes).
 
 ## plans/
 

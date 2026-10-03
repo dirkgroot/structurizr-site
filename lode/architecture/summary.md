@@ -35,6 +35,8 @@ flowchart LR
 - **D2 — CLI produces a deployable directory.** `generate-site` renders diagrams, exports JSON, and assembles the SPA
   plus diagrams plus JSON into one directory ready for a static host.
 - **D3 — Hosting is static and external.** NGINX / GitHub Pages / similar. No application server.
+- **D4 — Hash-based routes.** Drill-down links and SPA navigation use hash routes (`#/...`), so SVG anchors work
+  without static-host fallback or click interception. See [diagrams.md](diagrams.md).
 
 ## Known constraints
 
@@ -46,7 +48,9 @@ flowchart LR
 ## Open questions (awaiting owner)
 
 1. Language/runtime for the CLI and the SPA framework.
-2. Diagram asset format and renderer (reuse the PlantUML exporter? SVG? PNG?).
+2. Diagram asset format and renderer (reuse the PlantUML exporter? SVG? PNG?). **Partially resolved:** SVG rendered via
+   PlantUML, with clickable drill-down links driven through the workspace JSON. See [diagrams.md](diagrams.md). The
+   exact CLI runtime is still open.
 3. How documentation and ADRs are represented (markdown rendered by the SPA? pre-rendered?).
 4. Whether anything is pre-rendered for SEO / no-JS.
 5. CLI distribution and where the prebuilt SPA bundle lives.
@@ -56,3 +60,5 @@ flowchart LR
 
 - **D1–D3** — captured 2026-10-03 from owner direction: SPA reads Structurizr JSON from a static host; CLI emits a
   deployable directory (diagrams + JSON + SPA).
+- **D4** — captured 2026-10-03: hash-based routes for SPA navigation and SVG drill-down links.
+- Diagram link mechanism and TS pipeline verified 2026-10-03; see [diagrams.md](diagrams.md).

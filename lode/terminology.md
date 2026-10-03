@@ -27,6 +27,10 @@ Short `term - meaning` lines describing this project's domain language. Keep add
 - **SPA** - the client-side single-page app that fetches the workspace JSON and renders the site in the browser.
 - **Workspace JSON** - the Structurizr JSON export of the workspace; the SPA's runtime data source.
 - **Diagram asset** - a pre-rendered diagram file emitted by the CLI and referenced by the SPA.
+- **Drill-down link** - an SVG anchor on a diagram element that navigates to a more detailed view.
+- **Link injection** - setting an element's `url` in the workspace JSON so the Structurizr exporter emits a PlantUML link that renders as an SVG anchor.
+- **Route** - an SPA client-side path; hash-based (`#/...`) in v1, targeted by drill-down links.
+- **`Url` property** - holds an element's original model URL because the `url` field is reused for generated drill-down links.
 - **Generatr property** - a view/model property prefixed `generatr.` that customizes site output (style, search, exporter, theme, etc.).
 
 ## Project / process
