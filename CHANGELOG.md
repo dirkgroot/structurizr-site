@@ -5,26 +5,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Miscellaneous Tasks
+
+- Render Homebrew formula for v0.2.0-pre-alpha.1
+
 ## [0.2.0-pre-alpha.1] - 2026-10-03
 
 ### Miscellaneous Tasks
 
 - Generate changelog and release notes with git-cliff
 - Indicate the pre-alpha stage in the version number
-
-### Other
-
-- Render Homebrew formula for v0.1.1 binaries
-
-## [0.1.1] - 2026-10-03
-
-### Other
-
-- Fill Homebrew formula for the v0.1.0 release
-- Record the Homebrew tap and first release in docs
-- Distribute self-contained Bun binaries instead of an npm tarball
-
-## [0.1.0] - 2026-10-03
 
 ### Other
 
@@ -43,3 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Vitest unit tests with React Testing Library
 - Add serve command: generate the site and serve it on port 8080
 - Publish releases as GitHub release assets instead of npm
+- Fill Homebrew formula for the v0.1.0 release
+- Record the Homebrew tap and first release in docs
+- Distribute self-contained Bun binaries instead of an npm tarball
+- Render Homebrew formula for v0.1.1 binaries
