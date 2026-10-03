@@ -13,7 +13,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { SITE_NAME } from "../../shared/site";
 
 // Placeholder navigation. Replaced by a model-derived index once the workspace
 // loader lands (see lode/architecture/routing.md).
@@ -42,7 +41,12 @@ const navGroups: NavGroup[] = [
   },
 ];
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  /** Site name shown in the sidebar header. */
+  name: string;
+}
+
+export function AppSidebar({ name, ...props }: AppSidebarProps) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -53,7 +57,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <BoxesIcon className="size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-medium">{SITE_NAME}</span>
+                <span className="font-medium">{name}</span>
                 <span className="text-xs text-muted-foreground">Architecture</span>
               </div>
             </SidebarMenuButton>
