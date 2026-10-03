@@ -26,6 +26,7 @@ Short `term - meaning` lines describing this project's domain language. Keep add
 - **Assets directory** - directory of static assets (logos, favicon, custom CSS, ADR/doc images) (`--assets-dir` / `-a`).
 - **Build output** - the deployable directory emitted by the CLI, containing the SPA bundle, rendered diagram assets,
   and the exported workspace JSON. `./build` by default.
+- **Serve** - CLI command that generates the build output and serves it over HTTP for local preview (port 8080).
 - **SPA** - the client-side single-page app that fetches the workspace JSON and renders the site in the browser.
 - **Workspace JSON** - the Structurizr JSON export of the workspace; the SPA's runtime data source.
 - **Diagram asset** - a pre-rendered diagram file emitted by the CLI and referenced by the SPA.

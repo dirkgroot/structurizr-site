@@ -6,7 +6,8 @@ Current state and next steps. Update in place; this is not a changelog.
 
 - Git repository initialized on branch `main`. Build tooling is pinned with `mise.toml` (Node LTS `24.21.0`, Krypton).
 - Minimal scaffold in place: a TypeScript CLI (`src/cli`) emits a `build/` directory by copying the prebuilt
-  React + Vite SPA (`src/spa`); `src/shared` holds runtime-agnostic values used by both. No Structurizr functionality
+  React + Vite SPA (`src/spa`); `src/shared` holds runtime-agnostic values used by both. The CLI exposes
+  `generate-site` and `serve` (generate + static HTTP preview on port 8080). No Structurizr functionality
   yet. See [../architecture/repository-layout.md](../architecture/repository-layout.md).
 - Architecture top-level shape defined: CLI emits a deployable directory (rendered diagrams + exported Structurizr
   JSON + SPA bundle); the SPA renders the site client-side from the JSON. See

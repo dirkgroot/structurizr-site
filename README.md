@@ -46,6 +46,16 @@ node dist/cli/bin.js generate-site --output path/to/out
 
 `build/` contains the prebuilt SPA and is deployable to any static host. It is git-ignored.
 
+## Preview a site
+
+```sh
+node dist/cli/bin.js serve                    # http://localhost:8080
+node dist/cli/bin.js serve -o path/to/out -p 9000
+```
+
+`serve` generates the site into the output directory, then serves it over HTTP until stopped. Because the SPA uses
+hash routes, a plain static file server is enough.
+
 ## Release
 
 Releases publish to npm from a version tag.

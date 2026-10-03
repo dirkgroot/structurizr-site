@@ -47,11 +47,15 @@ flowchart LR
   See [repository-layout.md](repository-layout.md).
 - **D8 — Routes are static patterns plus a model-derived index.** Route patterns are declared in code; the model→URL
   mapping is derived from `workspace.json` at load. No `routes.json`. See [routing.md](routing.md).
+- **D9 — `serve` is a static preview server.** `serve` runs `generate-site` and then serves the output directory over a
+  dependency-free Node HTTP server (default port 8080). Unknown extensionless paths fall back to `index.html`; requests
+  are confined to the output directory. Watch + live rebuild are deferred.
 
 ## Known constraints
 
 - Consumes a Structurizr DSL workspace (optionally a Git repository with multiple branches).
-- Must support `generate-site` and `serve` (watch + live rebuild) modes.
+- Exposes two commands: `generate-site` emits the deployable directory; `serve` generates and serves it over HTTP
+  (port 8080 by default). Watch + live rebuild are not implemented yet.
 - Behavior matches the reference tool unless the owner decides otherwise. The reference tool's output behavior
   (navigation, documentation, ADRs) is now the SPA's responsibility. See [../terminology.md](../terminology.md).
 
@@ -77,6 +81,7 @@ flowchart LR
 - **D7–D8** — captured 2026-10-03: single published package (no workspaces); static route patterns with a
   model-derived index and no `routes.json`. See [repository-layout.md](repository-layout.md) and
   [routing.md](routing.md).
+- **D9** — captured 2026-10-03: `serve` is a static preview server (generate + serve, port 8080, no watch/rebuild yet).
 - vNext pipeline verified 2026-10-03 against `structurizr` 2026.09.19 / libraries 6.2.3; see
   [distribution.md](distribution.md).
 - Diagram link mechanism and TS pipeline verified 2026-10-03; see [diagrams.md](diagrams.md).
