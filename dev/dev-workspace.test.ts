@@ -6,6 +6,7 @@ interface FakeServer {
   watcher: EventEmitter & { add: (path: string) => void };
   middlewares: { use: (fn: Middleware) => void };
   config: { logger: { error: (msg: string) => void } };
+  ws: { send: (payload: { type: string }) => void };
 }
 
 type Middleware = (request: { url?: string }, response: FakeResponse, next: () => void) => void;
@@ -42,10 +43,12 @@ function setup(plugin: ReturnType<typeof devWorkspace>) {
 
   let middleware: Middleware | undefined;
   const errors: string[] = [];
+  const sent: { type: string }[] = [];
   const server: FakeServer = {
     watcher,
     middlewares: { use: (fn) => (middleware = fn) },
     config: { logger: { error: (msg) => errors.push(msg) } },
+    ws: { send: (payload) => sent.push(payload) },
   };
 
   (plugin.configureServer as unknown as (s: FakeServer) => void)(server);
@@ -53,7 +56,7 @@ function setup(plugin: ReturnType<typeof devWorkspace>) {
   if (!middleware) {
     throw new Error("plugin did not register middleware");
   }
-  return { middleware, watcher, added, errors };
+  return { middleware, watcher, added, errors, sent };
 }
 
 describe("devWorkspace", () => {
@@ -118,6 +121,22 @@ describe("devWorkspace", () => {
     await vi.waitFor(() => expect(second.ended).toBe(true));
 
     expect(runExport).toHaveBeenCalledTimes(2);
+  });
+
+  it("triggers a full reload when the workspace file changes", () => {
+    const { watcher, sent } = setup(devWorkspace({ workspaceFile: "w.dsl", runExport }));
+
+    watcher.emit("change", resolveFromCwd("w.dsl"));
+
+    expect(sent).toEqual([{ type: "full-reload" }]);
+  });
+
+  it("does not reload for unrelated file changes", () => {
+    const { watcher, sent } = setup(devWorkspace({ workspaceFile: "w.dsl", runExport }));
+
+    watcher.emit("change", resolveFromCwd("src/web/main.tsx"));
+
+    expect(sent).toEqual([]);
   });
 
   it("returns 500 with the failure message when the export fails", async () => {

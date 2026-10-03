@@ -76,6 +76,9 @@ export function devWorkspace(options: DevWorkspaceOptions = {}): Plugin {
       server.watcher.on("change", (path) => {
         if (resolve(path) === resolve(workspaceFile)) {
           invalidate();
+          // The workspace is fetched by main.tsx, not imported as a module, so
+          // HMR cannot replace it in place: reload the page to re-fetch.
+          server.ws.send({ type: "full-reload" });
         }
       });
 

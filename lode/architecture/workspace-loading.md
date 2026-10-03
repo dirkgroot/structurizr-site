@@ -61,6 +61,9 @@ export at `/workspace.json` by running the same `exportJson` pipeline the CLI us
 - **Lazy export.** The export runs on the first request, not at server start, so a backend failure surfaces as a `500`
   with the backend's message in the browser instead of preventing Vite from starting. The JSON is cached; a change to the
   workspace file invalidates the cache and re-exports on the next request.
+- **Reload on change.** The workspace is fetched by `main.tsx`, not imported as a module, so Vite HMR cannot replace it
+  in place. When the workspace file changes, the plugin sends `{ type: "full-reload" }` over Vite's HMR WebSocket, which
+  reloads the page and re-fetches the freshly exported JSON.
 - **Config.** `VITE_WORKSPACE_FILE` (default `test/fixtures/workspace.dsl`) selects the workspace; `VITE_STRUCTURIZR`
   overrides the backend command.
 - **Cleanup.** The temp export directory is removed when the dev server closes (`httpServer` `close`).

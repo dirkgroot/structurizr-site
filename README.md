@@ -35,8 +35,8 @@ npm run test:coverage
 ```
 
 `npm run watch` starts the Vite dev server and serves an exported `workspace.json` at `/workspace.json`, so the app
-runs against a real workspace under HMR. The export uses the Structurizr backend and is re-run when the workspace file
-changes. By default it exports `test/fixtures/workspace.dsl`; override with:
+runs against a real workspace under HMR. The export uses the Structurizr backend; editing the workspace file re-exports
+it and reloads the page. By default it exports `test/fixtures/workspace.dsl`; override with:
 
 ```sh
 VITE_WORKSPACE_FILE=architecture/workspace.dsl npm run watch
