@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Miscellaneous Tasks
 
-- Render Homebrew formula for v0.2.0-pre-alpha.1
+- Regenerate changelog after removing v0.1.0/v0.1.1 tags
 
 ## [0.2.0-pre-alpha.1] - 2026-10-03
 
@@ -35,7 +35,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Vitest unit tests with React Testing Library
 - Add serve command: generate the site and serve it on port 8080
 - Publish releases as GitHub release assets instead of npm
-- Fill Homebrew formula for the v0.1.0 release
 - Record the Homebrew tap and first release in docs
 - Distribute self-contained Bun binaries instead of an npm tarball
-- Render Homebrew formula for v0.1.1 binaries

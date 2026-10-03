@@ -52,6 +52,8 @@ commit_parsers = [
   { message = "^chore\\(release\\)", skip = true },
   { message = "^Bump version", skip = true },
   { message = "^Merge ", skip = true },
+  # Homebrew formula updates track a release's assets, not product changes.
+  { message = "(?i)^(chore: )?(render|fill) homebrew formula", skip = true },
   { message = "^chore|^ci|^build", group = "<!-- 7 -->Miscellaneous Tasks" },
   { body = ".*security", group = "<!-- 8 -->Security" },
   { message = "^revert", group = "<!-- 9 -->Revert" },
