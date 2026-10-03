@@ -10,37 +10,50 @@ How the CLI is packaged and shipped. Related: [summary.md](summary.md), [diagram
   command, so new DSL features arrive by updating Structurizr, independent of this tool's releases. Vendoring the
   prebuilt war is also not permitted (see Vendoring constraint), and vendoring the Apache-2.0 libraries would add an
   owned Java shim for self-containment this project does not need.
-- **Node is a runtime dependency, not bundled.** The Homebrew formula declares `depends_on "node"`. The tool already
-  needs Java and Graphviz, so bundling Node would not make it self-contained. Homebrew is the dependency manager.
+- **Distribution: self-contained binaries built with Bun.** Each `v*` tag compiles the CLI plus the embedded SPA into
+  four standalone executables (`darwin-arm64`, `darwin-x64`, `linux-x64`, `linux-arm64`) with `bun build --compile`,
+  attached to a GitHub release. Nothing is published to a package registry.
+- **Bun is the distribution runtime; Node is a build/test tool only.** The binary embeds the Bun runtime
+  (JavaScriptCore), so users need no Node. Node + npm remain for Vite, Vitest, `tsc`, and the build scripts.
+- **The SPA is embedded in the binary.** `dist/spa` is embedded at build time and materialized to a temp directory at
+  startup; there is no sidecar asset. See [repository-layout.md](repository-layout.md).
+- **macOS binaries are ad-hoc signed, not notarized.** They ship through a Homebrew _formula_, and formula downloads are
+  not quarantined, so Gatekeeper does not demand notarization. Ad-hoc signing is still required for arm64 execution. A
+  cask or browser download would require a paid Apple Developer notarization; both are rejected.
 - **PlantUML stays a dependency.** `depends_on "plantuml"` pulls `graphviz` and `openjdk`. PlantUML is GPL-3.0, so it
   is not vendored into this distribution.
-- **SPA bundle ships as package files.** The prebuilt SPA is included in the npm package; it is not built or fetched at
-  install time. See [repository-layout.md](repository-layout.md) for the package layout.
-- **Distribution: GitHub release with the packed tarball as an asset.** Each `v*` tag produces a GitHub release whose
-  asset is the `npm pack` tarball. Homebrew installs from that asset, so installation needs no registry credentials.
-  Nothing is published to a package registry.
-- **GitHub Packages is not used.** Its npm registry requires an auth token even for public installs, which would break
-  `brew install`. A GitHub release asset is public and works with the standard Homebrew npm-formula pattern.
-- **License: MIT.** `LICENSE` ships in the package and the Homebrew formula declares `license "MIT"`.
+- **License: MIT.** Bun is MIT; the compiled binary embeds JavaScriptCore/WebKit, whose notices ship in
+  `THIRD-PARTY-NOTICES.md`.
 
-## Packaged tarball
+## Compiled binary
 
-`npm pack` ships `dist/` plus npm's always-included `package.json`, `README.md`, and `LICENSE`:
+`packaging/binary/build.mjs` compiles `packaging/binary/entry.ts` with `bun build --compile` into
+`dist/binaries/structurizr-site-<platform>` (one executable per target). The build embeds the SPA and injects the
+version; there are no runtime dependencies.
 
-- `dist/cli/` — the compiled CLI; `bin` maps `structurizr-site` to `dist/cli/bin.js`.
-- `dist/spa/` — the prebuilt React + Vite bundle the CLI copies into the generated site.
+- **SPA embedding.** `build.mjs` walks `dist/spa` and generates `dist/binary/spa-assets.ts`, importing each file with
+  `{ type: "file" }` and mapping its original relative path to the embedded path. `entry.ts` writes those files to a
+  temp directory and calls `setSpaBundleDir()` before `run()`. Bun content-hashes embedded names, so the explicit map is
+  what preserves the `index.html` + `assets/*` layout.
+- **Version injection.** `main.ts` reads `__STRUCTURIZR_SITE_VERSION__`, replaced at compile time via `--define`. When
+  running from source the guard is false and it falls back to `package.json`.
+- **Signing.** `build.mjs` ad-hoc signs each macOS binary (`codesign --force --sign -` with JIT entitlements from
+  `packaging/binary/entitlements.plist`) and verifies it with `codesign --verify --strict`.
+- **Sizes** are ~59 MB (darwin-arm64) to ~78 MB (linux). The binary embeds the Bun runtime.
 
-`package.json` sets `files: ["dist", "!dist/**/*.map"]`: source maps are built for local debugging but excluded from the
-tarball. `prepack` runs `clean` then `build`, so `dist/` is always fresh when the release workflow runs `npm pack`. The
-package has no runtime dependencies — every entry in `package.json` is a dev dependency.
+`src/cli` still compiles to `dist/cli` via `tsc` for `npm run generate-site`/`serve` from source; that path is dev-only
+and not shipped.
 
 ## Release automation
 
-- **CI** (`.github/workflows/ci.yml`) runs on pushes to `main` and on pull requests: `npm ci`, `format:check`, `lint`,
-  `typecheck`, `npm test`, and `npm pack --dry-run`. Node comes from `mise.toml` via `jdx/mise-action`.
-- **Release** (`.github/workflows/release.yml`) triggers on `v*` tags. It verifies the tag equals the `package.json`
-  version, runs the checks (including `npm test`), runs `npm pack`, then attaches the tarball to a GitHub release
-  (`contents: write`, using the built-in `GITHUB_TOKEN`). No registry credentials are needed.
+- **CI** (`.github/workflows/ci.yml`) has two jobs. `verify` runs on Ubuntu: `npm ci`, `format:check`, `lint`,
+  `typecheck`, `npm test`. `binary` runs on `macos-latest`: `build:spa`, `build:binary` (native target, which signs and
+  verifies on macOS), then runs the compiled binary for `--version` and `generate-site`. Node and Bun both come from
+  `mise.toml` via `jdx/mise-action`.
+- **Release** (`.github/workflows/release.yml`) triggers on `v*` tags, on `macos-latest`. It verifies the tag equals the
+  `package.json` version, runs the checks, builds all four binaries (`build:binary:all`), smoke-tests the native binary,
+  writes `SHA256SUMS`, and attaches the binaries and checksums to a GitHub release (`contents: write`, built-in
+  `GITHUB_TOKEN`). No registry credentials are needed.
 - Cutting a release is only: bump `version`, commit, then `git tag v0.1.0 && git push origin v0.1.0`.
 
 ## Structurizr backend resolution
@@ -62,30 +75,50 @@ tag.
 
 ## Homebrew formula
 
-`packaging/homebrew/structurizr-site.rb` is the formula template; `packaging/homebrew/update-formula.mjs` fills its
-`url` and `sha256` from the GitHub release asset for the version in `package.json`. The result is copied into the
-`homebrew-structurizr-site` tap.
+`packaging/homebrew/structurizr-site.rb.template` is the formula source, with per-platform `url`/`sha256` placeholders;
+`packaging/homebrew/update-formula.mjs` fills them from the release assets and writes
+`packaging/homebrew/structurizr-site.rb`. The rendered formula is copied into the `homebrew-structurizr-site` tap.
 
 The tap is `dirkgroot/homebrew-structurizr-site` (a public repo; formula at `Formula/structurizr-site.rb`). Installing
 is `brew install dirkgroot/structurizr-site/structurizr-site`, which auto-taps on first use. The tap must stay public,
-because Homebrew downloads the release asset anonymously and a private repo's asset URLs return 404 without a token.
+because Homebrew downloads the release assets anonymously and a private repo's asset URLs return 404 without a token.
 
-The formula currently depends on `node` only, because the generator does not yet invoke Structurizr or render diagrams.
-`openjdk`, the Structurizr backend, and `plantuml` become dependencies when the pipeline lands.
+The formula installs the platform binary directly; it has no `node` dependency. `openjdk`, the Structurizr backend, and
+`plantuml` become dependencies when the diagram pipeline lands.
 
 ```ruby
 class StructurizrSite < Formula
   desc "Static site generator for Structurizr workspaces"
   homepage "https://github.com/dirkgroot/structurizr-site"
-  url "https://github.com/dirkgroot/structurizr-site/releases/download/v0.1.0/structurizr-site-0.1.0.tgz"
-  sha256 "..."
+  version "0.1.0"
   license "MIT"
 
-  depends_on "node"
+  on_macos do
+    on_arm do
+      url "https://github.com/dirkgroot/structurizr-site/releases/download/v0.1.0/structurizr-site-darwin-arm64"
+      sha256 "..."
+    end
+
+    on_intel do
+      url "https://github.com/dirkgroot/structurizr-site/releases/download/v0.1.0/structurizr-site-darwin-x64"
+      sha256 "..."
+    end
+  end
+
+  on_linux do
+    on_arm do
+      url "https://github.com/dirkgroot/structurizr-site/releases/download/v0.1.0/structurizr-site-linux-arm64"
+      sha256 "..."
+    end
+
+    on_intel do
+      url "https://github.com/dirkgroot/structurizr-site/releases/download/v0.1.0/structurizr-site-linux-x64"
+      sha256 "..."
+    end
+  end
 
   def install
-    system "npm", "install", *std_npm_args
-    bin.install_symlink libexec.glob("bin/*")
+    bin.install Dir["structurizr-site-*"].first => "structurizr-site"
   end
 
   test do
@@ -111,8 +144,15 @@ prebuilt war.
 
 ## Constraints
 
-- Homebrew's `std_npm_args` installs a packed tarball and ignores lifecycle scripts by default. The tarball ships the
-  prebuilt CLI JS and SPA bundle; nothing builds or fetches at install time.
+- The compiled binary is large (~59–78 MB) because it embeds the Bun runtime. Homebrew downloads it directly; nothing is
+  built at install time.
+- Bun is pinned in `mise.toml` (currently `1.4.2`). `bun build --compile` had a macOS signing regression in 1.3.12; the
+  build re-signs ad-hoc and runs `codesign --verify --strict` on every macOS binary, and CI executes the binary, to
+  catch such regressions.
+- macOS binaries are ad-hoc signed, so they run when installed by Homebrew (downloads are not quarantined) but would be
+  blocked by Gatekeeper if downloaded through a browser. Notarization (paid Apple Developer Program) is deliberately not
+  used.
+- The binary embeds JavaScriptCore/WebKit (LGPL-2.1 + BSD components); `THIRD-PARTY-NOTICES.md` carries the notices.
 - The Homebrew `structurizr` formula is a **community build**, not maintained by Structurizr. Users who want the newest
   features override the backend with their own war or Docker image.
 - PlantUML is GPL-3.0; it is depended on, not redistributed.
@@ -124,3 +164,5 @@ prebuilt war.
 - Whether to offer an opt-in pinned backend for reproducible output.
 - When to add `openjdk` / Structurizr / `plantuml` formula dependencies (tied to the diagram pipeline).
 - Whether the release workflow should update the tap automatically instead of by hand.
+- Whether to add a Windows target (currently macOS + Linux only).
+- Whether to notarize later to support a cask or browser downloads.

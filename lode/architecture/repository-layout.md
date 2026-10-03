@@ -1,15 +1,16 @@
 # Repository Layout
 
-How the source tree and the published package are organized. Related: [summary.md](summary.md),
+How the source tree and the distributed binary are organized. Related: [summary.md](summary.md),
 [distribution.md](distribution.md), [routing.md](routing.md).
 
 ## Decision
 
-One published npm package. The CLI, the SPA, and the shared code are **source trees inside it**, not separate
-packages. There is one version and one build; the SPA bundle ships inside the same artifact as the CLI.
+One package, distributed as a single compiled binary. The CLI, the SPA, and the shared code are **source trees inside
+it**, not separate packages. There is one version and one build; the SPA bundle is embedded in the same binary as the
+CLI.
 
 Separate packages were rejected: the SPA has no independent consumer and no independent release cycle. Splitting it
-out would force a lockstep version pin and an extra publish step for no benefit.
+out would force a lockstep version pin and an extra build step for no benefit.
 
 ## Tree
 
@@ -23,7 +24,7 @@ structurizr-site/
 ├── .oxfmtrc.json                # oxfmt config (formatter)
 ├── .oxlintrc.json               # oxlint config (linter)
 ├── mise.toml                    # pinned build tools (Node LTS)
-├── package.json                 # single package; bin, files: ["dist", "!dist/**/*.map"]
+├── package.json                 # single package; build scripts
 ├── tsconfig.json                # solution file; references the projects below
 ├── tsconfig.base.json
 ├── tsconfig.cli.json            # Node libs
@@ -60,13 +61,19 @@ structurizr-site/
 │   ├── setup/                   # Vitest setup: RTL jest-dom matchers + cleanup
 │   ├── fixtures/                # sample .dsl workspaces + expected JSON
 │   └── e2e/                     # DSL -> JSON -> puml -> svg -> anchor assertions
-├── dist/                        # git-ignored; shipped
-│   ├── cli/                     # tsc output
-│   └── spa/                     # vite output
+├── dist/                        # git-ignored; build output
+│   ├── cli/                     # tsc output (dev only)
+│   ├── spa/                     # vite output (embedded into the binary)
+│   └── binaries/                # compiled self-contained binaries
 └── packaging/
+    ├── binary/
+    │   ├── entry.ts             # compiled-binary entry point
+    │   ├── entitlements.plist   # macOS ad-hoc signing entitlements
+    │   └── build.mjs            # bun build --compile + sign
     └── homebrew/
-        ├── structurizr-site.rb      # formula template
-        └── update-formula.mjs       # fills url + sha256 at release
+        ├── structurizr-site.rb.template  # per-platform url/sha256 placeholders
+        ├── structurizr-site.rb           # rendered formula (copied to the tap)
+        └── update-formula.mjs            # fills the template from release assets
 ```
 
 ## Rationale
@@ -86,13 +93,14 @@ structurizr-site/
 
 ## Build and packaging
 
-- Build tools are managed by `mise` (`mise.toml`). Node is pinned to the current LTS, `24.21.0` (Krypton).
-- `tsc -p tsconfig.cli.json` → `dist/cli/` (plus `dist/shared/`); `vite build` → `dist/spa/`. `dist/` is git-ignored
-  and shipped.
-- `package.json`: `bin` → `dist/cli/bin.js`; `files: ["dist", "!dist/**/*.map"]` (source maps are built but not
-  shipped). `prepack` rebuilds `dist/` before packing.
-- `assembly/` copies `dist/spa/` into the output directory at generate time. The path is relative to the CLI module,
-  so there is no cross-package resolution.
+- Build tools are managed by `mise` (`mise.toml`): Node `24.21.0` (Krypton) and Bun `1.4.2`.
+- `tsc -p tsconfig.cli.json` → `dist/cli/` (plus `dist/shared/`), dev only; `vite build` → `dist/spa/`;
+  `node packaging/binary/build.mjs` → `dist/binaries/` (the self-contained binaries). `dist/` is git-ignored.
+- `package.json` has no `bin`/`files`/`prepack` — nothing is published to a registry. Scripts: `build:spa`,
+  `build:binary`, `build:binary:all`.
+- `assembly/` copies the SPA into the output directory at generate time. From `dist/cli` it resolves `dist/spa`; in the
+  compiled binary the SPA is embedded, materialized to a temp directory by `packaging/binary/entry.ts`, and registered
+  via `setSpaBundleDir()`.
 - Four project tsconfigs: `tsconfig.cli.json` (Node libs) and `tsconfig.spa.json` (DOM libs) — both including
   `src/shared` and excluding test files — plus `tsconfig.node.json` for `vite.config.ts` + `vitest.config.ts` and
   `tsconfig.test.json` (`noEmit`) for tests. A root `tsconfig.json` with `"files": []` references them (the Vite
@@ -103,6 +111,6 @@ structurizr-site/
 
 - `src/shared/` imports nothing from `src/cli/` or `src/spa/`, and nothing runtime-specific.
 - Unit tests are excluded from the build tsconfigs, so `dist/` never contains test code.
-- The published artifact contains exactly one version of CLI and SPA; version skew is impossible.
-- The prebuilt SPA is committed to the package at release; nothing builds or fetches at install time (see
+- The binary contains exactly one version of CLI and SPA; version skew is impossible.
+- The SPA is embedded into the binary at build time; nothing builds or fetches at install time (see
   [distribution.md](distribution.md)).

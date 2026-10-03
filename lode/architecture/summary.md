@@ -40,16 +40,18 @@ flowchart LR
 - **D5 — Structurizr is an external runtime dependency, not vendored.** The legacy `structurizr-cli` is archived;
   vendoring would freeze the DSL parser. The maintained vNext tooling is invoked as an external command so new DSL
   features arrive by updating Structurizr. See [distribution.md](distribution.md).
-- **D6 — Node is a dependency, not bundled.** The tool already needs Java and Graphviz, so bundling Node would not make
-  it self-contained; Homebrew manages the runtime. See [distribution.md](distribution.md).
-- **D7 — One published package.** The CLI, the SPA, and the shared code are source trees inside a single npm package;
-  no workspaces. The SPA has no independent consumer, so a separate package would only force a lockstep version pin.
-  See [repository-layout.md](repository-layout.md).
+- **D6 — Distributed as a self-contained binary.** The CLI and the embedded SPA are compiled with Bun into standalone
+  executables for macOS and Linux, so users need no Node. Node is a build/test tool only. See
+  [distribution.md](distribution.md).
+- **D7 — One package, one binary.** The CLI, the SPA, and the shared code are source trees inside a single package; no
+  workspaces. The SPA is embedded in the binary and has no independent consumer, so a separate package would only force
+  a lockstep version pin. See [repository-layout.md](repository-layout.md).
 - **D8 — Routes are static patterns plus a model-derived index.** Route patterns are declared in code; the model→URL
   mapping is derived from `workspace.json` at load. No `routes.json`. See [routing.md](routing.md).
 - **D9 — `serve` is a static preview server.** `serve` runs `generate-site` and then serves the output directory over a
-  dependency-free Node HTTP server (default port 8080). Unknown extensionless paths fall back to `index.html`; requests
-  are confined to the output directory. Watch + live rebuild are deferred.
+  dependency-free HTTP server (Node's `node:http`, which Bun provides in the compiled binary; default port 8080).
+  Unknown extensionless paths fall back to `index.html`; requests are confined to the output directory. Watch + live
+  rebuild are deferred.
 
 ## Known constraints
 
@@ -68,7 +70,7 @@ flowchart LR
 3. How documentation and ADRs are represented (markdown rendered by the SPA? pre-rendered?).
 4. Whether anything is pre-rendered for SEO / no-JS.
 5. CLI distribution and where the prebuilt SPA bundle lives. **Resolved:** Structurizr is an external runtime
-   dependency, Node is a dependency, SPA ships in the package. See [distribution.md](distribution.md).
+   dependency; the CLI and SPA ship as self-contained Bun binaries. See [distribution.md](distribution.md).
 6. How `generatr.*` properties map into the new design.
 
 ## Decisions log
@@ -77,8 +79,9 @@ flowchart LR
   deployable directory (diagrams + JSON + SPA).
 - **D4** — captured 2026-10-03: hash-based routes for SPA navigation and SVG drill-down links.
 - **D5–D6** — captured 2026-10-03: Structurizr is an external runtime dependency (not vendored) so new DSL features
-  track upstream; Node is a dependency, not bundled. See [distribution.md](distribution.md).
-- **D7–D8** — captured 2026-10-03: single published package (no workspaces); static route patterns with a
+  track upstream; the CLI and SPA ship as self-contained Bun binaries (Node is a build/test tool only). See
+  [distribution.md](distribution.md).
+- **D7–D8** — captured 2026-10-03: single package (no workspaces); static route patterns with a
   model-derived index and no `routes.json`. See [repository-layout.md](repository-layout.md) and
   [routing.md](routing.md).
 - **D9** — captured 2026-10-03: `serve` is a static preview server (generate + serve, port 8080, no watch/rebuild yet).

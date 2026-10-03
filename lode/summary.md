@@ -10,7 +10,7 @@ _behavior_ and is not a blueprint for the new implementation.
 
 **Status:** Architecture top-level shape defined (CLI + SPA + Structurizr JSON; see
 [architecture/summary.md](architecture/summary.md)). Diagram pipeline and clickable SVG links designed and verified
-(see [architecture/diagrams.md](architecture/diagrams.md)); distribution implemented (GitHub release tarball, CI/release
+(see [architecture/diagrams.md](architecture/diagrams.md)); distribution implemented (self-contained Bun binaries, CI/release
 workflows, Homebrew formula; see [architecture/distribution.md](architecture/distribution.md)); repository layout and
 SPA routing decided (see [architecture/repository-layout.md](architecture/repository-layout.md) and
 [architecture/routing.md](architecture/routing.md)). A minimal scaffold exists: the CLI emits a `build/` directory

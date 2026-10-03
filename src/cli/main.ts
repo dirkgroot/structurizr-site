@@ -2,8 +2,17 @@ import { createRequire } from "node:module";
 import { generateSite } from "./commands/generate-site.js";
 import { serveSite } from "./commands/serve-site.js";
 
-const require = createRequire(import.meta.url);
-const pkg = require("../../package.json") as { version: string };
+// Injected at build time for the compiled binary (see packaging/binary/build.mjs).
+// When running from source, the guard is false and the version comes from package.json.
+declare const __STRUCTURIZR_SITE_VERSION__: string | undefined;
+
+function readVersion(): string {
+  if (typeof __STRUCTURIZR_SITE_VERSION__ !== "undefined") {
+    return __STRUCTURIZR_SITE_VERSION__;
+  }
+  const require = createRequire(import.meta.url);
+  return (require("../../package.json") as { version: string }).version;
+}
 
 const USAGE = `Usage: structurizr-site <command> [options]
 
@@ -39,7 +48,7 @@ export async function run(argv: string[]): Promise<void> {
       return;
     case "-v":
     case "--version":
-      process.stdout.write(`${pkg.version}\n`);
+      process.stdout.write(`${readVersion()}\n`);
       return;
     default:
       throw new Error(`unknown command "${command}"\n\n${USAGE}`);

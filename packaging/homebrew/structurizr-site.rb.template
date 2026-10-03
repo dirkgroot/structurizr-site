@@ -1,0 +1,38 @@
+class StructurizrSite < Formula
+  desc "Static site generator for Structurizr workspaces"
+  homepage "https://github.com/dirkgroot/structurizr-site"
+  version "__VERSION__"
+  license "MIT"
+
+  on_macos do
+    on_arm do
+      url "__URL_DARWIN_ARM64__"
+      sha256 "__SHA256_DARWIN_ARM64__"
+    end
+
+    on_intel do
+      url "__URL_DARWIN_X64__"
+      sha256 "__SHA256_DARWIN_X64__"
+    end
+  end
+
+  on_linux do
+    on_arm do
+      url "__URL_LINUX_ARM64__"
+      sha256 "__SHA256_LINUX_ARM64__"
+    end
+
+    on_intel do
+      url "__URL_LINUX_X64__"
+      sha256 "__SHA256_LINUX_X64__"
+    end
+  end
+
+  def install
+    bin.install Dir["structurizr-site-*"].first => "structurizr-site"
+  end
+
+  test do
+    assert_match version.to_s, shell_output("#{bin}/structurizr-site --version")
+  end
+end

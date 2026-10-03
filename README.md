@@ -16,19 +16,26 @@ Releases are also downloadable as GitHub release assets, but Homebrew is the sup
 
 ## Requirements
 
-Build tools are pinned with [`mise`](https://mise.jdx.dev/) (Node LTS). With mise active, `node` and `npm` come from
-`mise.toml`.
+Build tools are pinned with [`mise`](https://mise.jdx.dev/) (Node LTS + Bun). With mise active, `node`, `npm`, and
+`bun` come from `mise.toml`.
 
 ## Develop
 
 ```sh
 npm install
-npm run build        # tsc -> dist/cli, vite -> dist/spa
+npm run build          # tsc -> dist/cli, vite -> dist/spa, bun -> dist/binaries/<platform>
+npm run build:spa      # vite -> dist/spa (the SPA embedded in the binary)
+npm run build:binary   # native platform only
+npm run build:binary:all  # all four release targets (cross-compiles)
 npm run typecheck
-npm test             # vitest (node + jsdom projects)
+npm test               # vitest (node + jsdom projects)
 npm run test:watch
 npm run test:coverage
 ```
+
+The distributed artifact is a self-contained binary: `bun build --compile` embeds the CLI, the SPA, and the Bun
+runtime, so users need no Node. The `bun` toolchain is only needed to build it. See
+`lode/architecture/distribution.md`.
 
 Unit tests use Vitest; React components are tested with React Testing Library. Tests are colocated with the source as
 `*.test.ts(x)`. See `lode/architecture/testing.md`.
@@ -54,20 +61,26 @@ hash routes, a plain static file server is enough.
 
 ## Release
 
-Releases are published as GitHub releases from a version tag. Each release carries the packed npm tarball as a
-downloadable asset, which is what the Homebrew formula installs.
+Releases are published as GitHub releases from a version tag. Each release carries four self-contained binaries
+(`darwin-arm64`, `darwin-x64`, `linux-x64`, `linux-arm64`) plus `SHA256SUMS`; the Homebrew formula installs the
+matching binary.
 
 1. Bump `version` in `package.json` and commit.
 2. Tag and push: `git tag v0.1.0 && git push origin v0.1.0`.
-3. The `Release` workflow verifies the tag matches `package.json`, runs the checks, and attaches the packed tarball to
-   a GitHub release.
-4. Refresh the Homebrew formula against the release asset, then copy it into the tap:
+3. The `Release` workflow verifies the tag matches `package.json`, runs the checks, builds and ad-hoc signs the
+   binaries, and attaches them to a GitHub release.
+4. Render the Homebrew formula against the release assets, then copy it into the tap:
 
    ```sh
    node packaging/homebrew/update-formula.mjs
    ```
 
-`prepack` rebuilds `dist/` before packing, so the released tarball always contains a fresh CLI and SPA.
+   Before a release exists, pass the local build directory instead:
+
+   ```sh
+   npm run build:binary:all
+   node packaging/homebrew/update-formula.mjs dist/binaries
+   ```
 
 ## Layout
 
@@ -75,6 +88,8 @@ downloadable asset, which is what the Homebrew formula installs.
 - `src/spa/` — the React + Vite single-page app.
 - `src/shared/` — runtime-agnostic code imported by both.
 - `.github/workflows/` — CI and release automation.
-- `packaging/homebrew/` — the Homebrew formula and its updater.
+- `packaging/binary/` — the compiled-binary entry point, entitlements, and build script.
+- `packaging/homebrew/` — the Homebrew formula template, rendered formula, and updater.
+- `THIRD-PARTY-NOTICES.md` — licenses for the runtime embedded in the binary.
 
 See `lode/architecture/repository-layout.md` for the full layout.

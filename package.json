@@ -20,20 +20,15 @@
     "architecture-diagrams",
     "static-site-generator"
   ],
-  "bin": {
-    "structurizr-site": "dist/cli/bin.js"
-  },
-  "files": [
-    "dist",
-    "!dist/**/*.map"
-  ],
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "build": "npm run build:cli && npm run build:spa",
+    "build": "npm run build:cli && npm run build:spa && npm run build:binary",
     "build:cli": "tsc -p tsconfig.cli.json",
     "build:spa": "vite build",
+    "build:binary": "node packaging/binary/build.mjs",
+    "build:binary:all": "node packaging/binary/build.mjs --all",
     "typecheck": "tsc -p tsconfig.cli.json --noEmit && tsc -p tsconfig.spa.json && tsc -p tsconfig.node.json && tsc -p tsconfig.test.json",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -43,7 +38,6 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "clean": "rm -rf dist build",
-    "prepack": "npm run clean && npm run build",
     "generate-site": "node dist/cli/bin.js generate-site"
   },
   "devDependencies": {
