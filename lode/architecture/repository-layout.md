@@ -5,11 +5,11 @@ How the source tree and the distributed binary are organized. Related: [summary.
 
 ## Decision
 
-One package, distributed as a single compiled binary. The CLI, the SPA, and the shared code are **source trees inside
-it**, not separate packages. There is one version and one build; the SPA bundle is embedded in the same binary as the
+One package, distributed as a single compiled binary. The CLI, the web app, and the shared code are **source trees inside
+it**, not separate packages. There is one version and one build; the web app bundle is embedded in the same binary as the
 CLI.
 
-Separate packages were rejected: the SPA has no independent consumer and no independent release cycle. Splitting it
+Separate packages were rejected: the web app has no independent consumer and no independent release cycle. Splitting it
 out would force a lockstep version pin and an extra build step for no benefit.
 
 ## Tree
@@ -30,16 +30,16 @@ structurizr-site/
 ├── tsconfig.json                # solution file; references the projects below
 ├── tsconfig.base.json
 ├── tsconfig.cli.json            # Node libs
-├── tsconfig.spa.json            # DOM libs
+├── tsconfig.web.json            # DOM libs
 ├── tsconfig.node.json           # vite.config.ts + vitest.config.ts
 ├── tsconfig.test.json           # test files (noEmit)
-├── vite.config.ts               # src/spa -> dist/spa
+├── vite.config.ts               # src/web -> dist/web
 ├── vitest.config.ts             # unit tests: node + jsdom projects
 ├── components.json              # shadcn/ui config (base-nova preset)
 ├── lode/                        # AI memory
 ├── .claude/skills/              # procedural skills (run/verify)
 ├── src/
-│   ├── shared/                  # contracts imported by cli + spa
+│   ├── shared/                  # contracts imported by cli + web
 │   │   ├── workspace/           # Structurizr JSON types
 │   │   ├── routes/              # normalize(), drill-down rules
 │   │   └── config/              # generatr.* keys + defaults
@@ -49,10 +49,10 @@ structurizr-site/
 │   │   ├── backend/             # Structurizr resolution + spawn
 │   │   ├── pipeline/            # exportJson, injectLinks, exportPuml,
 │   │   │                        #   renderSvg, stripOrigin
-│   │   ├── assembly/            # output dir; copy dist/spa + assets
+│   │   ├── assembly/            # output dir; copy dist/web + assets
 │   │   ├── config/              # CLI args, generatr.* mapping
 │   │   └── serve/               # watch + live rebuild
-│   └── spa/
+│   └── web/
 │       ├── index.html
 │       ├── main.tsx
 │       ├── app/                 # hash router, App shell
@@ -70,7 +70,7 @@ structurizr-site/
 │   └── e2e/                     # DSL -> JSON -> puml -> svg -> anchor assertions
 ├── dist/                        # git-ignored; build output
 │   ├── cli/                     # tsc output (dev only)
-│   ├── spa/                     # vite output (embedded into the binary)
+│   ├── web/                     # vite output (embedded into the binary)
 │   └── binaries/                # compiled self-contained binaries
 └── packaging/
     ├── binary/
@@ -90,7 +90,7 @@ structurizr-site/
   `fs`, no `window` — so it compiles into both the Node CLI and the browser bundle.
 - **`src/cli/`** is the generator. `pipeline/` mirrors the six pipeline steps one-to-one (see [diagrams.md](diagrams.md));
   `backend/` isolates the Structurizr resolution order (see [distribution.md](distribution.md)).
-- **`src/spa/`** is the React + Vite app. `app/` owns the router and App shell, `components/` holds layout and vendored
+- **`src/web/`** is the React + Vite app. `app/` owns the router and App shell, `components/` holds layout and vendored
   shadcn/ui primitives, `diagram/` owns SVG embedding and the pan/zoom click-vs-drag model, `data/` owns the workspace
   JSON loader and selectors. Routing is defined in [routing.md](routing.md); the UI stack in [ui.md](ui.md).
 - **Unit tests are colocated** as `<module>.test.ts(x)` next to the source, split into a Node and a jsdom Vitest project.
@@ -101,14 +101,14 @@ structurizr-site/
 ## Build and packaging
 
 - Build tools are managed by `mise` (`mise.toml`): Node `24.21.0` (Krypton), Bun `1.4.2`, and git-cliff `2.14.2`.
-- `tsc -p tsconfig.cli.json` → `dist/cli/` (plus `dist/shared/`), dev only; `vite build` → `dist/spa/`;
+- `tsc -p tsconfig.cli.json` → `dist/cli/` (plus `dist/shared/`), dev only; `vite build` → `dist/web/`;
   `node packaging/binary/build.mjs` → `dist/binaries/` (the self-contained binaries). `dist/` is git-ignored.
-- `package.json` has no `bin`/`files`/`prepack` — nothing is published to a registry. Scripts: `build:spa`,
+- `package.json` has no `bin`/`files`/`prepack` — nothing is published to a registry. Scripts: `build:web`,
   `build:binary`, `build:binary:all`, `changelog`, `changelog:release`.
-- `assembly/` copies the SPA into the output directory at generate time. From `dist/cli` it resolves `dist/spa`; in the
-  compiled binary the SPA is embedded, materialized to a temp directory by `packaging/binary/entry.ts`, and registered
-  via `setSpaBundleDir()`.
-- Four project tsconfigs: `tsconfig.cli.json` (Node libs) and `tsconfig.spa.json` (DOM libs) — both including
+- `assembly/` copies the web app into the output directory at generate time. From `dist/cli` it resolves `dist/web`; in the
+  compiled binary the web app is embedded, materialized to a temp directory by `packaging/binary/entry.ts`, and registered
+  via `setWebBundleDir()`.
+- Four project tsconfigs: `tsconfig.cli.json` (Node libs) and `tsconfig.web.json` (DOM libs) — both including
   `src/shared` and excluding test files — plus `tsconfig.node.json` for `vite.config.ts` + `vitest.config.ts` and
   `tsconfig.test.json` (`noEmit`) for tests. A root `tsconfig.json` with `"files": []` references them (the Vite
   "solution file" pattern) so the IDE's TypeScript language server discovers each project; the language server only
@@ -116,8 +116,8 @@ structurizr-site/
 
 ## Invariants
 
-- `src/shared/` imports nothing from `src/cli/` or `src/spa/`, and nothing runtime-specific.
+- `src/shared/` imports nothing from `src/cli/` or `src/web/`, and nothing runtime-specific.
 - Unit tests are excluded from the build tsconfigs, so `dist/` never contains test code.
-- The binary contains exactly one version of CLI and SPA; version skew is impossible.
-- The SPA is embedded into the binary at build time; nothing builds or fetches at install time (see
+- The binary contains exactly one version of CLI and web app; version skew is impossible.
+- The web app is embedded into the binary at build time; nothing builds or fetches at install time (see
   [distribution.md](distribution.md)).

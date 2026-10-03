@@ -6,36 +6,36 @@ Current state and next steps. Update in place; this is not a changelog.
 
 - Git repository initialized on branch `main`. Build tooling is pinned with `mise.toml` (Node LTS `24.21.0`, Krypton).
 - Minimal scaffold in place: a TypeScript CLI (`src/cli`) emits a `build/` directory by copying the prebuilt
-  React + Vite SPA (`src/spa`); `src/shared` holds runtime-agnostic values used by both. The CLI exposes
+  React + Vite web app (`src/web`); `src/shared` holds runtime-agnostic values used by both. The CLI exposes
   `generate-site` and `serve` (generate + static HTTP preview on port 8080). No Structurizr functionality
   yet. See [../architecture/repository-layout.md](../architecture/repository-layout.md).
 - Architecture top-level shape defined: CLI emits a deployable directory (rendered diagrams + exported Structurizr
-  JSON + SPA bundle); the SPA renders the site client-side from the JSON. See
+  JSON + web app bundle); the web app renders the site client-side from the JSON. See
   [../architecture/summary.md](../architecture/summary.md).
 - Diagram pipeline and clickable SVG links designed and verified end-to-end (official Structurizr CLI + PlantUML,
   link injection via the workspace JSON, hash routes). See [../architecture/diagrams.md](../architecture/diagrams.md).
 - Distribution implemented: each `v*` tag compiles self-contained Bun binaries for `darwin-arm64`, `darwin-x64`,
-  `linux-x64`, and `linux-arm64` (the SPA is embedded), attaches them plus `SHA256SUMS` to a GitHub release, and the
+  `linux-x64`, and `linux-arm64` (the web app is embedded), attaches them plus `SHA256SUMS` to a GitHub release, and the
   public tap `dirkgroot/homebrew-structurizr-site` installs the matching binary. macOS binaries are ad-hoc signed, not
   notarized. `.github/workflows/` holds CI and the tag-triggered release; `packaging/binary/` builds the binaries and
   `packaging/homebrew/` holds the formula template and updater. Structurizr stays an external runtime dependency (not
   vendored). See [../architecture/distribution.md](../architecture/distribution.md).
 - Versioning: Semantic Versioning with a `-pre-alpha.N` pre-release identifier; pre-release tags publish as GitHub
   pre-releases, never "Latest". See [../architecture/distribution.md](../architecture/distribution.md).
-- Repository layout decided: one package with `src/{cli,spa,shared}`. See
+- Repository layout decided: one package with `src/{cli,web,shared}`. See
   [../architecture/repository-layout.md](../architecture/repository-layout.md).
-- SPA routing decided: hash routes, static patterns, a model-derived index, react-router v7. See
+- Web app routing decided: hash routes, static patterns, a model-derived index, react-router v7. See
   [../architecture/routing.md](../architecture/routing.md).
 - Unit testing in place: Vitest with a Node project (CLI/shared) and a jsdom project (React), React Testing Library,
   colocated tests, no coverage threshold, and `npm test` gating CI and release. See
   [../architecture/testing.md](../architecture/testing.md).
-- SPA app shell in place: shadcn/ui on Base UI with Tailwind v4, using the `sidebar-01` block (sidebar nav + inset
+- Web app shell in place: shadcn/ui on Base UI with Tailwind v4, using the `sidebar-01` block (sidebar nav + inset
   content). Navigation is placeholder until the workspace loader lands. See [../architecture/ui.md](../architecture/ui.md).
 
 ## Next
 
-1. Extend `generate-site` to export `workspace.json` into the output directory alongside the SPA.
-2. Scaffold the first vertical slice: DSL → `workspace.json` → linked `.puml` → `.svg` → SPA renders one diagram with
+1. Extend `generate-site` to export `workspace.json` into the output directory alongside the web app.
+2. Scaffold the first vertical slice: DSL → `workspace.json` → linked `.puml` → `.svg` → web app renders one diagram with
    working hash links.
 3. Wire react-router v7 into the App shell and drive the sidebar navigation from the model-derived route index.
 4. Record build/run/verify as a skill.
@@ -43,7 +43,7 @@ Current state and next steps. Update in place; this is not a changelog.
 ## Open
 
 - Backend resolution details (community Homebrew build vs user-provided war/Docker) and minimum supported version.
-- Documentation and ADR representation in the SPA.
+- Documentation and ADR representation in the web app.
 - `generatr.*` property mapping into the new design.
 - Whether to pre-render anything for SEO / no-JS.
 - Target platform.

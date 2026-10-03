@@ -28,7 +28,7 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
-      - run: npm run build:spa
+      - run: npm run build:web
       - name: Build self-contained binaries
         run: npm run build:binary:all
       - name: Smoke test the native binary

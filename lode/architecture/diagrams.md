@@ -1,6 +1,6 @@
 # Diagrams & Clickable Links
 
-How diagram assets are produced and how elements become clickable in the SPA. Related:
+How diagram assets are produced and how elements become clickable in the web app. Related:
 [summary.md](summary.md), [../terminology.md](../terminology.md).
 
 ## Mechanism (reference tool)
@@ -30,12 +30,12 @@ flowchart LR
     PUML -->|plantuml -tsvg| SVG[*.svg with anchors]
     SVG -->|TS: strip temp origin| OUT[deployable dir]
     JSON --> OUT
-    SPA[SPA bundle] --> OUT
+    WEB[web app bundle] --> OUT
 ```
 
 Steps:
 
-1. `structurizr export -w workspace.dsl -f json -o build` → `workspace.json` (also the SPA's runtime data source).
+1. `structurizr export -w workspace.dsl -f json -o build` → `workspace.json` (also the web app's runtime data source).
 2. TS builds a linked copy of the JSON. For every element: move any user-defined `url` into property `Url`; compute
    the drill-down route; set `url = <temp-origin>/#<route>`. `ModelItem.setUrl` rejects relative URLs, so the route
    is wrapped in a valid absolute URL and stripped later (the reference tool uses `TEMP_URI` for the same reason).
@@ -43,7 +43,7 @@ Steps:
    `generatr.site.exporter`) → `*.puml`.
 4. `plantuml -tsvg` → `*.svg` containing `<a href="<temp-origin>/#<route>">`.
 5. TS strips `<temp-origin>` from the SVGs.
-6. Assemble the output directory (SPA bundle + clean `workspace.json` + SVGs).
+6. Assemble the output directory (web app bundle + clean `workspace.json` + SVGs).
 
 The runtime `workspace.json` stays clean: original element urls, no temp origin. `structurizr` is the backend command
 resolved per [distribution.md](distribution.md).
@@ -63,7 +63,7 @@ resolved per [distribution.md](distribution.md).
 ## Routes
 
 Hash-based (`#/...`). SVG anchors work unchanged with no static-host fallback or click interception. Decision **D4**.
-See [routing.md](routing.md) for how the SPA declares and resolves them.
+See [routing.md](routing.md) for how the web app declares and resolves them.
 
 ## Invariants
 
@@ -73,7 +73,7 @@ See [routing.md](routing.md) for how the SPA declares and resolves them.
 
 ## Caveats
 
-- **Pan/zoom vs click.** `svg-pan-zoom` swallows clicks; the reference tool disables links in its zoom modal. The SPA
+- **Pan/zoom vs click.** `svg-pan-zoom` swallows clicks; the reference tool disables links in its zoom modal. The web app
   must define the interaction model (click vs drag threshold). UX decision, not a technical blocker.
 - **Version drift.** The reference pins `structurizr-core/export` 6.2.2; the tool uses whatever Structurizr backend is
   installed (vNext 2026.09.19 bundles libraries 6.2.3). Link behavior is identical; diagram styling may differ. Point

@@ -1,7 +1,7 @@
 # Architecture
 
 > **Status: top-level shape defined; component details still open.** The owner has fixed the build/runtime split (see
-> Decisions). Split into focused files (e.g. `pipeline.md`, `renderer.md`, `spa.md`, `cli.md`) as the design grows.
+> Decisions). Split into focused files (e.g. `pipeline.md`, `renderer.md`, `web.md`, `cli.md`) as the design grows.
 
 ## Shape
 
@@ -10,8 +10,8 @@ generated HTML. Instead:
 
 - The CLI exports the workspace as **Structurizr JSON**.
 - The CLI renders each view to a static **diagram asset**.
-- The CLI assembles a prebuilt **SPA** into the output directory.
-- The SPA runs in the browser, fetches the JSON and diagrams, and renders the whole site client-side.
+- The CLI assembles a prebuilt **web app** into the output directory.
+- The web app runs in the browser, fetches the JSON and diagrams, and renders the whole site client-side.
 
 The output directory is self-contained and deployable to any static host (NGINX, GitHub Pages, object storage).
 
@@ -20,31 +20,31 @@ flowchart LR
     DSL[workspace.dsl] --> CLI[Generator CLI]
     CLI -->|renders| DIAG[Diagram assets]
     CLI -->|exports| JSON[workspace.json]
-    CLI -->|copies| SPA[SPA bundle]
+    CLI -->|copies| WEB[web app bundle]
     DIAG --> OUT[Output directory]
     JSON --> OUT
-    SPA --> OUT
+    WEB --> OUT
     OUT -->|deploy| HOST[Static host]
-    HOST -->|fetch JSON + assets| BROWSER[Browser SPA]
+    HOST -->|fetch JSON + assets| BROWSER[Browser web app]
 ```
 
 ## Decisions
 
-- **D1 — Client-rendered site.** The site is an SPA, not generated HTML. The workspace is consumed as exported
+- **D1 — Client-rendered site.** The site is a web app, not generated HTML. The workspace is consumed as exported
   Structurizr JSON at runtime, not baked into pages at build time.
-- **D2 — CLI produces a deployable directory.** `generate-site` renders diagrams, exports JSON, and assembles the SPA
+- **D2 — CLI produces a deployable directory.** `generate-site` renders diagrams, exports JSON, and assembles the web app
   plus diagrams plus JSON into one directory ready for a static host.
 - **D3 — Hosting is static and external.** NGINX / GitHub Pages / similar. No application server.
-- **D4 — Hash-based routes.** Drill-down links and SPA navigation use hash routes (`#/...`), so SVG anchors work
+- **D4 — Hash-based routes.** Drill-down links and web app navigation use hash routes (`#/...`), so SVG anchors work
   without static-host fallback or click interception. See [diagrams.md](diagrams.md).
 - **D5 — Structurizr is an external runtime dependency, not vendored.** The legacy `structurizr-cli` is archived;
   vendoring would freeze the DSL parser. The maintained vNext tooling is invoked as an external command so new DSL
   features arrive by updating Structurizr. See [distribution.md](distribution.md).
-- **D6 — Distributed as a self-contained binary.** The CLI and the embedded SPA are compiled with Bun into standalone
+- **D6 — Distributed as a self-contained binary.** The CLI and the embedded web app are compiled with Bun into standalone
   executables for macOS and Linux, so users need no Node. Node is a build/test tool only. See
   [distribution.md](distribution.md).
-- **D7 — One package, one binary.** The CLI, the SPA, and the shared code are source trees inside a single package; no
-  workspaces. The SPA is embedded in the binary and has no independent consumer, so a separate package would only force
+- **D7 — One package, one binary.** The CLI, the web app, and the shared code are source trees inside a single package; no
+  workspaces. The web app is embedded in the binary and has no independent consumer, so a separate package would only force
   a lockstep version pin. See [repository-layout.md](repository-layout.md).
 - **D8 — Routes are static patterns plus a model-derived index.** Route patterns are declared in code; the model→URL
   mapping is derived from `workspace.json` at load. No `routes.json`. See [routing.md](routing.md).
@@ -52,8 +52,8 @@ flowchart LR
   dependency-free HTTP server (Node's `node:http`, which Bun provides in the compiled binary; default port 8080).
   Unknown extensionless paths fall back to `index.html`; requests are confined to the output directory. Watch + live
   rebuild are deferred.
-- **D10 — SPA UI is shadcn/ui on Base UI, styled with Tailwind CSS v4.** Components are vendored under
-  `src/spa/components/ui/`; shadcn is a build-time tool, not a runtime dependency. The app shell uses the `sidebar-01`
+- **D10 — Web app UI is shadcn/ui on Base UI, styled with Tailwind CSS v4.** Components are vendored under
+  `src/web/components/ui/`; shadcn is a build-time tool, not a runtime dependency. The app shell uses the `sidebar-01`
   block. See [ui.md](ui.md).
 - **D11 — Vendored UI is exempt from the lint and coverage gates.** Generated components are excluded from
   `react/only-export-components` / `react/set-state-in-effect` and from coverage; our own layout code is not. See
@@ -65,27 +65,27 @@ flowchart LR
 - Exposes two commands: `generate-site` emits the deployable directory; `serve` generates and serves it over HTTP
   (port 8080 by default). Watch + live rebuild are not implemented yet.
 - Behavior matches the reference tool unless the owner decides otherwise. The reference tool's output behavior
-  (navigation, documentation, ADRs) is now the SPA's responsibility. See [../terminology.md](../terminology.md).
+  (navigation, documentation, ADRs) is now the web app's responsibility. See [../terminology.md](../terminology.md).
 
 ## Open questions (awaiting owner)
 
-1. Language/runtime for the CLI and the SPA framework. **Resolved:** TypeScript CLI; React + Vite + react-router v7
-   SPA. See [repository-layout.md](repository-layout.md) and [routing.md](routing.md).
+1. Language/runtime for the CLI and the web app framework. **Resolved:** TypeScript CLI; React + Vite + react-router v7
+   web app. See [repository-layout.md](repository-layout.md) and [routing.md](routing.md).
 2. Diagram asset format and renderer (reuse the PlantUML exporter? SVG? PNG?). **Partially resolved:** SVG rendered via
    PlantUML, with clickable drill-down links driven through the workspace JSON. See [diagrams.md](diagrams.md).
-3. How documentation and ADRs are represented (markdown rendered by the SPA? pre-rendered?).
+3. How documentation and ADRs are represented (markdown rendered by the web app? pre-rendered?).
 4. Whether anything is pre-rendered for SEO / no-JS.
-5. CLI distribution and where the prebuilt SPA bundle lives. **Resolved:** Structurizr is an external runtime
-   dependency; the CLI and SPA ship as self-contained Bun binaries. See [distribution.md](distribution.md).
+5. CLI distribution and where the prebuilt web app bundle lives. **Resolved:** Structurizr is an external runtime
+   dependency; the CLI and web app ship as self-contained Bun binaries. See [distribution.md](distribution.md).
 6. How `generatr.*` properties map into the new design.
 
 ## Decisions log
 
-- **D1–D3** — captured 2026-10-03 from owner direction: SPA reads Structurizr JSON from a static host; CLI emits a
-  deployable directory (diagrams + JSON + SPA).
-- **D4** — captured 2026-10-03: hash-based routes for SPA navigation and SVG drill-down links.
+- **D1–D3** — captured 2026-10-03 from owner direction: web app reads Structurizr JSON from a static host; CLI emits a
+  deployable directory (diagrams + JSON + web app).
+- **D4** — captured 2026-10-03: hash-based routes for web app navigation and SVG drill-down links.
 - **D5–D6** — captured 2026-10-03: Structurizr is an external runtime dependency (not vendored) so new DSL features
-  track upstream; the CLI and SPA ship as self-contained Bun binaries (Node is a build/test tool only). See
+  track upstream; the CLI and web app ship as self-contained Bun binaries (Node is a build/test tool only). See
   [distribution.md](distribution.md).
 - **D7–D8** — captured 2026-10-03: single package (no workspaces); static route patterns with a
   model-derived index and no `routes.json`. See [repository-layout.md](repository-layout.md) and

@@ -1,4 +1,4 @@
-// Runtime-agnostic values shared by the CLI and the SPA. This module must not
+// Runtime-agnostic values shared by the CLI and the web app. This module must not
 // import Node or browser APIs (see lode/architecture/repository-layout.md).
 
 /** Display name of the generated site. */

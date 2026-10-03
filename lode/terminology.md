@@ -24,15 +24,15 @@ Short `term - meaning` lines describing this project's domain language. Keep add
 
 - **Workspace file** - the input `.dsl` file (`--workspace-file` / `-w`).
 - **Assets directory** - directory of static assets (logos, favicon, custom CSS, ADR/doc images) (`--assets-dir` / `-a`).
-- **Build output** - the deployable directory emitted by the CLI, containing the SPA bundle, rendered diagram assets,
+- **Build output** - the deployable directory emitted by the CLI, containing the web app bundle, rendered diagram assets,
   and the exported workspace JSON. `./build` by default.
 - **Serve** - CLI command that generates the build output and serves it over HTTP for local preview (port 8080).
-- **SPA** - the client-side single-page app that fetches the workspace JSON and renders the site in the browser.
-- **Workspace JSON** - the Structurizr JSON export of the workspace; the SPA's runtime data source.
-- **Diagram asset** - a pre-rendered diagram file emitted by the CLI and referenced by the SPA.
+- **Web app** - the browser app that fetches the workspace JSON and renders the site client-side.
+- **Workspace JSON** - the Structurizr JSON export of the workspace; the web app's runtime data source.
+- **Diagram asset** - a pre-rendered diagram file emitted by the CLI and referenced by the web app.
 - **Drill-down link** - an SVG anchor on a diagram element that navigates to a more detailed view.
 - **Link injection** - setting an element's `url` in the workspace JSON so the Structurizr exporter emits a PlantUML link that renders as an SVG anchor.
-- **Route** - an SPA client-side path; hash-based (`#/...`) in v1, targeted by drill-down links.
+- **Route** - a web app client-side path; hash-based (`#/...`) in v1, targeted by drill-down links.
 - **`Url` property** - holds an element's original model URL because the `url` field is reused for generated drill-down links.
 - **Generatr property** - a view/model property prefixed `generatr.` that customizes site output (style, search, exporter, theme, etc.).
 

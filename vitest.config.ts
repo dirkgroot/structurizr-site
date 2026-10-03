@@ -2,13 +2,13 @@ import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
-// Two Vitest projects: CLI/shared run in Node, the React SPA runs in jsdom with
-// Testing Library. This is a separate config from vite.config.ts so the SPA
-// build root (src/spa) does not leak into test discovery.
+// Two Vitest projects: CLI/shared run in Node, the React web app runs in jsdom with
+// Testing Library. This is a separate config from vite.config.ts so the web app
+// build root (src/web) does not leak into test discovery.
 export default defineConfig({
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./src/spa", import.meta.url)),
+      "@": fileURLToPath(new URL("./src/web", import.meta.url)),
     },
   },
   test: {
@@ -23,10 +23,10 @@ export default defineConfig({
       {
         plugins: [react()],
         test: {
-          name: "spa",
+          name: "web",
           environment: "jsdom",
-          include: ["src/spa/**/*.test.ts", "src/spa/**/*.test.tsx"],
-          setupFiles: ["./test/setup/spa.ts"],
+          include: ["src/web/**/*.test.ts", "src/web/**/*.test.tsx"],
+          setupFiles: ["./test/setup/web.ts"],
         },
       },
     ],
@@ -35,11 +35,11 @@ export default defineConfig({
       include: ["src/**/*.{ts,tsx}"],
       exclude: [
         "src/**/*.test.{ts,tsx}",
-        "src/spa/vite-env.d.ts",
+        "src/web/vite-env.d.ts",
         // Vendored shadcn/ui components and generated hooks are not unit tested;
         // see lode/architecture/ui.md.
-        "src/spa/components/ui/**",
-        "src/spa/hooks/**",
+        "src/web/components/ui/**",
+        "src/web/hooks/**",
       ],
     },
   },

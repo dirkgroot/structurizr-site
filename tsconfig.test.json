@@ -7,7 +7,7 @@
     "jsx": "react-jsx",
     "types": ["node", "vite/client"],
     "paths": {
-      "@/*": ["./src/spa/*"]
+      "@/*": ["./src/web/*"]
     },
     "noEmit": true
   },

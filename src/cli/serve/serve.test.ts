@@ -47,7 +47,7 @@ describe("serve", () => {
   it("falls back to index.html for unknown extensionless routes", async () => {
     running = await serve(root, { port: 0 });
 
-    const response = await fetch(`http://localhost:${running.port}/some/spa/route`);
+    const response = await fetch(`http://localhost:${running.port}/some/web/route`);
 
     expect(response.status).toBe(200);
     expect(await response.text()).toContain("Site");

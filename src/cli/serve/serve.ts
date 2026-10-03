@@ -37,7 +37,7 @@ export interface RunningServer {
 
 /**
  * Serve `outputDir` as a static site. Unknown extensionless paths fall back to
- * `index.html` so client-side routes render the SPA shell; unknown files 404.
+ * `index.html` so client-side routes render the web app shell; unknown files 404.
  * Requests are confined to `outputDir`.
  */
 export async function serve(outputDir: string, options: ServeOptions = {}): Promise<RunningServer> {

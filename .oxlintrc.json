@@ -12,7 +12,7 @@
   },
   "overrides": [
     {
-      "files": ["src/spa/components/ui/**", "src/spa/hooks/**"],
+      "files": ["src/web/components/ui/**", "src/web/hooks/**"],
       "rules": {
         "react/only-export-components": "off",
         "react/set-state-in-effect": "off"

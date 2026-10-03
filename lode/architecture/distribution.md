@@ -10,12 +10,12 @@ How the CLI is packaged and shipped. Related: [summary.md](summary.md), [diagram
   command, so new DSL features arrive by updating Structurizr, independent of this tool's releases. Vendoring the
   prebuilt war is also not permitted (see Vendoring constraint), and vendoring the Apache-2.0 libraries would add an
   owned Java shim for self-containment this project does not need.
-- **Distribution: self-contained binaries built with Bun.** Each `v*` tag compiles the CLI plus the embedded SPA into
+- **Distribution: self-contained binaries built with Bun.** Each `v*` tag compiles the CLI plus the embedded web app into
   four standalone executables (`darwin-arm64`, `darwin-x64`, `linux-x64`, `linux-arm64`) with `bun build --compile`,
   attached to a GitHub release. Nothing is published to a package registry.
 - **Bun is the distribution runtime; Node is a build/test tool only.** The binary embeds the Bun runtime
   (JavaScriptCore), so users need no Node. Node + npm remain for Vite, Vitest, `tsc`, and the build scripts.
-- **The SPA is embedded in the binary.** `dist/spa` is embedded at build time and materialized to a temp directory at
+- **The web app is embedded in the binary.** `dist/web` is embedded at build time and materialized to a temp directory at
   startup; there is no sidecar asset. See [repository-layout.md](repository-layout.md).
 - **macOS binaries are ad-hoc signed, not notarized.** They ship through a Homebrew _formula_, and formula downloads are
   not quarantined, so Gatekeeper does not demand notarization. Ad-hoc signing is still required for arm64 execution. A
@@ -28,12 +28,12 @@ How the CLI is packaged and shipped. Related: [summary.md](summary.md), [diagram
 ## Compiled binary
 
 `packaging/binary/build.mjs` compiles `packaging/binary/entry.ts` with `bun build --compile` into
-`dist/binaries/structurizr-site-<platform>` (one executable per target). The build embeds the SPA and injects the
+`dist/binaries/structurizr-site-<platform>` (one executable per target). The build embeds the web app and injects the
 version; there are no runtime dependencies.
 
-- **SPA embedding.** `build.mjs` walks `dist/spa` and generates `dist/binary/spa-assets.ts`, importing each file with
+- **web app embedding.** `build.mjs` walks `dist/web` and generates `dist/binary/web-assets.ts`, importing each file with
   `{ type: "file" }` and mapping its original relative path to the embedded path. `entry.ts` writes those files to a
-  temp directory and calls `setSpaBundleDir()` before `run()`. Bun content-hashes embedded names, so the explicit map is
+  temp directory and calls `setWebBundleDir()` before `run()`. Bun content-hashes embedded names, so the explicit map is
   what preserves the `index.html` + `assets/*` layout.
 - **Version injection.** `main.ts` reads `__STRUCTURIZR_SITE_VERSION__`, replaced at compile time via `--define`. When
   running from source the guard is false and it falls back to `package.json`.
@@ -56,7 +56,7 @@ published release rather than the `package.json` version.
 ## Release automation
 
 - **CI** (`.github/workflows/ci.yml`) has two jobs. `verify` runs on Ubuntu: `npm ci`, `format:check`, `lint`,
-  `typecheck`, `npm test`. `binary` runs on `macos-latest`: `build:spa`, `build:binary` (native target, which signs and
+  `typecheck`, `npm test`. `binary` runs on `macos-latest`: `build:web`, `build:binary` (native target, which signs and
   verifies on macOS), then runs the compiled binary for `--version` and `generate-site`. Node and Bun both come from
   `mise.toml` via `jdx/mise-action`.
 - **Release** (`.github/workflows/release.yml`) triggers on `v*` tags, on `macos-latest`. It verifies the tag equals the

@@ -17,7 +17,7 @@ function readVersion(): string {
 const USAGE = `Usage: structurizr-site <command> [options]
 
 Commands:
-  generate-site    Emit a deployable directory containing the prebuilt SPA.
+  generate-site    Emit a deployable directory containing the prebuilt web app.
   serve            Generate the site and serve it on http://localhost:8080.
 
 Options:

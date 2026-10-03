@@ -21,8 +21,7 @@ body = """
 {% for entry in commits | commit_groups(groups=commit_parsers_groups) %}
     ### {{ entry.group | striptags | trim | upper_first }}
     {% for commit in entry.commits %}
-        - {% if commit.scope %}*({{ commit.scope }})* {% endif %}\
-            {% if commit.breaking %}[**breaking**] {% endif %}\
+        - {% if commit.breaking %}[**breaking**] {% endif %}\
             {{ commit.message | split(pat="\n") | first | upper_first }}\
             {% if commit.remote.pr_number %} ([#{{ commit.remote.pr_number }}]({{ commit.remote.pr_url }})){% endif %}\
     {% endfor %}

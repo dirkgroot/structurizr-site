@@ -3,7 +3,7 @@
 Static site generator for [Structurizr](https://structurizr.com/) workspaces. See `lode/summary.md` for the project
 overview.
 
-**Status:** pre-alpha. Minimal scaffold. The CLI emits a deployable directory containing the prebuilt SPA. Structurizr
+**Status:** pre-alpha. Minimal scaffold. The CLI emits a deployable directory containing the prebuilt web app. Structurizr
 export, diagram rendering, and link injection are not implemented yet.
 
 ## Install
@@ -23,8 +23,8 @@ Build tools are pinned with [`mise`](https://mise.jdx.dev/) (Node LTS + Bun). Wi
 
 ```sh
 npm install
-npm run build          # tsc -> dist/cli, vite -> dist/spa, bun -> dist/binaries/<platform>
-npm run build:spa      # vite -> dist/spa (the SPA embedded in the binary)
+npm run build          # tsc -> dist/cli, vite -> dist/web, bun -> dist/binaries/<platform>
+npm run build:web      # vite -> dist/web (the web app embedded in the binary)
 npm run build:binary   # native platform only
 npm run build:binary:all  # all four release targets (cross-compiles)
 npm run typecheck
@@ -33,7 +33,7 @@ npm run test:watch
 npm run test:coverage
 ```
 
-The distributed artifact is a self-contained binary: `bun build --compile` embeds the CLI, the SPA, and the Bun
+The distributed artifact is a self-contained binary: `bun build --compile` embeds the CLI, the web app, and the Bun
 runtime, so users need no Node. The `bun` toolchain is only needed to build it. See
 `lode/architecture/distribution.md`.
 
@@ -47,7 +47,7 @@ npm run generate-site            # writes ./build
 node dist/cli/bin.js generate-site --output path/to/out
 ```
 
-`build/` contains the prebuilt SPA and is deployable to any static host. It is git-ignored.
+`build/` contains the prebuilt web app and is deployable to any static host. It is git-ignored.
 
 ## Preview a site
 
@@ -56,7 +56,7 @@ node dist/cli/bin.js serve                    # http://localhost:8080
 node dist/cli/bin.js serve -o path/to/out -p 9000
 ```
 
-`serve` generates the site into the output directory, then serves it over HTTP until stopped. Because the SPA uses
+`serve` generates the site into the output directory, then serves it over HTTP until stopped. Because the web app uses
 hash routes, a plain static file server is enough.
 
 ## Release
@@ -94,7 +94,7 @@ non-conforming commits land under `Other`. The same history produces each releas
 ## Layout
 
 - `src/cli/` — the generator CLI.
-- `src/spa/` — the React + Vite single-page app (shadcn/ui on Base UI, Tailwind v4).
+- `src/web/` — the React + Vite web app (shadcn/ui on Base UI, Tailwind v4).
 - `src/shared/` — runtime-agnostic code imported by both.
 - `.github/workflows/` — CI and release automation.
 - `packaging/binary/` — the compiled-binary entry point, entitlements, and build script.

@@ -16,7 +16,7 @@ describe("assemble", () => {
   });
 
   it("copies the source bundle into the output directory", async () => {
-    const source = join(workDir, "spa");
+    const source = join(workDir, "web");
     await mkdir(join(source, "assets"), { recursive: true });
     await writeFile(join(source, "index.html"), "<html></html>");
     await writeFile(join(source, "assets", "app.js"), "console.log(1)");
@@ -29,7 +29,7 @@ describe("assemble", () => {
   });
 
   it("replaces any previous output contents", async () => {
-    const source = join(workDir, "spa");
+    const source = join(workDir, "web");
     await mkdir(source, { recursive: true });
     await writeFile(join(source, "fresh.txt"), "fresh");
 
@@ -46,7 +46,7 @@ describe("assemble", () => {
   it("fails when the source bundle is missing", async () => {
     const missing = join(workDir, "missing");
     await expect(assemble(join(workDir, "out"), missing)).rejects.toThrow(
-      `prebuilt SPA not found at ${missing}`,
+      `prebuilt web app not found at ${missing}`,
     );
   });
 });

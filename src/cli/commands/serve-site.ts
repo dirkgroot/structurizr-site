@@ -10,7 +10,7 @@ export interface ServeSiteOptions {
 
 /**
  * Generate the deployable site, then serve it over HTTP until the process is
- * stopped. The SPA uses hash routes, so a plain static file server suffices.
+ * stopped. The web app uses hash routes, so a plain static file server suffices.
  */
 export async function serveSite(options: ServeSiteOptions): Promise<void> {
   const outputDir = resolve(options.output ?? DEFAULT_OUTPUT_DIR);

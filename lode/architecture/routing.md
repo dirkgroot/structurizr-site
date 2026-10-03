@@ -1,6 +1,6 @@
 # Routing
 
-How the SPA's hash routes are defined and resolved. Related: [summary.md](summary.md), [diagrams.md](diagrams.md),
+How the web app's hash routes are defined and resolved. Related: [summary.md](summary.md), [diagrams.md](diagrams.md),
 [repository-layout.md](repository-layout.md).
 
 ## Decision
@@ -44,13 +44,13 @@ key through the index, and loads the matching diagram asset.
 
 ## Why no routes.json
 
-- Redundant: the SPA already fetches `workspace.json`, from which the index is a cheap pure computation.
+- Redundant: the web app already fetches `workspace.json`, from which the index is a cheap pure computation.
 - Drift risk: two artifacts that must agree are a bug source; one shared module makes divergence impossible.
 - The only real coupling is the route formula, and that already lives in `src/shared/routes`.
 
 ## Diagram asset addressing
 
-The CLI's `assembly` step names each rendered diagram `<viewKey>.svg`. The SPA addresses assets by view key, which is
+The CLI's `assembly` step names each rendered diagram `<viewKey>.svg`. The web app addresses assets by view key, which is
 already present in `workspace.json`. No sidecar mapping is needed.
 
 ## Framework
@@ -62,7 +62,7 @@ needs.
 
 ## Invariant
 
-For any element, the drill-down route the CLI injects into the SVG equals the route the SPA resolves for that element.
+For any element, the drill-down route the CLI injects into the SVG equals the route the web app resolves for that element.
 Both sides call the same `normalize()` and drill-down rules in `src/shared/routes`.
 
 ## Related

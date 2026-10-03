@@ -3,20 +3,20 @@ import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 
-// The SPA lives in src/spa and is emitted to dist/spa. The CLI copies that
+// The web app lives in src/web and is emitted to dist/web. The CLI copies that
 // directory into the generated output (see src/cli/assembly/assemble.ts).
 export default defineConfig({
-  root: "src/spa",
+  root: "src/web",
   plugins: [react(), tailwindcss()],
   resolve: {
-    // `@` points at the SPA tree so shadcn's `@/components/...` imports resolve
+    // `@` points at the web app tree so shadcn's `@/components/...` imports resolve
     // (see components.json and lode/architecture/ui.md).
     alias: {
-      "@": fileURLToPath(new URL("./src/spa", import.meta.url)),
+      "@": fileURLToPath(new URL("./src/web", import.meta.url)),
     },
   },
   build: {
-    outDir: "../../dist/spa",
+    outDir: "../../dist/web",
     emptyOutDir: true,
   },
 });
