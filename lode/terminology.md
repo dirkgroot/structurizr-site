@@ -6,6 +6,8 @@ Short `term - meaning` lines describing this project's domain language. Keep add
 
 - **C4 model** - a hierarchical way to describe software architecture at four levels: context, container, component, code.
 - **Structurizr** - tooling ecosystem for building C4 models as code, notably the Structurizr DSL and Java library.
+- **vNext** - the maintained Structurizr tooling (`structurizr/structurizr`), distributed as a `.war` and Docker image; replaces the archived `structurizr-cli`.
+- **Structurizr backend** - the external Structurizr command the CLI invokes: a native `structurizr` binary, `java -jar structurizr.war`, or the `structurizr/structurizr` Docker image.
 - **Structurizr DSL** - a text language (`workspace.dsl`) that defines a C4 model: people, software systems, containers, components, and relationships.
 - **Workspace** - the root of a Structurizr model. Contains the model and one or more views.
 - **Model** - the elements (people, software systems, containers, components) and their relationships.

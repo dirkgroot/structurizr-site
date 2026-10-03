@@ -10,8 +10,8 @@ Current state and next steps. Update in place; this is not a changelog.
   [../architecture/summary.md](../architecture/summary.md).
 - Diagram pipeline and clickable SVG links designed and verified end-to-end (official Structurizr CLI + PlantUML,
   link injection via the workspace JSON, hash routes). See [../architecture/diagrams.md](../architecture/diagrams.md).
-- Distribution decided: vendor a version-pinned Structurizr artifact, Node as a dependency, SPA shipped in the package,
-  Homebrew tap. See [../architecture/distribution.md](../architecture/distribution.md).
+- Distribution decided: Structurizr as an external runtime dependency (not vendored), Node as a dependency, SPA shipped
+  in the package, Homebrew tap. See [../architecture/distribution.md](../architecture/distribution.md).
 
 ## Next
 
@@ -22,9 +22,9 @@ Current state and next steps. Update in place; this is not a changelog.
 
 ## Open
 
-- CLI runtime: TS orchestrator shelling out to the vendored Structurizr artifact and PlantUML is validated; not yet
+- CLI runtime: TS orchestrator shelling out to the Structurizr vNext backend and PlantUML is validated; not yet
   confirmed by the owner.
 - SPA framework (React + Vite proposed).
-- Which Structurizr artifact to vendor (legacy CLI `lib/` vs vNext war).
+- Backend resolution details (community Homebrew build vs user-provided war/Docker) and minimum supported version.
 - Documentation and ADR representation in the SPA.
 - Target platform.

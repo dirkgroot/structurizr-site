@@ -19,14 +19,14 @@ The reference tool does not post-process SVGs. It injects a per-element link int
 
 ## Our approach (TS orchestrator)
 
-Do not subclass the exporter. Drive links through the workspace JSON's `url` field and let the official Structurizr
-CLI plus PlantUML do the rendering. This reuses the existing exporter instead of reimplementing it.
+Do not subclass the exporter. Drive links through the workspace JSON's `url` field and let the Structurizr backend plus
+PlantUML do the rendering. This reuses the existing exporter instead of reimplementing it.
 
 ```mermaid
 flowchart LR
-    DSL[workspace.dsl] -->|structurizr-cli -f json| JSON[workspace.json]
+    DSL[workspace.dsl] -->|structurizr export -f json| JSON[workspace.json]
     JSON -->|TS: move url to Url prop; compute route; set url=temp-origin/#route| LINKED[workspace-linked.json]
-    LINKED -->|structurizr-cli -f plantuml/c4plantuml| PUML[*.puml]
+    LINKED -->|structurizr export -f plantuml/c4plantuml| PUML[*.puml]
     PUML -->|plantuml -tsvg| SVG[*.svg with anchors]
     SVG -->|TS: strip temp origin| OUT[deployable dir]
     JSON --> OUT
@@ -35,17 +35,18 @@ flowchart LR
 
 Steps:
 
-1. `structurizr-cli export -w workspace.dsl -f json -o build` → `workspace.json` (also the SPA's runtime data source).
+1. `structurizr export -w workspace.dsl -f json -o build` → `workspace.json` (also the SPA's runtime data source).
 2. TS builds a linked copy of the JSON. For every element: move any user-defined `url` into property `Url`; compute
    the drill-down route; set `url = <temp-origin>/#<route>`. `ModelItem.setUrl` rejects relative URLs, so the route
    is wrapped in a valid absolute URL and stripped later (the reference tool uses `TEMP_URI` for the same reason).
-3. `structurizr-cli export -w workspace-linked.json -f plantuml/c4plantuml` (or `plantuml/structurizr` per
+3. `structurizr export -w workspace-linked.json -f plantuml/c4plantuml` (or `plantuml/structurizr` per
    `generatr.site.exporter`) → `*.puml`.
 4. `plantuml -tsvg` → `*.svg` containing `<a href="<temp-origin>/#<route>">`.
 5. TS strips `<temp-origin>` from the SVGs.
 6. Assemble the output directory (SPA bundle + clean `workspace.json` + SVGs).
 
-The runtime `workspace.json` stays clean: original element urls, no temp origin.
+The runtime `workspace.json` stays clean: original element urls, no temp origin. `structurizr` is the backend command
+resolved per [distribution.md](distribution.md).
 
 ## Drill-down rules (ported from the reference tool)
 
@@ -73,8 +74,9 @@ Hash-based (`#/...`). SVG anchors work unchanged with no static-host fallback or
 
 - **Pan/zoom vs click.** `svg-pan-zoom` swallows clicks; the reference tool disables links in its zoom modal. The SPA
   must define the interaction model (click vs drag threshold). UX decision, not a technical blocker.
-- **Version drift.** The reference pins `structurizr-core/export` 6.2.2; the latest CLI bundles `structurizr-java`
-  5.0.2. Link behavior is identical; diagram styling may differ. Pin the CLI version for stable output.
+- **Version drift.** The reference pins `structurizr-core/export` 6.2.2; the tool uses whatever Structurizr backend is
+  installed (vNext 2026.09.19 bundles libraries 6.2.3). Link behavior is identical; diagram styling may differ. Point
+  `--structurizr` at a pinned war/Docker tag when reproducibility matters. See [distribution.md](distribution.md).
 - **Property round-trip.** `generatr.*` properties live in `views.configuration.properties`; confirm they survive the
   JSON export before relying on them.
 - **Image/code view rules** depend on `imageViews` / `componentViews` being present in the JSON.
