@@ -6,7 +6,9 @@ How the CLI is packaged and shipped. Related: [summary.md](summary.md), [diagram
 
 - **Structurizr is an external runtime dependency, not vendored.** The legacy `structurizr-cli` is archived; vendoring it
   would freeze the DSL parser and block new DSL features. The maintained vNext tooling is invoked as an external
-  command, so new DSL features arrive by updating Structurizr, independent of this tool's releases.
+  command, so new DSL features arrive by updating Structurizr, independent of this tool's releases. Vendoring the
+  prebuilt war is also not permitted (see Vendoring constraint), and vendoring the Apache-2.0 libraries would add an
+  owned Java shim for self-containment this project does not need.
 - **Node is a runtime dependency, not bundled.** The Homebrew formula declares `depends_on "node"`. The tool already
   needs Java and Graphviz, so bundling Node would not make it self-contained. Homebrew is the dependency manager.
 - **PlantUML stays a dependency.** `depends_on "plantuml"` pulls `graphviz` and `openjdk`. PlantUML is GPL-3.0, so it
@@ -86,7 +88,5 @@ prebuilt war.
 ## Open
 
 - Whether the formula depends on the community `structurizr` build or requires a user-provided backend.
-- Whether to vendor an Apache-2.0 backend (libraries + shim, or source build) for self-containment and reproducible
-  output, versus depending on an external vNext install. The prebuilt war is not an option (see Vendoring constraint).
 - Primary distribution channel: npm package vs GitHub release tarball; Homebrew is a convenience wrapper either way.
 - Whether to offer an opt-in pinned backend for reproducible output.
