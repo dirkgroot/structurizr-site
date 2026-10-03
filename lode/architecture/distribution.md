@@ -59,6 +59,21 @@ end
 
 This is a tap (`brew tap you/structurizr-site`), not homebrew-core.
 
+## Vendoring constraint
+
+The prebuilt vNext `.war` is **not redistributable**. It bundles the open-core server under an End-User License
+Agreement (embedded at `com/structurizr/server/web/eula/`) that grants download/install/use but prohibits distribution:
+"distribute, transmit, host, outsource, disclose or otherwise commercially exploit the Application or make the
+Application available to any third party", and prohibits derivative works. The `export` command is free to *use* from
+the binary, but that is a use right, not a redistribution right.
+
+Homebrew's `structurizr` formula sidesteps this by building from the Apache-2.0 source (`mvn package`) instead of
+redistributing the war.
+
+Consequence: if the backend is ever vendored, it must be built from the Apache-2.0 source or assembled from the
+Apache-2.0 Maven Central artifacts (`com.structurizr:structurizr-dsl` and friends) plus an owned shim — never the
+prebuilt war.
+
 ## Constraints
 
 - Homebrew's `std_npm_args` installs a packed tarball and ignores lifecycle scripts by default. Ship the prebuilt CLI JS
@@ -71,5 +86,7 @@ This is a tap (`brew tap you/structurizr-site`), not homebrew-core.
 ## Open
 
 - Whether the formula depends on the community `structurizr` build or requires a user-provided backend.
+- Whether to vendor an Apache-2.0 backend (libraries + shim, or source build) for self-containment and reproducible
+  output, versus depending on an external vNext install. The prebuilt war is not an option (see Vendoring constraint).
 - Primary distribution channel: npm package vs GitHub release tarball; Homebrew is a convenience wrapper either way.
 - Whether to offer an opt-in pinned backend for reproducible output.
