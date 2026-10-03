@@ -69,5 +69,6 @@ Patterns and practices for working on this project. Split into focused files if 
   file with an `Unreleased` section; `npm run changelog:release` labels it with the `package.json` version at release
   time.
 - Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html); while pre-alpha, releases carry an explicit
-  `-pre-alpha.N` pre-release identifier (currently `0.2.0-pre-alpha.1`).
+  `-pre-alpha.N` pre-release identifier. The current version lives in `package.json` (the tag mirrors it); the Lode does
+  not track it.
 - Release detail: [architecture/distribution.md](architecture/distribution.md).

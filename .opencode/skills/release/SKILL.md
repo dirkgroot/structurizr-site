@@ -80,9 +80,10 @@ Set `version` in `package.json` to the approved version (no `v` prefix).
 ```sh
 npm version <version> --no-git-tag-version
 npm run changelog:release
+npx oxfmt CHANGELOG.md
 ```
 
-`npm version` edits `package.json` (and `package-lock.json`) without tagging. `npm run changelog:release` uses the new `package.json` version as the git-cliff tag, folding `[Unreleased]` into `## [<version>] - <date>`.
+`npm version` edits `package.json` (and `package-lock.json`) without tagging. `npm run changelog:release` uses the new `package.json` version as the git-cliff tag, folding `[Unreleased]` into `## [<version>] - <date>`. git-cliff emits emphasis as `*text*` and other Markdown that fails `oxfmt --check`; run `oxfmt` on the generated file so `format:check` stays green (CI enforces it).
 
 Verify the changelog now has a dated section and no lingering `[Unreleased]` for these commits:
 
@@ -174,7 +175,7 @@ Report: version, tag, release URL, workflow run URL, and tap commit hash.
 
 ### 10. Update lode
 
-`lode/architecture/distribution.md` records the current version in prose (search for the previous version string, e.g. `0.2.0-pre-alpha.1`). Update those references to the released version, and update the "currently" version in `README.md` if present. Do not add changelog-style history; describe the new current state.
+The Lode records durable knowledge (decisions, practices, architecture), **not** the current version — that lives in `package.json` and the git tag. Do not add version numbers or changelog-style history to lode files. Only update the Lode if the release changed lasting behavior or a documented decision.
 
 ## Failure handling summary
 

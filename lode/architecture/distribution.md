@@ -69,8 +69,8 @@ published release rather than the `package.json` version.
   `package.json` version and is run after bumping, before tagging. Release notes are `git cliff --latest --strip header`,
   so the changelog and the GitHub notes come from the same commit history. Commit messages follow Conventional Commits;
   non-conforming commits are grouped under `Other` rather than dropped.
-- Cutting a release: bump `version`, run `npm run changelog:release`, commit both, then
-  `git tag v0.2.0-pre-alpha.1 && git push origin v0.2.0-pre-alpha.1`.
+- Cutting a release: bump `version`, run `npm run changelog:release`, commit both, then push a tag matching the new
+  version (`git tag v<version> && git push origin v<version>`).
 
 ## Structurizr backend resolution
 
