@@ -26,6 +26,15 @@ Patterns and practices for working on this project. Split into focused files if 
 - Record each architecture decision as it is made; do not invent architecture ahead of the owner's direction.
 - Prefer capturing a design in `lode/architecture/` before writing code for it.
 
+## Testing
+
+- Behavior is unit tested. **Vitest** runs the suite; **React Testing Library** drives React DOM assertions.
+- Tests are colocated as `<module>.test.ts(x)` and split by runtime: a Node project for `src/cli` + `src/shared`, a
+  jsdom project for `src/spa`. `npm test` is part of the merge and release gate.
+- Query by role/text, not implementation. Mock module boundaries with `vi.mock`; inject IO seams (e.g.
+  `assemble(outputDir, sourceDir)`) instead of mocking `node:fs`; do not test constants tautologically.
+- Full detail: [architecture/testing.md](architecture/testing.md).
+
 ## Linting and formatting
 
 - `oxlint` lints. Config: `.oxlintrc.json`, Vite's default React preset: plugins `react`, `typescript`, `oxc`;

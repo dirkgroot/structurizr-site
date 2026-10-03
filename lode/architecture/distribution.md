@@ -35,10 +35,10 @@ in `package.json` is a dev dependency.
 ## Release automation
 
 - **CI** (`.github/workflows/ci.yml`) runs on pushes to `main` and on pull requests: `npm ci`, `format:check`, `lint`,
-  `typecheck`, and `npm pack --dry-run`. Node comes from `mise.toml` via `jdx/mise-action`.
+  `typecheck`, `npm test`, and `npm pack --dry-run`. Node comes from `mise.toml` via `jdx/mise-action`.
 - **Release** (`.github/workflows/release.yml`) triggers on `v*` tags. It verifies the tag equals the `package.json`
-  version, runs the checks, then `npm publish --provenance`. Provenance needs `id-token: write` (present) and an
-  `NPM_TOKEN` repository secret.
+  version, runs the checks (including `npm test`), then `npm publish --provenance`. Provenance needs `id-token: write`
+  (present) and an `NPM_TOKEN` repository secret.
 - Cutting a release is only: bump `version`, commit, then `git tag v0.1.0 && git push origin v0.1.0`.
 
 ## Structurizr backend resolution

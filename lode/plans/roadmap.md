@@ -21,6 +21,9 @@ Current state and next steps. Update in place; this is not a changelog.
   [../architecture/repository-layout.md](../architecture/repository-layout.md).
 - SPA routing decided: hash routes, static patterns, a model-derived index, react-router v7. See
   [../architecture/routing.md](../architecture/routing.md).
+- Unit testing in place: Vitest with a Node project (CLI/shared) and a jsdom project (React), React Testing Library,
+  colocated tests, 100% coverage, and `npm test` gating CI and release. See
+  [../architecture/testing.md](../architecture/testing.md).
 
 ## Next
 

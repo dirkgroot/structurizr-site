@@ -28,8 +28,10 @@ structurizr-site/
 ├── tsconfig.base.json
 ├── tsconfig.cli.json            # Node libs
 ├── tsconfig.spa.json            # DOM libs
-├── tsconfig.node.json           # vite.config.ts
+├── tsconfig.node.json           # vite.config.ts + vitest.config.ts
+├── tsconfig.test.json           # test files (noEmit)
 ├── vite.config.ts               # src/spa -> dist/spa
+├── vitest.config.ts             # unit tests: node + jsdom projects
 ├── lode/                        # AI memory
 ├── .claude/skills/              # procedural skills (run/verify)
 ├── src/
@@ -55,6 +57,7 @@ structurizr-site/
 │       ├── data/                # workspace.json loader + selectors
 │       └── styles/
 ├── test/
+│   ├── setup/                   # Vitest setup: RTL jest-dom matchers + cleanup
 │   ├── fixtures/                # sample .dsl workspaces + expected JSON
 │   └── e2e/                     # DSL -> JSON -> puml -> svg -> anchor assertions
 ├── dist/                        # git-ignored; shipped
@@ -76,8 +79,10 @@ structurizr-site/
 - **`src/spa/`** is the React + Vite app. `app/` owns the router and layout, `diagram/` owns SVG embedding and the
   pan/zoom click-vs-drag model, `data/` owns the workspace JSON loader and selectors. Routing is defined in
   [routing.md](routing.md).
-- **`test/fixtures/`** holds sample `.dsl` workspaces; **`test/e2e/`** runs the full pipeline and encodes the manually
-  verified behavior from [diagrams.md](diagrams.md).
+- **Unit tests are colocated** as `<module>.test.ts(x)` next to the source, split into a Node and a jsdom Vitest project.
+  **`test/setup/`** holds shared Vitest setup; **`test/fixtures/`** holds sample `.dsl` workspaces; **`test/e2e/`** runs
+  the full pipeline and encodes the manually verified behavior from [diagrams.md](diagrams.md). See
+  [testing.md](testing.md).
 
 ## Build and packaging
 
@@ -88,14 +93,16 @@ structurizr-site/
   shipped). `prepack` rebuilds `dist/`; `prepublishOnly` gates on `typecheck` + `lint`.
 - `assembly/` copies `dist/spa/` into the output directory at generate time. The path is relative to the CLI module,
   so there is no cross-package resolution.
-- Three project tsconfigs: `tsconfig.cli.json` (Node libs) and `tsconfig.spa.json` (DOM libs) — both including
-  `src/shared` — plus `tsconfig.node.json` for `vite.config.ts`. A root `tsconfig.json` with `"files": []` references
-  them (the Vite "solution file" pattern) so the IDE's TypeScript language server discovers each project; the language
-  server only auto-discovers files literally named `tsconfig.json`.
+- Four project tsconfigs: `tsconfig.cli.json` (Node libs) and `tsconfig.spa.json` (DOM libs) — both including
+  `src/shared` and excluding test files — plus `tsconfig.node.json` for `vite.config.ts` + `vitest.config.ts` and
+  `tsconfig.test.json` (`noEmit`) for tests. A root `tsconfig.json` with `"files": []` references them (the Vite
+  "solution file" pattern) so the IDE's TypeScript language server discovers each project; the language server only
+  auto-discovers files literally named `tsconfig.json`. See [testing.md](testing.md).
 
 ## Invariants
 
 - `src/shared/` imports nothing from `src/cli/` or `src/spa/`, and nothing runtime-specific.
+- Unit tests are excluded from the build tsconfigs, so `dist/` never contains test code.
 - The published artifact contains exactly one version of CLI and SPA; version skew is impossible.
 - The prebuilt SPA is committed to the package at release; nothing builds or fetches at install time (see
   [distribution.md](distribution.md)).

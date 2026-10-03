@@ -27,9 +27,15 @@ Build tools are pinned with [`mise`](https://mise.jdx.dev/) (Node LTS). With mis
 
 ```sh
 npm install
-npm run build      # tsc -> dist/cli, vite -> dist/spa
+npm run build        # tsc -> dist/cli, vite -> dist/spa
 npm run typecheck
+npm test             # vitest (node + jsdom projects)
+npm run test:watch
+npm run test:coverage
 ```
+
+Unit tests use Vitest; React components are tested with React Testing Library. Tests are colocated with the source as
+`*.test.ts(x)`. See `lode/architecture/testing.md`.
 
 ## Generate a site
 

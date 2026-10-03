@@ -15,6 +15,7 @@ Hierarchical index of all lode files. Read this first; it is the entry point to 
 - [architecture/distribution.md](architecture/distribution.md) - npm publish, CI/release workflows, and the Homebrew formula; Structurizr and Node as external dependencies.
 - [architecture/repository-layout.md](architecture/repository-layout.md) - single-package source tree and build/packaging layout.
 - [architecture/routing.md](architecture/routing.md) - SPA hash routes: static patterns plus a model-derived index.
+- [architecture/testing.md](architecture/testing.md) - Vitest projects (node + jsdom), React Testing Library, test layout, coverage, CI gate.
 
 ## plans/
 

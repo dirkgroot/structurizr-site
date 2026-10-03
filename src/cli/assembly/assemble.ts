@@ -10,15 +10,18 @@ const moduleDir = dirname(fileURLToPath(import.meta.url));
  */
 export const spaBundleDir = resolve(moduleDir, "../../spa");
 
-/** Copy the prebuilt SPA into `outputDir`, replacing any previous contents. */
-export async function assemble(outputDir: string): Promise<void> {
+/**
+ * Copy the prebuilt SPA into `outputDir`, replacing any previous contents.
+ * `sourceDir` defaults to the shipped bundle and is injectable for tests.
+ */
+export async function assemble(outputDir: string, sourceDir: string = spaBundleDir): Promise<void> {
   try {
-    await access(spaBundleDir);
+    await access(sourceDir);
   } catch {
-    throw new Error(`prebuilt SPA not found at ${spaBundleDir}; run "npm run build:spa" first`);
+    throw new Error(`prebuilt SPA not found at ${sourceDir}; run "npm run build:spa" first`);
   }
 
   await rm(outputDir, { recursive: true, force: true });
   await mkdir(outputDir, { recursive: true });
-  await cp(spaBundleDir, outputDir, { recursive: true });
+  await cp(sourceDir, outputDir, { recursive: true });
 }

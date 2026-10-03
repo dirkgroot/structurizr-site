@@ -5,9 +5,8 @@
     "moduleResolution": "Bundler",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
-    "types": ["vite/client"],
+    "types": ["node", "vite/client"],
     "noEmit": true
   },
-  "include": ["src/spa/**/*.ts", "src/spa/**/*.tsx", "src/shared/**/*.ts"],
-  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
+  "include": ["src/**/*.test.ts", "src/**/*.test.tsx", "test/**/*.ts"]
 }
