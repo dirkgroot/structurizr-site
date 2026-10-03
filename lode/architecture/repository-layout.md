@@ -35,6 +35,7 @@ structurizr-site/
 ├── tsconfig.test.json           # test files (noEmit)
 ├── vite.config.ts               # src/spa -> dist/spa
 ├── vitest.config.ts             # unit tests: node + jsdom projects
+├── components.json              # shadcn/ui config (base-nova preset)
 ├── lode/                        # AI memory
 ├── .claude/skills/              # procedural skills (run/verify)
 ├── src/
@@ -54,11 +55,15 @@ structurizr-site/
 │   └── spa/
 │       ├── index.html
 │       ├── main.tsx
-│       ├── app/                 # hash router, layout, nav
+│       ├── app/                 # hash router, App shell
 │       ├── pages/               # context/container/component/code, docs, ADR
+│       ├── components/          # app-sidebar + ui/
+│       │   └── ui/              # vendored shadcn/ui primitives (gate-exempt)
+│       ├── hooks/               # use-mobile (vendored, gate-exempt)
+│       ├── lib/                 # cn() re-export
 │       ├── diagram/             # SVG embed, pan/zoom, click-vs-drag
 │       ├── data/                # workspace.json loader + selectors
-│       └── styles/
+│       └── styles/              # global.css: Tailwind v4 + shadcn theme
 ├── test/
 │   ├── setup/                   # Vitest setup: RTL jest-dom matchers + cleanup
 │   ├── fixtures/                # sample .dsl workspaces + expected JSON
@@ -85,9 +90,9 @@ structurizr-site/
   `fs`, no `window` — so it compiles into both the Node CLI and the browser bundle.
 - **`src/cli/`** is the generator. `pipeline/` mirrors the six pipeline steps one-to-one (see [diagrams.md](diagrams.md));
   `backend/` isolates the Structurizr resolution order (see [distribution.md](distribution.md)).
-- **`src/spa/`** is the React + Vite app. `app/` owns the router and layout, `diagram/` owns SVG embedding and the
-  pan/zoom click-vs-drag model, `data/` owns the workspace JSON loader and selectors. Routing is defined in
-  [routing.md](routing.md).
+- **`src/spa/`** is the React + Vite app. `app/` owns the router and App shell, `components/` holds layout and vendored
+  shadcn/ui primitives, `diagram/` owns SVG embedding and the pan/zoom click-vs-drag model, `data/` owns the workspace
+  JSON loader and selectors. Routing is defined in [routing.md](routing.md); the UI stack in [ui.md](ui.md).
 - **Unit tests are colocated** as `<module>.test.ts(x)` next to the source, split into a Node and a jsdom Vitest project.
   **`test/setup/`** holds shared Vitest setup; **`test/fixtures/`** holds sample `.dsl` workspaces; **`test/e2e/`** runs
   the full pipeline and encodes the manually verified behavior from [diagrams.md](diagrams.md). See

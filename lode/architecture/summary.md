@@ -52,6 +52,12 @@ flowchart LR
   dependency-free HTTP server (Node's `node:http`, which Bun provides in the compiled binary; default port 8080).
   Unknown extensionless paths fall back to `index.html`; requests are confined to the output directory. Watch + live
   rebuild are deferred.
+- **D10 — SPA UI is shadcn/ui on Base UI, styled with Tailwind CSS v4.** Components are vendored under
+  `src/spa/components/ui/`; shadcn is a build-time tool, not a runtime dependency. The app shell uses the `sidebar-01`
+  block. See [ui.md](ui.md).
+- **D11 — Vendored UI is exempt from the lint and coverage gates.** Generated components are excluded from
+  `react/only-export-components` / `react/set-state-in-effect` and from coverage; our own layout code is not. See
+  [ui.md](ui.md).
 
 ## Known constraints
 
@@ -85,6 +91,8 @@ flowchart LR
   model-derived index and no `routes.json`. See [repository-layout.md](repository-layout.md) and
   [routing.md](routing.md).
 - **D9** — captured 2026-10-03: `serve` is a static preview server (generate + serve, port 8080, no watch/rebuild yet).
+- **D10–D11** — captured 2026-10-03 from owner direction: shadcn/ui on Base UI with Tailwind v4 (vendored components,
+  build-time only), and the vendored-UI lint/coverage exemption. See [ui.md](ui.md).
 - vNext pipeline verified 2026-10-03 against `structurizr` 2026.09.19 / libraries 6.2.3; see
   [distribution.md](distribution.md).
 - Diagram link mechanism and TS pipeline verified 2026-10-03; see [diagrams.md](diagrams.md).

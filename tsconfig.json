@@ -5,5 +5,10 @@
     { "path": "./tsconfig.spa.json" },
     { "path": "./tsconfig.node.json" },
     { "path": "./tsconfig.test.json" }
-  ]
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/spa/*"]
+    }
+  }
 }

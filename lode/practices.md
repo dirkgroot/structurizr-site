@@ -31,6 +31,7 @@ Patterns and practices for working on this project. Split into focused files if 
 - Behavior is unit tested. **Vitest** runs the suite; **React Testing Library** drives React DOM assertions.
 - Tests are colocated as `<module>.test.ts(x)` and split by runtime: a Node project for `src/cli` + `src/shared`, a
   jsdom project for `src/spa`. `npm test` is part of the merge and release gate.
+- Coverage has no threshold; the goal is testing important behavior, not 100%. Vendored shadcn/ui code is excluded.
 - Query by role/text, not implementation. Mock module boundaries with `vi.mock`; inject IO seams (e.g.
   `assemble(outputDir, sourceDir)`) instead of mocking `node:fs`; do not test constants tautologically.
 - Full detail: [architecture/testing.md](architecture/testing.md).
@@ -44,6 +45,9 @@ Patterns and practices for working on this project. Split into focused files if 
   applies safe fixes.
 - `oxfmt` formats (0.71.0, beta). Config: `.oxfmtrc.json`; `sortPackageJson` is disabled so `package.json` key order
   stays stable (Prettier does not sort keys either). `npm run format` writes; `npm run format:check` verifies.
+- Vendored shadcn/ui code (`src/spa/components/ui/**`, `src/spa/hooks/**`) gets an `.oxlintrc.json` `overrides` entry
+  that disables `react/only-export-components` and `react/set-state-in-effect`; those files export variants/hooks and
+  use browser-only effects. See [architecture/ui.md](architecture/ui.md).
 - Both tools respect `.gitignore`, so `dist/`, `build/`, and `node_modules/` are skipped without explicit patterns.
 - `.editorconfig` is the shared baseline: UTF-8, LF, 2-space indent, final newline, trimmed trailing whitespace
   (Markdown keeps trailing whitespace). oxfmt's `printWidth` is 100 and overrides `.editorconfig.max_line_length`.

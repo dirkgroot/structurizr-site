@@ -94,7 +94,7 @@ non-conforming commits land under `Other`. The same history produces each releas
 ## Layout
 
 - `src/cli/` — the generator CLI.
-- `src/spa/` — the React + Vite single-page app.
+- `src/spa/` — the React + Vite single-page app (shadcn/ui on Base UI, Tailwind v4).
 - `src/shared/` — runtime-agnostic code imported by both.
 - `.github/workflows/` — CI and release automation.
 - `packaging/binary/` — the compiled-binary entry point, entitlements, and build script.

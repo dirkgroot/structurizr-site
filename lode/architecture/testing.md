@@ -91,8 +91,10 @@ project:
 
 ## Coverage
 
-v8 coverage is reported with `npm run test:coverage`. There is no enforced threshold; the suite currently reports 100%
-statements, lines, and functions, and 100% branches. The `src/spa/vite-env.d.ts` declaration is excluded.
+v8 coverage is reported with `npm run test:coverage`. There is **no enforced threshold and 100% is not a goal**: the
+standard is that all important functionality is tested, not that every branch is exercised. Do not add tests for
+far-fetched edge cases just to move the number. The `src/spa/vite-env.d.ts` declaration is excluded, as are vendored
+shadcn/ui components (`src/spa/components/ui/**`) and generated hooks (`src/spa/hooks/**`) — see [ui.md](ui.md).
 
 ## CI gate
 

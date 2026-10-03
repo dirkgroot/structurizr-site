@@ -9,5 +9,14 @@
         "allowConstantExport": true
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["src/spa/components/ui/**", "src/spa/hooks/**"],
+      "rules": {
+        "react/only-export-components": "off",
+        "react/set-state-in-effect": "off"
+      }
+    }
+  ]
 }

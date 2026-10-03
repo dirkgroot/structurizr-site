@@ -12,4 +12,10 @@ describe("App", () => {
     render(<App />);
     expect(screen.getByText(/workspace rendering is not implemented yet/i)).toBeInTheDocument();
   });
+
+  it("renders the sidebar navigation groups", () => {
+    render(<App />);
+    expect(screen.getByText("Views")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "System Context" })).toHaveAttribute("href", "#/");
+  });
 });

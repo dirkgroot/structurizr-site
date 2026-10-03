@@ -6,6 +6,9 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
     "types": ["vite/client"],
+    "paths": {
+      "@/*": ["./src/spa/*"]
+    },
     "noEmit": true
   },
   "include": ["src/spa/**/*.ts", "src/spa/**/*.tsx", "src/shared/**/*.ts"],

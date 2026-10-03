@@ -1,10 +1,16 @@
 import react from "@vitejs/plugin-react";
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
 // Two Vitest projects: CLI/shared run in Node, the React SPA runs in jsdom with
 // Testing Library. This is a separate config from vite.config.ts so the SPA
 // build root (src/spa) does not leak into test discovery.
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src/spa", import.meta.url)),
+    },
+  },
   test: {
     projects: [
       {
@@ -27,7 +33,14 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: ["src/**/*.{ts,tsx}"],
-      exclude: ["src/**/*.test.{ts,tsx}", "src/spa/vite-env.d.ts"],
+      exclude: [
+        "src/**/*.test.{ts,tsx}",
+        "src/spa/vite-env.d.ts",
+        // Vendored shadcn/ui components and generated hooks are not unit tested;
+        // see lode/architecture/ui.md.
+        "src/spa/components/ui/**",
+        "src/spa/hooks/**",
+      ],
     },
   },
 });

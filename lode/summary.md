@@ -13,7 +13,8 @@ _behavior_ and is not a blueprint for the new implementation.
 (see [architecture/diagrams.md](architecture/diagrams.md)); distribution implemented (self-contained Bun binaries, CI/release
 workflows, Homebrew formula; see [architecture/distribution.md](architecture/distribution.md)); repository layout and
 SPA routing decided (see [architecture/repository-layout.md](architecture/repository-layout.md) and
-[architecture/routing.md](architecture/routing.md)). A minimal scaffold exists: the CLI emits a `build/` directory
+[architecture/routing.md](architecture/routing.md)); the SPA app shell uses shadcn/ui on Base UI with Tailwind v4
+(see [architecture/ui.md](architecture/ui.md)). A minimal scaffold exists: the CLI emits a `build/` directory
 containing the prebuilt SPA. Structurizr functionality is not implemented yet — component details and scope are still
 open. See [plans/roadmap.md](plans/roadmap.md).
 

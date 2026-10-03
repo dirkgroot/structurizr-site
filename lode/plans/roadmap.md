@@ -27,15 +27,18 @@ Current state and next steps. Update in place; this is not a changelog.
 - SPA routing decided: hash routes, static patterns, a model-derived index, react-router v7. See
   [../architecture/routing.md](../architecture/routing.md).
 - Unit testing in place: Vitest with a Node project (CLI/shared) and a jsdom project (React), React Testing Library,
-  colocated tests, 100% coverage, and `npm test` gating CI and release. See
+  colocated tests, no coverage threshold, and `npm test` gating CI and release. See
   [../architecture/testing.md](../architecture/testing.md).
+- SPA app shell in place: shadcn/ui on Base UI with Tailwind v4, using the `sidebar-01` block (sidebar nav + inset
+  content). Navigation is placeholder until the workspace loader lands. See [../architecture/ui.md](../architecture/ui.md).
 
 ## Next
 
 1. Extend `generate-site` to export `workspace.json` into the output directory alongside the SPA.
 2. Scaffold the first vertical slice: DSL → `workspace.json` → linked `.puml` → `.svg` → SPA renders one diagram with
    working hash links.
-3. Record build/run/verify as a skill.
+3. Wire react-router v7 into the App shell and drive the sidebar navigation from the model-derived route index.
+4. Record build/run/verify as a skill.
 
 ## Open
 
