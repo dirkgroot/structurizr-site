@@ -55,4 +55,6 @@ Patterns and practices for working on this project. Split into focused files if 
   `Other` instead of being dropped.
 - Version-bump and merge commits are skipped by parser rules. `npm run changelog` regenerates the file with an
   `Unreleased` section; `npm run changelog:release` labels it with the `package.json` version at release time.
+- Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html); while pre-alpha, releases carry an explicit
+  `-pre-alpha.N` pre-release identifier (currently `0.2.0-pre-alpha.1`).
 - Release detail: [architecture/distribution.md](architecture/distribution.md).

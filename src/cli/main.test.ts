@@ -86,7 +86,10 @@ describe("run", () => {
 
   it.each(["-v", "--version"])("prints the package version for %s", async (flag) => {
     await run([flag]);
-    expect(process.stdout.write).toHaveBeenCalledWith(expect.stringMatching(/^\d+\.\d+\.\d+\n$/));
+    // X.Y.Z with an optional semver pre-release suffix, e.g. 0.2.0-pre-alpha.1.
+    expect(process.stdout.write).toHaveBeenCalledWith(
+      expect.stringMatching(/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\n$/),
+    );
   });
 
   it("rejects an unknown command", async () => {

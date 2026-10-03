@@ -44,6 +44,15 @@ version; there are no runtime dependencies.
 `src/cli` still compiles to `dist/cli` via `tsc` for `npm run generate-site`/`serve` from source; that path is dev-only
 and not shipped.
 
+## Versioning
+
+Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html). The project is **pre-alpha**, so the
+version carries an explicit `-pre-alpha.N` pre-release identifier: `0.y.z` already marks initial development, and the
+suffix makes the pre-alpha stage explicit and sorts before the eventual `0.2.0`. The counter increments per
+pre-release. `release.yml` passes `--prerelease` to `gh release create` when the version contains a `-`, so pre-alpha
+tags are never published as "Latest". The Homebrew formula is rendered from a published release's assets, so it pins a
+published release rather than the `package.json` version.
+
 ## Release automation
 
 - **CI** (`.github/workflows/ci.yml`) has two jobs. `verify` runs on Ubuntu: `npm ci`, `format:check`, `lint`,
@@ -61,7 +70,7 @@ and not shipped.
   so the changelog and the GitHub notes come from the same commit history. Commit messages follow Conventional Commits;
   non-conforming commits are grouped under `Other` rather than dropped.
 - Cutting a release: bump `version`, run `npm run changelog:release`, commit both, then
-  `git tag v0.1.0 && git push origin v0.1.0`.
+  `git tag v0.2.0-pre-alpha.1 && git push origin v0.2.0-pre-alpha.1`.
 
 ## Structurizr backend resolution
 

@@ -51,10 +51,16 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # A semver pre-release (version contains "-") is published as a GitHub pre-release.
+          prerelease=""
+          case "$(node -p "require('./package.json').version")" in
+            *-*) prerelease="--prerelease" ;;
+          esac
           if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
             gh release upload "$GITHUB_REF_NAME" dist/binaries/* --clobber
           else
             gh release create "$GITHUB_REF_NAME" dist/binaries/* \
               --title "$GITHUB_REF_NAME" \
-              --notes-file "$RUNNER_TEMP/release-notes.md"
+              --notes-file "$RUNNER_TEMP/release-notes.md" \
+              $prerelease
           fi

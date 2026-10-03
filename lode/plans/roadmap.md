@@ -20,6 +20,8 @@ Current state and next steps. Update in place; this is not a changelog.
   notarized. `.github/workflows/` holds CI and the tag-triggered release; `packaging/binary/` builds the binaries and
   `packaging/homebrew/` holds the formula template and updater. Structurizr stays an external runtime dependency (not
   vendored). See [../architecture/distribution.md](../architecture/distribution.md).
+- Versioning: Semantic Versioning, currently pre-alpha (`0.2.0-pre-alpha.1`); pre-release tags publish as GitHub
+  pre-releases, never "Latest". See [../architecture/distribution.md](../architecture/distribution.md).
 - Repository layout decided: one package with `src/{cli,spa,shared}`. See
   [../architecture/repository-layout.md](../architecture/repository-layout.md).
 - SPA routing decided: hash routes, static patterns, a model-derived index, react-router v7. See
