@@ -6,6 +6,10 @@ import { generateSite } from "./generate-site.js";
 export interface ServeSiteOptions {
   output?: string;
   port?: number;
+  /** Structurizr workspace file to export; omit to serve the web app only. */
+  workspaceFile?: string;
+  /** `--structurizr` backend override. */
+  structurizr?: string;
 }
 
 /**
@@ -14,7 +18,11 @@ export interface ServeSiteOptions {
  */
 export async function serveSite(options: ServeSiteOptions): Promise<void> {
   const outputDir = resolve(options.output ?? DEFAULT_OUTPUT_DIR);
-  await generateSite({ output: outputDir });
+  await generateSite({
+    output: outputDir,
+    workspaceFile: options.workspaceFile,
+    structurizr: options.structurizr,
+  });
 
   const server = await serve(outputDir, { port: options.port ?? DEFAULT_PORT });
   process.stdout.write(`Serving ${outputDir} at http://localhost:${server.port}\n`);
