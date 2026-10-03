@@ -8,7 +8,8 @@ architecture model) into a browsable website containing rendered diagrams, docum
 The rebuild uses a **new architecture**, chosen by the project owner. The reference tool defines desired
 *behavior* and is not a blueprint for the new implementation.
 
-**Status:** Lode initialized. No source code exists yet. The new architecture is not yet captured — see
-[plans/roadmap.md](plans/roadmap.md) and [architecture/summary.md](architecture/summary.md).
+**Status:** Architecture top-level shape defined (CLI + SPA + Structurizr JSON; see
+[architecture/summary.md](architecture/summary.md)). No source code exists yet — component details and scope are still
+open. See [plans/roadmap.md](plans/roadmap.md).
 
 **Source of truth:** code once it exists; until then, the project owner's stated decisions.

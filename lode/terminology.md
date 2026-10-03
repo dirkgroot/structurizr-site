@@ -22,7 +22,11 @@ Short `term - meaning` lines describing this project's domain language. Keep add
 
 - **Workspace file** - the input `.dsl` file (`--workspace-file` / `-w`).
 - **Assets directory** - directory of static assets (logos, favicon, custom CSS, ADR/doc images) (`--assets-dir` / `-a`).
-- **Build output** - the generated static site, `./build` by default.
+- **Build output** - the deployable directory emitted by the CLI, containing the SPA bundle, rendered diagram assets,
+  and the exported workspace JSON. `./build` by default.
+- **SPA** - the client-side single-page app that fetches the workspace JSON and renders the site in the browser.
+- **Workspace JSON** - the Structurizr JSON export of the workspace; the SPA's runtime data source.
+- **Diagram asset** - a pre-rendered diagram file emitted by the CLI and referenced by the SPA.
 - **Generatr property** - a view/model property prefixed `generatr.` that customizes site output (style, search, exporter, theme, etc.).
 
 ## Project / process

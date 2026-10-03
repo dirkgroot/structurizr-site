@@ -10,7 +10,7 @@ Hierarchical index of all lode files. Read this first; it is the entry point to 
 
 ## architecture/
 
-- [architecture/summary.md](architecture/summary.md) - the new architecture (placeholder; not yet defined).
+- [architecture/summary.md](architecture/summary.md) - top-level shape (CLI + SPA + Structurizr JSON) and decisions; component details still open.
 
 ## plans/
 
