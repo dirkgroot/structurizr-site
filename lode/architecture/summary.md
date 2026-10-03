@@ -42,6 +42,11 @@ flowchart LR
   features arrive by updating Structurizr. See [distribution.md](distribution.md).
 - **D6 — Node is a dependency, not bundled.** The tool already needs Java and Graphviz, so bundling Node would not make
   it self-contained; Homebrew manages the runtime. See [distribution.md](distribution.md).
+- **D7 — One published package.** The CLI, the SPA, and the shared code are source trees inside a single npm package;
+  no workspaces. The SPA has no independent consumer, so a separate package would only force a lockstep version pin.
+  See [repository-layout.md](repository-layout.md).
+- **D8 — Routes are static patterns plus a model-derived index.** Route patterns are declared in code; the model→URL
+  mapping is derived from `workspace.json` at load. No `routes.json`. See [routing.md](routing.md).
 
 ## Known constraints
 
@@ -52,10 +57,10 @@ flowchart LR
 
 ## Open questions (awaiting owner)
 
-1. Language/runtime for the CLI and the SPA framework.
+1. Language/runtime for the CLI and the SPA framework. **Resolved:** TypeScript CLI; React + Vite + react-router v7
+   SPA. See [repository-layout.md](repository-layout.md) and [routing.md](routing.md).
 2. Diagram asset format and renderer (reuse the PlantUML exporter? SVG? PNG?). **Partially resolved:** SVG rendered via
-   PlantUML, with clickable drill-down links driven through the workspace JSON. See [diagrams.md](diagrams.md). The
-   exact CLI runtime is still open.
+   PlantUML, with clickable drill-down links driven through the workspace JSON. See [diagrams.md](diagrams.md).
 3. How documentation and ADRs are represented (markdown rendered by the SPA? pre-rendered?).
 4. Whether anything is pre-rendered for SEO / no-JS.
 5. CLI distribution and where the prebuilt SPA bundle lives. **Resolved:** Structurizr is an external runtime
@@ -69,6 +74,9 @@ flowchart LR
 - **D4** — captured 2026-10-03: hash-based routes for SPA navigation and SVG drill-down links.
 - **D5–D6** — captured 2026-10-03: Structurizr is an external runtime dependency (not vendored) so new DSL features
   track upstream; Node is a dependency, not bundled. See [distribution.md](distribution.md).
+- **D7–D8** — captured 2026-10-03: single published package (no workspaces); static route patterns with a
+  model-derived index and no `routes.json`. See [repository-layout.md](repository-layout.md) and
+  [routing.md](routing.md).
 - vNext pipeline verified 2026-10-03 against `structurizr` 2026.09.19 / libraries 6.2.3; see
   [distribution.md](distribution.md).
 - Diagram link mechanism and TS pipeline verified 2026-10-03; see [diagrams.md](diagrams.md).

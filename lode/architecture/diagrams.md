@@ -63,6 +63,7 @@ resolved per [distribution.md](distribution.md).
 ## Routes
 
 Hash-based (`#/...`). SVG anchors work unchanged with no static-host fallback or click interception. Decision **D4**.
+See [routing.md](routing.md) for how the SPA declares and resolves them.
 
 ## Invariants
 

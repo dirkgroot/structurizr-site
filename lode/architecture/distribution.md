@@ -14,7 +14,7 @@ How the CLI is packaged and shipped. Related: [summary.md](summary.md), [diagram
 - **PlantUML stays a dependency.** `depends_on "plantuml"` pulls `graphviz` and `openjdk`. PlantUML is GPL-3.0, so it
   is not vendored into this distribution.
 - **SPA bundle ships as package files.** The prebuilt SPA is included in the npm package; it is not built or fetched at
-  install time.
+  install time. See [repository-layout.md](repository-layout.md) for the package layout.
 
 ## Structurizr backend resolution
 

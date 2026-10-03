@@ -12,19 +12,21 @@ Current state and next steps. Update in place; this is not a changelog.
   link injection via the workspace JSON, hash routes). See [../architecture/diagrams.md](../architecture/diagrams.md).
 - Distribution decided: Structurizr as an external runtime dependency (not vendored), Node as a dependency, SPA shipped
   in the package, Homebrew tap. See [../architecture/distribution.md](../architecture/distribution.md).
+- Repository layout decided: one published npm package with `src/{cli,spa,shared}`. See
+  [../architecture/repository-layout.md](../architecture/repository-layout.md).
+- SPA routing decided: hash routes, static patterns, a model-derived index, react-router v7. See
+  [../architecture/routing.md](../architecture/routing.md).
 
 ## Next
 
-1. Confirm the CLI runtime (the TS-orchestrator approach is validated; see the roadmap's Open items).
-2. Scaffold the first vertical slice: DSL → `workspace.json` → linked `.puml` → `.svg` → SPA renders one diagram with
+1. Scaffold the first vertical slice: DSL → `workspace.json` → linked `.puml` → `.svg` → SPA renders one diagram with
    working hash links.
-3. Record build/run/verify as a skill.
+2. Record build/run/verify as a skill.
 
 ## Open
 
-- CLI runtime: TS orchestrator shelling out to the Structurizr vNext backend and PlantUML is validated; not yet
-  confirmed by the owner.
-- SPA framework (React + Vite proposed).
 - Backend resolution details (community Homebrew build vs user-provided war/Docker) and minimum supported version.
 - Documentation and ADR representation in the SPA.
+- `generatr.*` property mapping into the new design.
+- Whether to pre-render anything for SEO / no-JS.
 - Target platform.
