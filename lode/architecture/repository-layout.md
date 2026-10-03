@@ -19,9 +19,11 @@ structurizr-site/
 ├── README.md
 ├── mise.toml                    # pinned build tools (Node LTS)
 ├── package.json                 # single package; bin, files: ["dist"]
+├── tsconfig.json                # solution file; references the projects below
 ├── tsconfig.base.json
 ├── tsconfig.cli.json            # Node libs
 ├── tsconfig.spa.json            # DOM libs
+├── tsconfig.node.json           # vite.config.ts
 ├── vite.config.ts               # src/spa -> dist/spa
 ├── lode/                        # AI memory
 ├── .claude/skills/              # procedural skills (run/verify)
@@ -73,11 +75,15 @@ structurizr-site/
 ## Build and packaging
 
 - Build tools are managed by `mise` (`mise.toml`). Node is pinned to the current LTS, `24.21.0` (Krypton).
-- `tsc -p tsconfig.cli.json` → `dist/cli/`; `vite build` → `dist/spa/`. `dist/` is git-ignored and shipped.
+- `tsc -p tsconfig.cli.json` → `dist/cli/` (plus `dist/shared/`); `vite build` → `dist/spa/`. `dist/` is git-ignored
+  and shipped.
 - `package.json`: `bin` → `dist/cli/bin.js`; `files: ["dist"]`.
 - `assembly/` copies `dist/spa/` into the output directory at generate time. The path is relative to the CLI module,
   so there is no cross-package resolution.
-- Two tsconfigs: `tsconfig.cli.json` (Node libs) and `tsconfig.spa.json` (DOM libs), both including `src/shared`.
+- Three project tsconfigs: `tsconfig.cli.json` (Node libs) and `tsconfig.spa.json` (DOM libs) — both including
+  `src/shared` — plus `tsconfig.node.json` for `vite.config.ts`. A root `tsconfig.json` with `"files": []` references
+  them (the Vite "solution file" pattern) so the IDE's TypeScript language server discovers each project; the language
+  server only auto-discovers files literally named `tsconfig.json`.
 
 ## Invariants
 

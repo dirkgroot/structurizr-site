@@ -4,8 +4,10 @@ Current state and next steps. Update in place; this is not a changelog.
 
 ## State
 
-- Git repository initialized on branch `main`. Contains the Lode plus build-tool config: `mise.toml` pins Node to the
-  LTS version `24.21.0` (Krypton). No source code yet.
+- Git repository initialized on branch `main`. Build tooling is pinned with `mise.toml` (Node LTS `24.21.0`, Krypton).
+- Minimal scaffold in place: a TypeScript CLI (`src/cli`) emits a `build/` directory by copying the prebuilt
+  React + Vite SPA (`src/spa`); `src/shared` holds runtime-agnostic values used by both. No Structurizr functionality
+  yet. See [../architecture/repository-layout.md](../architecture/repository-layout.md).
 - Architecture top-level shape defined: CLI emits a deployable directory (rendered diagrams + exported Structurizr
   JSON + SPA bundle); the SPA renders the site client-side from the JSON. See
   [../architecture/summary.md](../architecture/summary.md).
@@ -20,9 +22,10 @@ Current state and next steps. Update in place; this is not a changelog.
 
 ## Next
 
-1. Scaffold the first vertical slice: DSL → `workspace.json` → linked `.puml` → `.svg` → SPA renders one diagram with
+1. Extend `generate-site` to export `workspace.json` into the output directory alongside the SPA.
+2. Scaffold the first vertical slice: DSL → `workspace.json` → linked `.puml` → `.svg` → SPA renders one diagram with
    working hash links.
-2. Record build/run/verify as a skill.
+3. Record build/run/verify as a skill.
 
 ## Open
 

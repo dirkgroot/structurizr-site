@@ -4,5 +4,9 @@ lode/tmp/
 # IDE
 .idea/
 
+# Dependencies
+node_modules/
+
 # Build output
+dist/
 build/

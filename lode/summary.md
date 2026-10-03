@@ -13,7 +13,8 @@ The rebuild uses a **new architecture**, chosen by the project owner. The refere
 (see [architecture/diagrams.md](architecture/diagrams.md)); distribution decided (see
 [architecture/distribution.md](architecture/distribution.md)); repository layout and SPA routing decided (see
 [architecture/repository-layout.md](architecture/repository-layout.md) and
-[architecture/routing.md](architecture/routing.md)). No source code exists yet — component details and scope
-are still open. See [plans/roadmap.md](plans/roadmap.md).
+[architecture/routing.md](architecture/routing.md)). A minimal scaffold exists: the CLI emits a `build/` directory
+containing the prebuilt SPA. Structurizr functionality is not implemented yet — component details and scope are still
+open. See [plans/roadmap.md](plans/roadmap.md).
 
 **Source of truth:** code once it exists; until then, the project owner's stated decisions.
