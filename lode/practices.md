@@ -13,6 +13,14 @@ Patterns and practices for working on this project. Split into focused files if 
 - If lode contradicts code, code wins: summarize the disparity and ask the owner to confirm the lode fix.
 - Workflow: chat-mode design first, implement only after a decision, then immediately update the lode.
 
+## Project skills
+
+- Interactive skills under `.opencode/skills/` capture repeatable procedures (see the Lode-vs-skill rule above).
+- `release` (`.opencode/skills/release/SKILL.md`) cuts a release end to end: proposes a version for approval, bumps
+  `package.json`, regenerates `CHANGELOG.md`, runs the gates, commits, tags, pushes, watches the Release workflow, and
+  updates the Homebrew tap. It owns the version-suggestion rule (increment the `-pre-alpha.N` counter, not
+  `git cliff --bumped-version`). Release detail stays in [architecture/distribution.md](architecture/distribution.md).
+
 ## Working with the project owner
 
 - The owner makes final decisions and owns the code. The AI is memory + fast executor.
