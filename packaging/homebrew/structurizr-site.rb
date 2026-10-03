@@ -1,7 +1,7 @@
 class StructurizrSite < Formula
   desc "Static site generator for Structurizr workspaces"
   homepage "https://github.com/dirkgroot/structurizr-site"
-  url "https://registry.npmjs.org/structurizr-site/-/structurizr-site-0.1.0.tgz"
+  url "https://github.com/dirkgroot/structurizr-site/releases/download/v0.1.0/structurizr-site-0.1.0.tgz"
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
   license "MIT"
 

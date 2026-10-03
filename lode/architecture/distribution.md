@@ -16,29 +16,31 @@ How the CLI is packaged and shipped. Related: [summary.md](summary.md), [diagram
   is not vendored into this distribution.
 - **SPA bundle ships as package files.** The prebuilt SPA is included in the npm package; it is not built or fetched at
   install time. See [repository-layout.md](repository-layout.md) for the package layout.
-- **Primary channel: the npm registry.** The package publishes to npm as the unscoped `structurizr-site`. Homebrew is a
-  convenience wrapper around that tarball. A GitHub release tarball is not produced.
+- **Distribution: GitHub release with the packed tarball as an asset.** Each `v*` tag produces a GitHub release whose
+  asset is the `npm pack` tarball. Homebrew installs from that asset, so installation needs no registry credentials.
+  Nothing is published to a package registry.
+- **GitHub Packages is not used.** Its npm registry requires an auth token even for public installs, which would break
+  `brew install`. A GitHub release asset is public and works with the standard Homebrew npm-formula pattern.
 - **License: MIT.** `LICENSE` ships in the package and the Homebrew formula declares `license "MIT"`.
 
-## Published package
+## Packaged tarball
 
-`npm publish` ships `dist/` plus npm's always-included `package.json`, `README.md`, and `LICENSE`:
+`npm pack` ships `dist/` plus npm's always-included `package.json`, `README.md`, and `LICENSE`:
 
 - `dist/cli/` — the compiled CLI; `bin` maps `structurizr-site` to `dist/cli/bin.js`.
 - `dist/spa/` — the prebuilt React + Vite bundle the CLI copies into the generated site.
 
 `package.json` sets `files: ["dist", "!dist/**/*.map"]`: source maps are built for local debugging but excluded from the
-tarball. `prepack` runs `clean` then `build`, so `dist/` is always fresh for `npm pack` and `npm publish`;
-`prepublishOnly` runs `typecheck` and `lint` as the publish gate. The package has no runtime dependencies — every entry
-in `package.json` is a dev dependency.
+tarball. `prepack` runs `clean` then `build`, so `dist/` is always fresh when the release workflow runs `npm pack`. The
+package has no runtime dependencies — every entry in `package.json` is a dev dependency.
 
 ## Release automation
 
 - **CI** (`.github/workflows/ci.yml`) runs on pushes to `main` and on pull requests: `npm ci`, `format:check`, `lint`,
   `typecheck`, `npm test`, and `npm pack --dry-run`. Node comes from `mise.toml` via `jdx/mise-action`.
 - **Release** (`.github/workflows/release.yml`) triggers on `v*` tags. It verifies the tag equals the `package.json`
-  version, runs the checks (including `npm test`), then `npm publish --provenance`. Provenance needs `id-token: write`
-  (present) and an `NPM_TOKEN` repository secret.
+  version, runs the checks (including `npm test`), runs `npm pack`, then attaches the tarball to a GitHub release
+  (`contents: write`, using the built-in `GITHUB_TOKEN`). No registry credentials are needed.
 - Cutting a release is only: bump `version`, commit, then `git tag v0.1.0 && git push origin v0.1.0`.
 
 ## Structurizr backend resolution
@@ -61,7 +63,8 @@ tag.
 ## Homebrew formula
 
 `packaging/homebrew/structurizr-site.rb` is the formula template; `packaging/homebrew/update-formula.mjs` fills its
-`url` and `sha256` from the published npm tarball. The result is copied into the `homebrew-structurizr-site` tap.
+`url` and `sha256` from the GitHub release asset for the version in `package.json`. The result is copied into the
+`homebrew-structurizr-site` tap.
 
 The formula currently depends on `node` only, because the generator does not yet invoke Structurizr or render diagrams.
 `openjdk`, the Structurizr backend, and `plantuml` become dependencies when the pipeline lands.
@@ -70,7 +73,7 @@ The formula currently depends on `node` only, because the generator does not yet
 class StructurizrSite < Formula
   desc "Static site generator for Structurizr workspaces"
   homepage "https://github.com/dirkgroot/structurizr-site"
-  url "https://registry.npmjs.org/structurizr-site/-/structurizr-site-0.1.0.tgz"
+  url "https://github.com/dirkgroot/structurizr-site/releases/download/v0.1.0/structurizr-site-0.1.0.tgz"
   sha256 "..."
   license "MIT"
 

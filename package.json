@@ -44,7 +44,6 @@
     "format:check": "oxfmt --check",
     "clean": "rm -rf dist build",
     "prepack": "npm run clean && npm run build",
-    "prepublishOnly": "npm run typecheck && npm run lint",
     "generate-site": "node dist/cli/bin.js generate-site"
   },
   "devDependencies": {

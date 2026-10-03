@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 // Fill in the `url` and `sha256` of structurizr-site.rb for the version in
-// package.json. Run it after that version is published to npm:
+// package.json. Run it after that version's GitHub release is published:
 //
 //   node packaging/homebrew/update-formula.mjs
 //
+// The tarball is the asset attached to the GitHub release, so it is public and
+// needs no registry credentials to install.
+//
 // Pass a tarball URL or a local tarball path to hash something other than the
-// published tarball (useful before the first publish):
+// published tarball (useful before the first release):
 //
 //   node packaging/homebrew/update-formula.mjs structurizr-site-0.1.0.tgz
 //
@@ -20,7 +23,13 @@ const repoRoot = resolve(here, "../..");
 
 const pkg = JSON.parse(await readFile(resolve(repoRoot, "package.json"), "utf8"));
 const formulaPath = resolve(here, "structurizr-site.rb");
-const formulaUrl = `https://registry.npmjs.org/${pkg.name}/-/${pkg.name}-${pkg.version}.tgz`;
+
+const repoMatch = /github\.com[/:]([^/]+)\/([^/.]+)/.exec(pkg.repository.url);
+if (!repoMatch) {
+  throw new Error(`cannot derive GitHub owner/repo from ${pkg.repository.url}`);
+}
+const [, owner, repo] = repoMatch;
+const formulaUrl = `https://github.com/${owner}/${repo}/releases/download/v${pkg.version}/${pkg.name}-${pkg.version}.tgz`;
 
 const source = process.argv[2];
 let tarball;

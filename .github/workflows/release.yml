@@ -5,8 +5,7 @@ on:
     tags: ["v*"]
 
 permissions:
-  contents: read
-  id-token: write # npm provenance
+  contents: write # create the GitHub release
 
 jobs:
   publish:
@@ -27,9 +26,19 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
-      - name: Publish to npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Pack
         run: |
-          npm config set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
-          npm publish --provenance
+          version="$(node -p "require('./package.json').version")"
+          echo "TARBALL=structurizr-site-${version}.tgz" >> "$GITHUB_ENV"
+          npm pack
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "$TARBALL" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "$TARBALL" \
+              --title "$GITHUB_REF_NAME" \
+              --generate-notes
+          fi

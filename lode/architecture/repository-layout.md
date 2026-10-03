@@ -90,7 +90,7 @@ structurizr-site/
 - `tsc -p tsconfig.cli.json` → `dist/cli/` (plus `dist/shared/`); `vite build` → `dist/spa/`. `dist/` is git-ignored
   and shipped.
 - `package.json`: `bin` → `dist/cli/bin.js`; `files: ["dist", "!dist/**/*.map"]` (source maps are built but not
-  shipped). `prepack` rebuilds `dist/`; `prepublishOnly` gates on `typecheck` + `lint`.
+  shipped). `prepack` rebuilds `dist/` before packing.
 - `assembly/` copies `dist/spa/` into the output directory at generate time. The path is relative to the CLI module,
   so there is no cross-package resolution.
 - Four project tsconfigs: `tsconfig.cli.json` (Node libs) and `tsconfig.spa.json` (DOM libs) — both including

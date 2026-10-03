@@ -14,9 +14,10 @@ Current state and next steps. Update in place; this is not a changelog.
   [../architecture/summary.md](../architecture/summary.md).
 - Diagram pipeline and clickable SVG links designed and verified end-to-end (official Structurizr CLI + PlantUML,
   link injection via the workspace JSON, hash routes). See [../architecture/diagrams.md](../architecture/diagrams.md).
-- Distribution implemented: publishes to npm as `structurizr-site`; `.github/workflows/` holds CI and a tag-triggered
-  release; `packaging/homebrew/` holds the Homebrew formula template and updater. Structurizr stays an external runtime
-  dependency (not vendored), Node is a dependency, and the SPA ships in the package. See
+- Distribution implemented: each `v*` tag produces a GitHub release carrying the packed npm tarball (the artifact
+  Homebrew installs); `.github/workflows/` holds CI and the tag-triggered release; `packaging/homebrew/` holds the
+  Homebrew formula template and updater. Structurizr stays an external runtime dependency (not vendored), Node is a
+  dependency, and the SPA ships in the package. See
   [../architecture/distribution.md](../architecture/distribution.md).
 - Repository layout decided: one published npm package with `src/{cli,spa,shared}`. See
   [../architecture/repository-layout.md](../architecture/repository-layout.md).

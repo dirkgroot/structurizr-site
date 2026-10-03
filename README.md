@@ -8,15 +8,13 @@ diagram rendering, and link injection are not implemented yet.
 
 ## Install
 
-```sh
-npm install -g structurizr-site
-```
-
 A Homebrew formula is maintained in `packaging/homebrew/`. Once the tap is published:
 
 ```sh
 brew install dirkgroot/structurizr-site/structurizr-site
 ```
+
+Releases are also downloadable as GitHub release assets, but Homebrew is the supported install path.
 
 ## Requirements
 
@@ -58,19 +56,20 @@ hash routes, a plain static file server is enough.
 
 ## Release
 
-Releases publish to npm from a version tag.
+Releases are published as GitHub releases from a version tag. Each release carries the packed npm tarball as a
+downloadable asset, which is what the Homebrew formula installs.
 
 1. Bump `version` in `package.json` and commit.
 2. Tag and push: `git tag v0.1.0 && git push origin v0.1.0`.
-3. The `Release` workflow verifies the tag matches `package.json`, runs the checks, and publishes with provenance. It
-   needs an `NPM_TOKEN` repository secret.
-4. Refresh the Homebrew formula against the published tarball, then copy it into the tap:
+3. The `Release` workflow verifies the tag matches `package.json`, runs the checks, and attaches the packed tarball to
+   a GitHub release.
+4. Refresh the Homebrew formula against the release asset, then copy it into the tap:
 
    ```sh
    node packaging/homebrew/update-formula.mjs
    ```
 
-`prepack` rebuilds `dist/` before packing, so the published tarball always contains a fresh CLI and SPA.
+`prepack` rebuilds `dist/` before packing, so the released tarball always contains a fresh CLI and SPA.
 
 ## Layout
 
