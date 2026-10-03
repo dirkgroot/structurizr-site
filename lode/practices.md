@@ -25,3 +25,16 @@ Patterns and practices for working on this project. Split into focused files if 
 - The reference tool is a **behavioral spec**, not an implementation blueprint. Match behavior, not structure.
 - Record each architecture decision as it is made; do not invent architecture ahead of the owner's direction.
 - Prefer capturing a design in `lode/architecture/` before writing code for it.
+
+## Linting and formatting
+
+- `oxlint` lints. Config: `.oxlintrc.json`, Vite's default React preset: plugins `react`, `typescript`, `oxc`;
+  `react/rules-of-hooks` at **error**, `react/only-export-components` at **warn**. ESLint core rules still run;
+  `unicorn`, `import`, `promise`, `node`, `jsx-a11y`, `react-perf` are not enabled.
+- `npm run lint` runs `oxlint --deny-warnings`, so warnings and errors both fail the gate. `npm run lint:fix`
+  applies safe fixes.
+- `oxfmt` formats (0.71.0, beta). Config: `.oxfmtrc.json`; `sortPackageJson` is disabled so `package.json` key order
+  stays stable (Prettier does not sort keys either). `npm run format` writes; `npm run format:check` verifies.
+- Both tools respect `.gitignore`, so `dist/`, `build/`, and `node_modules/` are skipped without explicit patterns.
+- `.editorconfig` is the shared baseline: UTF-8, LF, 2-space indent, final newline, trimmed trailing whitespace
+  (Markdown keeps trailing whitespace). oxfmt's `printWidth` is 100 and overrides `.editorconfig.max_line_length`.

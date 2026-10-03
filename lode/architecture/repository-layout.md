@@ -17,6 +17,9 @@ out would force a lockstep version pin and an extra publish step for no benefit.
 structurizr-site/
 ├── AGENTS.md
 ├── README.md
+├── .editorconfig                # shared formatting baseline
+├── .oxfmtrc.json                # oxfmt config (formatter)
+├── .oxlintrc.json               # oxlint config (linter)
 ├── mise.toml                    # pinned build tools (Node LTS)
 ├── package.json                 # single package; bin, files: ["dist"]
 ├── tsconfig.json                # solution file; references the projects below

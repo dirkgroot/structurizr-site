@@ -63,8 +63,8 @@ You are responsible for managing project knowledge using the Lode Coding method.
 
 ## Lode vs. skills
 
-The Lode is descriptive: what the system *is* (architecture, terminology, decisions, invariants). A skill
-(`.claude/skills/`) is procedural: how to *do* something repeatable (launch/verify/stop the app, run a workflow).
+The Lode is descriptive: what the system _is_ (architecture, terminology, decisions, invariants). A skill
+(`.claude/skills/`) is procedural: how to _do_ something repeatable (launch/verify/stop the app, run a workflow).
 When knowledge is a step-by-step procedure meant to be invoked, not read for understanding, capture it as a project
 skill instead of a lode file — skills get found and run directly by name or by another skill's own routing, without
 requiring the lode-map detour. A lode file may reference the skill by name rather than duplicating its steps. When

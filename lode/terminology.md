@@ -37,6 +37,6 @@ Short `term - meaning` lines describing this project's domain language. Keep add
 
 ## Project / process
 
-- **Lode** - the AI-owned markdown memory repository at `lode/`; describes what the system *is*.
+- **Lode** - the AI-owned markdown memory repository at `lode/`; describes what the system _is_.
 - **Skill** - a procedural, invokable how-to (e.g. run/verify the app); lives outside the Lode.
 - **Reference tool** - the Avisi `structurizr-site-generatr`, used as the behavioral spec for the rebuild.

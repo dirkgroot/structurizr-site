@@ -6,7 +6,7 @@ How diagram assets are produced and how elements become clickable in the SPA. Re
 ## Mechanism (reference tool)
 
 The reference tool does not post-process SVGs. It injects a per-element link into the PlantUML definition
-*before* rendering:
+_before_ rendering:
 
 - It subclasses Structurizr's `C4PlantUMLExporter` / `StructurizrPlantUMLExporter` and overrides `writeElement`:
   set `element.url` to the drill-down route, call the parent writer, then restore `url`.

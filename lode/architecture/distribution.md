@@ -66,7 +66,7 @@ This is a tap (`brew tap you/structurizr-site`), not homebrew-core.
 The prebuilt vNext `.war` is **not redistributable**. It bundles the open-core server under an End-User License
 Agreement (embedded at `com/structurizr/server/web/eula/`) that grants download/install/use but prohibits distribution:
 "distribute, transmit, host, outsource, disclose or otherwise commercially exploit the Application or make the
-Application available to any third party", and prohibits derivative works. The `export` command is free to *use* from
+Application available to any third party", and prohibits derivative works. The `export` command is free to _use_ from
 the binary, but that is a use right, not a redistribution right.
 
 Homebrew's `structurizr` formula sidesteps this by building from the Apache-2.0 source (`mvn package`) instead of

@@ -6,7 +6,7 @@ a static site generator that turns a [Structurizr DSL](https://docs.structurizr.
 architecture model) into a browsable website containing rendered diagrams, documentation, and ADRs.
 
 The rebuild uses a **new architecture**, chosen by the project owner. The reference tool defines desired
-*behavior* and is not a blueprint for the new implementation.
+_behavior_ and is not a blueprint for the new implementation.
 
 **Status:** Architecture top-level shape defined (CLI + SPA + Structurizr JSON; see
 [architecture/summary.md](architecture/summary.md)). Diagram pipeline and clickable SVG links designed and verified

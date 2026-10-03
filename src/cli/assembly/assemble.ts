@@ -15,9 +15,7 @@ export async function assemble(outputDir: string): Promise<void> {
   try {
     await access(spaBundleDir);
   } catch {
-    throw new Error(
-      `prebuilt SPA not found at ${spaBundleDir}; run "npm run build:spa" first`,
-    );
+    throw new Error(`prebuilt SPA not found at ${spaBundleDir}; run "npm run build:spa" first`);
   }
 
   await rm(outputDir, { recursive: true, force: true });

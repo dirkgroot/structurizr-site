@@ -15,13 +15,13 @@ the model→URL mapping is **derived from `workspace.json`** at load. There is n
 
 ## Patterns
 
-| Pattern | View |
-|---|---|
-| `#/` | home |
-| `#/:system/context` | system context view |
-| `#/:system/container` | container view |
-| `#/:system/component/:container` | component view |
-| `#/:system/code/:container/:component` | code/image view |
+| Pattern                                | View                |
+| -------------------------------------- | ------------------- |
+| `#/`                                   | home                |
+| `#/:system/context`                    | system context view |
+| `#/:system/container`                  | container view      |
+| `#/:system/component/:container`       | component view      |
+| `#/:system/code/:container/:component` | code/image view     |
 
 The router matches these. It is never handed a list of routes.
 
