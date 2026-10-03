@@ -37,6 +37,11 @@ flowchart LR
 - **D3 — Hosting is static and external.** NGINX / GitHub Pages / similar. No application server.
 - **D4 — Hash-based routes.** Drill-down links and SPA navigation use hash routes (`#/...`), so SVG anchors work
   without static-host fallback or click interception. See [diagrams.md](diagrams.md).
+- **D5 — Vendored Structurizr artifact.** The Structurizr DSL/export jars ship with the tool and are invoked via `java`,
+  pinning diagram output instead of depending on the deprecated `structurizr-cli` formula. See
+  [distribution.md](distribution.md).
+- **D6 — Node is a dependency, not bundled.** The tool already needs Java and Graphviz, so bundling Node would not make
+  it self-contained; Homebrew manages the runtime. See [distribution.md](distribution.md).
 
 ## Known constraints
 
@@ -53,7 +58,8 @@ flowchart LR
    exact CLI runtime is still open.
 3. How documentation and ADRs are represented (markdown rendered by the SPA? pre-rendered?).
 4. Whether anything is pre-rendered for SEO / no-JS.
-5. CLI distribution and where the prebuilt SPA bundle lives.
+5. CLI distribution and where the prebuilt SPA bundle lives. **Resolved:** vendored Structurizr jars, Node as a
+   dependency, SPA shipped in the package. See [distribution.md](distribution.md).
 6. How `generatr.*` properties map into the new design.
 
 ## Decisions log
@@ -61,4 +67,6 @@ flowchart LR
 - **D1–D3** — captured 2026-10-03 from owner direction: SPA reads Structurizr JSON from a static host; CLI emits a
   deployable directory (diagrams + JSON + SPA).
 - **D4** — captured 2026-10-03: hash-based routes for SPA navigation and SVG drill-down links.
+- **D5–D6** — captured 2026-10-03: vendor a version-pinned Structurizr artifact; Node is a dependency, not bundled. See
+  [distribution.md](distribution.md).
 - Diagram link mechanism and TS pipeline verified 2026-10-03; see [diagrams.md](diagrams.md).
