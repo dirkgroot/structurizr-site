@@ -47,3 +47,12 @@ Patterns and practices for working on this project. Split into focused files if 
 - Both tools respect `.gitignore`, so `dist/`, `build/`, and `node_modules/` are skipped without explicit patterns.
 - `.editorconfig` is the shared baseline: UTF-8, LF, 2-space indent, final newline, trimmed trailing whitespace
   (Markdown keeps trailing whitespace). oxfmt's `printWidth` is 100 and overrides `.editorconfig.max_line_length`.
+
+## Commits and changelog
+
+- Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`,
+  `chore:` …). `git-cliff` (config `cliff.toml`) groups them into `CHANGELOG.md`; non-conforming messages fall under
+  `Other` instead of being dropped.
+- Version-bump and merge commits are skipped by parser rules. `npm run changelog` regenerates the file with an
+  `Unreleased` section; `npm run changelog:release` labels it with the `package.json` version at release time.
+- Release detail: [architecture/distribution.md](architecture/distribution.md).
