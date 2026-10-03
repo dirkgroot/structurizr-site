@@ -29,6 +29,7 @@
     "build:web": "vite build",
     "build:binary": "node packaging/binary/build.mjs",
     "build:binary:all": "node packaging/binary/build.mjs --all",
+    "watch": "vite",
     "typecheck": "tsc -p tsconfig.cli.json --noEmit && tsc -p tsconfig.web.json && tsc -p tsconfig.node.json && tsc -p tsconfig.test.json",
     "test": "vitest run",
     "test:watch": "vitest",

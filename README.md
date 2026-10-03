@@ -27,6 +27,7 @@ npm run build          # tsc -> dist/cli, vite -> dist/web, bun -> dist/binaries
 npm run build:web      # vite -> dist/web (the web app embedded in the binary)
 npm run build:binary   # native platform only
 npm run build:binary:all  # all four release targets (cross-compiles)
+npm run watch          # Vite dev server for src/web (HMR)
 npm run typecheck
 npm test               # vitest (node + jsdom projects)
 npm run test:watch
