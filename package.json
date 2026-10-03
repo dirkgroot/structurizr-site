@@ -3,12 +3,29 @@
   "version": "0.1.0",
   "description": "Static site generator for Structurizr workspaces",
   "type": "module",
-  "license": "Apache-2.0",
+  "license": "MIT",
+  "author": "Dirk Groot",
+  "homepage": "https://github.com/dirkgroot/structurizr-site#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dirkgroot/structurizr-site.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dirkgroot/structurizr-site/issues"
+  },
+  "keywords": [
+    "structurizr",
+    "c4",
+    "architecture",
+    "architecture-diagrams",
+    "static-site-generator"
+  ],
   "bin": {
     "structurizr-site": "dist/cli/bin.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "!dist/**/*.map"
   ],
   "engines": {
     "node": ">=20"
@@ -23,6 +40,8 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "clean": "rm -rf dist build",
+    "prepack": "npm run clean && npm run build",
+    "prepublishOnly": "npm run typecheck && npm run lint",
     "generate-site": "node dist/cli/bin.js generate-site"
   },
   "devDependencies": {

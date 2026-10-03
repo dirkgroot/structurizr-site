@@ -6,6 +6,18 @@ overview.
 **Status:** minimal scaffold. The CLI emits a deployable directory containing the prebuilt SPA. Structurizr export,
 diagram rendering, and link injection are not implemented yet.
 
+## Install
+
+```sh
+npm install -g structurizr-site
+```
+
+A Homebrew formula is maintained in `packaging/homebrew/`. Once the tap is published:
+
+```sh
+brew install dirkgroot/structurizr-site/structurizr-site
+```
+
 ## Requirements
 
 Build tools are pinned with [`mise`](https://mise.jdx.dev/) (Node LTS). With mise active, `node` and `npm` come from
@@ -28,10 +40,28 @@ node dist/cli/bin.js generate-site --output path/to/out
 
 `build/` contains the prebuilt SPA and is deployable to any static host. It is git-ignored.
 
+## Release
+
+Releases publish to npm from a version tag.
+
+1. Bump `version` in `package.json` and commit.
+2. Tag and push: `git tag v0.1.0 && git push origin v0.1.0`.
+3. The `Release` workflow verifies the tag matches `package.json`, runs the checks, and publishes with provenance. It
+   needs an `NPM_TOKEN` repository secret.
+4. Refresh the Homebrew formula against the published tarball, then copy it into the tap:
+
+   ```sh
+   node packaging/homebrew/update-formula.mjs
+   ```
+
+`prepack` rebuilds `dist/` before packing, so the published tarball always contains a fresh CLI and SPA.
+
 ## Layout
 
 - `src/cli/` — the generator CLI.
 - `src/spa/` — the React + Vite single-page app.
 - `src/shared/` — runtime-agnostic code imported by both.
+- `.github/workflows/` — CI and release automation.
+- `packaging/homebrew/` — the Homebrew formula and its updater.
 
 See `lode/architecture/repository-layout.md` for the full layout.

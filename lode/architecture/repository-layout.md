@@ -17,11 +17,13 @@ out would force a lockstep version pin and an extra publish step for no benefit.
 structurizr-site/
 ├── AGENTS.md
 ├── README.md
+├── LICENSE                      # MIT
 ├── .editorconfig                # shared formatting baseline
+├── .github/workflows/           # ci.yml + release.yml
 ├── .oxfmtrc.json                # oxfmt config (formatter)
 ├── .oxlintrc.json               # oxlint config (linter)
 ├── mise.toml                    # pinned build tools (Node LTS)
-├── package.json                 # single package; bin, files: ["dist"]
+├── package.json                 # single package; bin, files: ["dist", "!dist/**/*.map"]
 ├── tsconfig.json                # solution file; references the projects below
 ├── tsconfig.base.json
 ├── tsconfig.cli.json            # Node libs
@@ -59,7 +61,9 @@ structurizr-site/
 │   ├── cli/                     # tsc output
 │   └── spa/                     # vite output
 └── packaging/
-    └── homebrew/structurizr-site.rb
+    └── homebrew/
+        ├── structurizr-site.rb      # formula template
+        └── update-formula.mjs       # fills url + sha256 at release
 ```
 
 ## Rationale
@@ -80,7 +84,8 @@ structurizr-site/
 - Build tools are managed by `mise` (`mise.toml`). Node is pinned to the current LTS, `24.21.0` (Krypton).
 - `tsc -p tsconfig.cli.json` → `dist/cli/` (plus `dist/shared/`); `vite build` → `dist/spa/`. `dist/` is git-ignored
   and shipped.
-- `package.json`: `bin` → `dist/cli/bin.js`; `files: ["dist"]`.
+- `package.json`: `bin` → `dist/cli/bin.js`; `files: ["dist", "!dist/**/*.map"]` (source maps are built but not
+  shipped). `prepack` rebuilds `dist/`; `prepublishOnly` gates on `typecheck` + `lint`.
 - `assembly/` copies `dist/spa/` into the output directory at generate time. The path is relative to the CLI module,
   so there is no cross-package resolution.
 - Three project tsconfigs: `tsconfig.cli.json` (Node libs) and `tsconfig.spa.json` (DOM libs) — both including

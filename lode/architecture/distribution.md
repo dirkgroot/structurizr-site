@@ -1,6 +1,7 @@
 # Distribution & Packaging
 
-How the CLI is packaged and shipped. Related: [summary.md](summary.md), [diagrams.md](diagrams.md).
+How the CLI is packaged and shipped. Related: [summary.md](summary.md), [diagrams.md](diagrams.md),
+[repository-layout.md](repository-layout.md).
 
 ## Decisions
 
@@ -15,6 +16,30 @@ How the CLI is packaged and shipped. Related: [summary.md](summary.md), [diagram
   is not vendored into this distribution.
 - **SPA bundle ships as package files.** The prebuilt SPA is included in the npm package; it is not built or fetched at
   install time. See [repository-layout.md](repository-layout.md) for the package layout.
+- **Primary channel: the npm registry.** The package publishes to npm as the unscoped `structurizr-site`. Homebrew is a
+  convenience wrapper around that tarball. A GitHub release tarball is not produced.
+- **License: MIT.** `LICENSE` ships in the package and the Homebrew formula declares `license "MIT"`.
+
+## Published package
+
+`npm publish` ships `dist/` plus npm's always-included `package.json`, `README.md`, and `LICENSE`:
+
+- `dist/cli/` — the compiled CLI; `bin` maps `structurizr-site` to `dist/cli/bin.js`.
+- `dist/spa/` — the prebuilt React + Vite bundle the CLI copies into the generated site.
+
+`package.json` sets `files: ["dist", "!dist/**/*.map"]`: source maps are built for local debugging but excluded from the
+tarball. `prepack` runs `clean` then `build`, so `dist/` is always fresh for `npm pack` and `npm publish`;
+`prepublishOnly` runs `typecheck` and `lint` as the publish gate. The package has no runtime dependencies — every entry
+in `package.json` is a dev dependency.
+
+## Release automation
+
+- **CI** (`.github/workflows/ci.yml`) runs on pushes to `main` and on pull requests: `npm ci`, `format:check`, `lint`,
+  `typecheck`, and `npm pack --dry-run`. Node comes from `mise.toml` via `jdx/mise-action`.
+- **Release** (`.github/workflows/release.yml`) triggers on `v*` tags. It verifies the tag equals the `package.json`
+  version, runs the checks, then `npm publish --provenance`. Provenance needs `id-token: write` (present) and an
+  `NPM_TOKEN` repository secret.
+- Cutting a release is only: bump `version`, commit, then `git tag v0.1.0 && git push origin v0.1.0`.
 
 ## Structurizr backend resolution
 
@@ -33,20 +58,23 @@ PlantUML, PlantUML → SVG anchors. The pipeline is unchanged from the legacy CL
 Trade-off: diagram output can change with upstream versions. To pin, point `--structurizr` at a specific war or Docker
 tag.
 
-## Homebrew formula shape
+## Homebrew formula
+
+`packaging/homebrew/structurizr-site.rb` is the formula template; `packaging/homebrew/update-formula.mjs` fills its
+`url` and `sha256` from the published npm tarball. The result is copied into the `homebrew-structurizr-site` tap.
+
+The formula currently depends on `node` only, because the generator does not yet invoke Structurizr or render diagrams.
+`openjdk`, the Structurizr backend, and `plantuml` become dependencies when the pipeline lands.
 
 ```ruby
 class StructurizrSite < Formula
   desc "Static site generator for Structurizr workspaces"
-  homepage "https://github.com/you/structurizr-site"
-  url "https://registry.npmjs.org/@you/structurizr-site/-/structurizr-site-0.1.0.tgz"
+  homepage "https://github.com/dirkgroot/structurizr-site"
+  url "https://registry.npmjs.org/structurizr-site/-/structurizr-site-0.1.0.tgz"
   sha256 "..."
-  license "Apache-2.0"
+  license "MIT"
 
   depends_on "node"
-  depends_on "openjdk"      # 21+
-  depends_on "structurizr"  # community build; see Open
-  depends_on "plantuml"     # pulls graphviz + openjdk
 
   def install
     system "npm", "install", *std_npm_args
@@ -58,8 +86,6 @@ class StructurizrSite < Formula
   end
 end
 ```
-
-This is a tap (`brew tap you/structurizr-site`), not homebrew-core.
 
 ## Vendoring constraint
 
@@ -78,8 +104,8 @@ prebuilt war.
 
 ## Constraints
 
-- Homebrew's `std_npm_args` installs a packed tarball and ignores lifecycle scripts by default. Ship the prebuilt CLI JS
-  and the prebuilt SPA bundle as package files; do not build or fetch at install time.
+- Homebrew's `std_npm_args` installs a packed tarball and ignores lifecycle scripts by default. The tarball ships the
+  prebuilt CLI JS and SPA bundle; nothing builds or fetches at install time.
 - The Homebrew `structurizr` formula is a **community build**, not maintained by Structurizr. Users who want the newest
   features override the backend with their own war or Docker image.
 - PlantUML is GPL-3.0; it is depended on, not redistributed.
@@ -88,5 +114,6 @@ prebuilt war.
 ## Open
 
 - Whether the formula depends on the community `structurizr` build or requires a user-provided backend.
-- Primary distribution channel: npm package vs GitHub release tarball; Homebrew is a convenience wrapper either way.
 - Whether to offer an opt-in pinned backend for reproducible output.
+- When to add `openjdk` / Structurizr / `plantuml` formula dependencies (tied to the diagram pipeline).
+- Whether the release workflow should update the tap automatically instead of by hand.

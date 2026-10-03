@@ -10,9 +10,9 @@ _behavior_ and is not a blueprint for the new implementation.
 
 **Status:** Architecture top-level shape defined (CLI + SPA + Structurizr JSON; see
 [architecture/summary.md](architecture/summary.md)). Diagram pipeline and clickable SVG links designed and verified
-(see [architecture/diagrams.md](architecture/diagrams.md)); distribution decided (see
-[architecture/distribution.md](architecture/distribution.md)); repository layout and SPA routing decided (see
-[architecture/repository-layout.md](architecture/repository-layout.md) and
+(see [architecture/diagrams.md](architecture/diagrams.md)); distribution implemented (npm publish, CI/release
+workflows, Homebrew formula; see [architecture/distribution.md](architecture/distribution.md)); repository layout and
+SPA routing decided (see [architecture/repository-layout.md](architecture/repository-layout.md) and
 [architecture/routing.md](architecture/routing.md)). A minimal scaffold exists: the CLI emits a `build/` directory
 containing the prebuilt SPA. Structurizr functionality is not implemented yet — component details and scope are still
 open. See [plans/roadmap.md](plans/roadmap.md).
