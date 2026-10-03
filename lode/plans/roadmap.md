@@ -4,7 +4,8 @@ Current state and next steps. Update in place; this is not a changelog.
 
 ## State
 
-- Git repository initialized on branch `main`. Contains the Lode only; no source code or build tooling yet.
+- Git repository initialized on branch `main`. Contains the Lode plus build-tool config: `mise.toml` pins Node to the
+  LTS version `24.21.0` (Krypton). No source code yet.
 - Architecture top-level shape defined: CLI emits a deployable directory (rendered diagrams + exported Structurizr
   JSON + SPA bundle); the SPA renders the site client-side from the JSON. See
   [../architecture/summary.md](../architecture/summary.md).
