@@ -1,0 +1,8 @@
+# Lode session scraps (git-ignored)
+lode/tmp/
+
+# IDE
+.idea/
+
+# Build output
+build/
