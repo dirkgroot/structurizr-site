@@ -17,7 +17,12 @@ export default defineConfig({
         test: {
           name: "node",
           environment: "node",
-          include: ["src/cli/**/*.test.ts", "src/shared/**/*.test.ts", "test/e2e/**/*.test.ts"],
+          include: [
+            "src/cli/**/*.test.ts",
+            "src/shared/**/*.test.ts",
+            "test/e2e/**/*.test.ts",
+            "dev/**/*.test.ts",
+          ],
         },
       },
       {

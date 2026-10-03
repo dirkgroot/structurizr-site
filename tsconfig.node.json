@@ -5,7 +5,8 @@
     "moduleResolution": "Bundler",
     "lib": ["ES2023"],
     "types": ["node"],
+    "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "include": ["vite.config.ts", "vitest.config.ts"]
+  "include": ["vite.config.ts", "vitest.config.ts", "dev/**/*.ts"]
 }

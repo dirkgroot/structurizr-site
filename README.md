@@ -27,11 +27,20 @@ npm run build          # tsc -> dist/cli, vite -> dist/web, bun -> dist/binaries
 npm run build:web      # vite -> dist/web (the web app embedded in the binary)
 npm run build:binary   # native platform only
 npm run build:binary:all  # all four release targets (cross-compiles)
-npm run watch          # Vite dev server for src/web (HMR)
+npm run watch          # Vite dev server for src/web (HMR), serving a workspace.json
 npm run typecheck
 npm test               # vitest (node + jsdom projects)
 npm run test:watch
 npm run test:coverage
+```
+
+`npm run watch` starts the Vite dev server and serves an exported `workspace.json` at `/workspace.json`, so the app
+runs against a real workspace under HMR. The export uses the Structurizr backend and is re-run when the workspace file
+changes. By default it exports `test/fixtures/workspace.dsl`; override with:
+
+```sh
+VITE_WORKSPACE_FILE=architecture/workspace.dsl npm run watch
+VITE_STRUCTURIZR="java -jar structurizr.war" npm run watch
 ```
 
 The distributed artifact is a self-contained binary: `bun build --compile` embeds the CLI, the web app, and the Bun

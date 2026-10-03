@@ -9,7 +9,7 @@ How the project is unit tested. Related: [repository-layout.md](repository-layou
   React web app. It is separate from `vite.config.ts` so the web app build root (`src/web`) does not leak into test discovery.
 - **React Testing Library** drives DOM assertions for React components. Tests query by role/text, not by implementation.
 - **Two Vitest projects** split by runtime:
-  - `node` — `environment: "node"`, covers `src/cli/**` and `src/shared/**`.
+  - `node` — `environment: "node"`, covers `src/cli/**`, `src/shared/**`, `test/e2e/**`, and `dev/**`.
   - `web` — `environment: "jsdom"`, React plugin enabled, covers `src/web/**`.
 - **Unit tests are colocated** with the module under test: `<module>.test.ts` / `.test.tsx`. Shared fixtures and e2e
   live under `test/` (see [repository-layout.md](repository-layout.md)).
@@ -37,7 +37,12 @@ export default defineConfig({
         test: {
           name: "node",
           environment: "node",
-          include: ["src/cli/**/*.test.ts", "src/shared/**/*.test.ts", "test/e2e/**/*.test.ts"],
+          include: [
+            "src/cli/**/*.test.ts",
+            "src/shared/**/*.test.ts",
+            "test/e2e/**/*.test.ts",
+            "dev/**/*.test.ts",
+          ],
         },
       },
       {

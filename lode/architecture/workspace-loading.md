@@ -52,6 +52,21 @@ set-state-in-effect and gives a correct title on first paint.
 `src/shared/site.ts` — `siteName(workspace)` returns `workspace.name` trimmed, or `SITE_NAME` ("Structurizr Site") when
 the workspace is absent or unnamed. `Workspace.name` is optional in the schema, so the fallback is required regardless.
 
+## Dev server
+
+`npm run watch` runs Vite against `src/web` with HMR, but the app under dev has no `workspace.json` unless one is
+served. `dev/dev-workspace.ts` is a dev-only Vite plugin (`apply: "serve"`) that fills that gap: it serves the workspace
+export at `/workspace.json` by running the same `exportJson` pipeline the CLI uses, into a temp directory.
+
+- **Lazy export.** The export runs on the first request, not at server start, so a backend failure surfaces as a `500`
+  with the backend's message in the browser instead of preventing Vite from starting. The JSON is cached; a change to the
+  workspace file invalidates the cache and re-exports on the next request.
+- **Config.** `VITE_WORKSPACE_FILE` (default `test/fixtures/workspace.dsl`) selects the workspace; `VITE_STRUCTURIZR`
+  overrides the backend command.
+- **Cleanup.** The temp export directory is removed when the dev server closes (`httpServer` `close`).
+- `dev/` is dev tooling, not shipped code: it is type-checked by `tsconfig.node.json` and unit-tested in the `node`
+  Vitest project. `vite build` is unaffected (`apply: "serve"`; no `workspace.json` is emitted into `dist/web`).
+
 ## Invariants
 
 - `build/workspace.json` is always named exactly `workspace.json`; the Structurizr JSON export does not vary the name

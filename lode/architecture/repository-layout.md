@@ -38,6 +38,8 @@ structurizr-site/
 ├── components.json              # shadcn/ui config (base-nova preset)
 ├── lode/                        # AI memory
 ├── .claude/skills/              # procedural skills (run/verify)
+├── dev/
+│   └── dev-workspace.ts         # Vite dev-server plugin: serves exported workspace.json
 ├── src/
 │   ├── shared/                  # contracts imported by cli + web
 │   │   ├── workspace/           # Structurizr JSON types + vendored OpenAPI spec
@@ -97,6 +99,9 @@ structurizr-site/
   vendored shadcn/ui primitives, `data/` owns the workspace JSON loader and selectors, `diagram/` owns SVG embedding and
   the pan/zoom click-vs-drag model (to come). Routing is defined in [routing.md](routing.md); the UI stack in
   [ui.md](ui.md); workspace loading in [workspace-loading.md](workspace-loading.md).
+- **`dev/`** is build-time dev tooling, not shipped code. `dev-workspace.ts` is a Vite plugin that serves the exported
+  workspace JSON to the `watch` dev server; it is excluded from the CLI and web builds. See
+  [workspace-loading.md](workspace-loading.md).
 - **Unit tests are colocated** as `<module>.test.ts(x)` next to the source, split into a Node and a jsdom Vitest project.
   **`test/setup/`** holds shared Vitest setup; **`test/fixtures/`** holds sample `.dsl` workspaces; **`test/e2e/`** runs
   the full pipeline and encodes the manually verified behavior from [diagrams.md](diagrams.md). See

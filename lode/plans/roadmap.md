@@ -36,7 +36,8 @@ Current state and next steps. Update in place; this is not a changelog.
   [../architecture/workspace-types.md](../architecture/workspace-types.md).
 - First vertical slice in place: `generate-site -w <workspace.dsl>` exports `workspace.json` via the Structurizr backend,
   and the web app derives the site name from the workspace name (placeholder fallback). Backend defaults to `structurizr`
-  on `PATH`; `--structurizr` overrides it. See
+  on `PATH`; `--structurizr` overrides it. `npm run watch` serves an exported `workspace.json` for the dev server (config
+  via `VITE_WORKSPACE_FILE` / `VITE_STRUCTURIZR`). See
   [../architecture/workspace-loading.md](../architecture/workspace-loading.md).
 
 ## Next
