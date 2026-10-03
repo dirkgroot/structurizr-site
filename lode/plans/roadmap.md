@@ -16,10 +16,11 @@ Current state and next steps. Update in place; this is not a changelog.
   link injection via the workspace JSON, hash routes). See [../architecture/diagrams.md](../architecture/diagrams.md).
 - Distribution implemented: each `v*` tag produces a GitHub release carrying the packed npm tarball (the artifact
   Homebrew installs); `.github/workflows/` holds CI and the tag-triggered release; `packaging/homebrew/` holds the
-  Homebrew formula template and updater. Structurizr stays an external runtime dependency (not vendored), Node is a
+  Homebrew formula template and updater, and the public tap `dirkgroot/homebrew-structurizr-site` holds the formula.
+  `v0.1.0` is the first release. Structurizr stays an external runtime dependency (not vendored), Node is a
   dependency, and the SPA ships in the package. See
   [../architecture/distribution.md](../architecture/distribution.md).
-- Repository layout decided: one published npm package with `src/{cli,spa,shared}`. See
+- Repository layout decided: one package with `src/{cli,spa,shared}`. See
   [../architecture/repository-layout.md](../architecture/repository-layout.md).
 - SPA routing decided: hash routes, static patterns, a model-derived index, react-router v7. See
   [../architecture/routing.md](../architecture/routing.md).
@@ -33,7 +34,6 @@ Current state and next steps. Update in place; this is not a changelog.
 2. Scaffold the first vertical slice: DSL → `workspace.json` → linked `.puml` → `.svg` → SPA renders one diagram with
    working hash links.
 3. Record build/run/verify as a skill.
-4. Create the `homebrew-structurizr-site` tap and publish the first npm release.
 
 ## Open
 

@@ -66,6 +66,10 @@ tag.
 `url` and `sha256` from the GitHub release asset for the version in `package.json`. The result is copied into the
 `homebrew-structurizr-site` tap.
 
+The tap is `dirkgroot/homebrew-structurizr-site` (a public repo; formula at `Formula/structurizr-site.rb`). Installing
+is `brew install dirkgroot/structurizr-site/structurizr-site`, which auto-taps on first use. The tap must stay public,
+because Homebrew downloads the release asset anonymously and a private repo's asset URLs return 404 without a token.
+
 The formula currently depends on `node` only, because the generator does not yet invoke Structurizr or render diagrams.
 `openjdk`, the Structurizr backend, and `plantuml` become dependencies when the pipeline lands.
 

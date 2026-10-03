@@ -8,8 +8,6 @@ diagram rendering, and link injection are not implemented yet.
 
 ## Install
 
-A Homebrew formula is maintained in `packaging/homebrew/`. Once the tap is published:
-
 ```sh
 brew install dirkgroot/structurizr-site/structurizr-site
 ```
