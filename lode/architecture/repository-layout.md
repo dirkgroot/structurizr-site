@@ -115,8 +115,8 @@ structurizr-site/
 - `package.json` has no `bin`/`files`/`prepack` — nothing is published to a registry. Scripts: `build:web`,
   `build:binary`, `build:binary:all`, `changelog`, `changelog:release`.
 - `assembly/` copies the web app into the output directory at generate time. From `dist/cli` it resolves `dist/web`; in the
-  compiled binary the web app is embedded, materialized to a temp directory by `packaging/binary/entry.ts`, and registered
-  via `setWebBundleDir()`.
+  compiled binary `packaging/binary/entry.ts` registers the embedded asset map via `setWebBundleAssets()`, and the
+  assembler copies each embedded file straight into the output directory.
 - Four project tsconfigs: `tsconfig.cli.json` (Node libs) and `tsconfig.web.json` (DOM libs) — both including
   `src/shared` and excluding test files — plus `tsconfig.node.json` for `vite.config.ts` + `vitest.config.ts` and
   `tsconfig.test.json` (`noEmit`) for tests. A root `tsconfig.json` with `"files": []` references them (the Vite

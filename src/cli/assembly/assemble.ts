@@ -1,5 +1,5 @@
-import { access, cp, mkdir, rm } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { access, cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const moduleDir = dirname(fileURLToPath(import.meta.url));
@@ -11,31 +11,52 @@ const moduleDir = dirname(fileURLToPath(import.meta.url));
 const builtWebDir = resolve(moduleDir, "../../web");
 
 /**
- * The web app directory for the compiled binary, where the bundle is embedded and
- * materialized to a temp directory at startup. Set by the binary entry point.
+ * Relative path -> embedded file path for the compiled binary, where Bun embeds
+ * the web app into the executable. Set by the binary entry point; the assembler
+ * copies these files straight into the output directory, with no temp extraction.
  */
-let embeddedWebDir: string | undefined;
+let embeddedWebAssets: Record<string, string> | undefined;
 
-export function setWebBundleDir(dir: string): void {
-  embeddedWebDir = dir;
+export function setWebBundleAssets(assets: Record<string, string> | undefined): void {
+  embeddedWebAssets = assets;
 }
 
 /**
  * Copy the prebuilt web app into `outputDir`, replacing any previous contents.
- * `sourceDir` defaults to the embedded bundle (compiled binary) or the shipped
- * build output; it is injectable for tests.
+ * The source is the embedded bundle when running from a compiled binary, or the
+ * shipped build output otherwise. `sourceDir` overrides the latter for tests.
  */
-export async function assemble(
-  outputDir: string,
-  sourceDir: string = embeddedWebDir ?? builtWebDir,
-): Promise<void> {
+export async function assemble(outputDir: string, sourceDir?: string): Promise<void> {
+  if (!sourceDir && embeddedWebAssets) {
+    await copyAssets(embeddedWebAssets, outputDir);
+    return;
+  }
+
+  const dir = sourceDir ?? builtWebDir;
   try {
-    await access(sourceDir);
+    await access(dir);
   } catch {
-    throw new Error(`prebuilt web app not found at ${sourceDir}; run "npm run build:web" first`);
+    throw new Error(`prebuilt web app not found at ${dir}; run "npm run build:web" first`);
   }
 
   await rm(outputDir, { recursive: true, force: true });
   await mkdir(outputDir, { recursive: true });
-  await cp(sourceDir, outputDir, { recursive: true });
+  await cp(dir, outputDir, { recursive: true });
+}
+
+/**
+ * Write an embedded asset map (relative path -> source file) into `outputDir`.
+ * Bun's embedded paths (`/$bunfs/...`) are read-only virtual files that `cp` and
+ * `copyFile` cannot open, so each file is read and written directly.
+ */
+async function copyAssets(assets: Record<string, string>, outputDir: string): Promise<void> {
+  await rm(outputDir, { recursive: true, force: true });
+  await mkdir(outputDir, { recursive: true });
+  await Promise.all(
+    Object.entries(assets).map(async ([relativePath, sourcePath]) => {
+      const destination = join(outputDir, relativePath);
+      await mkdir(dirname(destination), { recursive: true });
+      await writeFile(destination, await readFile(sourcePath));
+    }),
+  );
 }

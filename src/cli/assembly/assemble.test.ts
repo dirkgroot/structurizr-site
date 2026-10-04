@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { assemble } from "./assemble.js";
+import { assemble, setWebBundleAssets } from "./assemble.js";
 
 describe("assemble", () => {
   let workDir: string;
@@ -12,6 +12,7 @@ describe("assemble", () => {
   });
 
   afterEach(async () => {
+    setWebBundleAssets(undefined);
     await rm(workDir, { recursive: true, force: true });
   });
 
@@ -48,5 +49,26 @@ describe("assemble", () => {
     await expect(assemble(join(workDir, "out"), missing)).rejects.toThrow(
       `prebuilt web app not found at ${missing}`,
     );
+  });
+
+  it("copies the embedded bundle straight into the output directory", async () => {
+    const embedded = join(workDir, "embedded");
+    await mkdir(join(embedded, "nested"), { recursive: true });
+    await writeFile(join(embedded, "index.html"), "<html></html>");
+    await writeFile(join(embedded, "nested", "app.js"), "console.log(1)");
+    setWebBundleAssets({
+      "index.html": join(embedded, "index.html"),
+      "assets/app.js": join(embedded, "nested", "app.js"),
+    });
+
+    const output = join(workDir, "out");
+    await mkdir(output, { recursive: true });
+    await writeFile(join(output, "stale.txt"), "stale");
+
+    await assemble(output);
+
+    expect(await readFile(join(output, "index.html"), "utf8")).toBe("<html></html>");
+    expect(await readFile(join(output, "assets", "app.js"), "utf8")).toBe("console.log(1)");
+    await expect(readFile(join(output, "stale.txt"))).rejects.toThrow();
   });
 });
