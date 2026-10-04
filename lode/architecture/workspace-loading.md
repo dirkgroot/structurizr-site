@@ -17,16 +17,16 @@ flowchart LR
 
 ## Pipeline
 
-`generate-site` with `-w/--workspace-file`:
+`generate` with `-w/--workspace-file`:
 
 1. `assemble(outputDir)` copies the prebuilt web app into the output directory.
 2. `exportJson({ workspaceFile, outputDir, structurizr })` runs `structurizr export -w <file> -f json -o <outputDir>`,
    which writes `workspace.json`.
 
 Export runs **after** assemble because Structurizr's JSON export preserves existing files in the output directory;
-`assemble` itself wipes the directory first. Without `-w`, `generate-site` emits the web app only.
+`assemble` itself wipes the directory first. Without `-w`, `generate` emits the web app only.
 
-`serve` forwards `-w` and `--structurizr` to `generate-site`.
+`serve` forwards `-w` and `--structurizr` to `generate`.
 
 ## Backend resolution
 

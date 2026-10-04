@@ -53,9 +53,9 @@ Unit tests use Vitest; React components are tested with React Testing Library. T
 ## Generate a site
 
 ```sh
-npm run generate-site                                   # writes ./build (web app only)
-node dist/cli/bin.js generate-site -w workspace.dsl     # + exported workspace.json
-node dist/cli/bin.js generate-site -w workspace.dsl --output path/to/out
+npm run generate                                        # writes ./build (web app only)
+node dist/cli/bin.js generate -w workspace.dsl          # + exported workspace.json
+node dist/cli/bin.js generate -w workspace.dsl --output path/to/out
 ```
 
 With `-w/--workspace-file`, the CLI exports the workspace as `workspace.json` into the output directory after assembling

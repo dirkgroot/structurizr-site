@@ -30,7 +30,7 @@ describe("run", () => {
   });
 
   it("passes an explicit output directory", async () => {
-    await run(["generate-site", "-o", "out"]);
+    await run(["generate", "-o", "out"]);
     expect(generateSite).toHaveBeenCalledWith({
       output: "out",
       workspaceFile: undefined,
@@ -39,7 +39,7 @@ describe("run", () => {
   });
 
   it("supports the --output=<dir> form", async () => {
-    await run(["generate-site", "--output=out"]);
+    await run(["generate", "--output=out"]);
     expect(generateSite).toHaveBeenCalledWith({
       output: "out",
       workspaceFile: undefined,
@@ -48,7 +48,7 @@ describe("run", () => {
   });
 
   it("passes a workspace file", async () => {
-    await run(["generate-site", "-w", "architecture/workspace.dsl"]);
+    await run(["generate", "-w", "architecture/workspace.dsl"]);
     expect(generateSite).toHaveBeenCalledWith({
       output: undefined,
       workspaceFile: "architecture/workspace.dsl",
@@ -57,7 +57,7 @@ describe("run", () => {
   });
 
   it("supports the --workspace-file=<path> form", async () => {
-    await run(["generate-site", "--workspace-file=workspace.json"]);
+    await run(["generate", "--workspace-file=workspace.json"]);
     expect(generateSite).toHaveBeenCalledWith({
       output: undefined,
       workspaceFile: "workspace.json",
@@ -66,7 +66,7 @@ describe("run", () => {
   });
 
   it("passes a structurizr backend override", async () => {
-    await run(["generate-site", "--structurizr", "my-structurizr"]);
+    await run(["generate", "--structurizr", "my-structurizr"]);
     expect(generateSite).toHaveBeenCalledWith({
       output: undefined,
       workspaceFile: undefined,
@@ -75,7 +75,7 @@ describe("run", () => {
   });
 
   it("supports the --structurizr=<command> form", async () => {
-    await run(["generate-site", "--structurizr=my-structurizr"]);
+    await run(["generate", "--structurizr=my-structurizr"]);
     expect(generateSite).toHaveBeenCalledWith({
       output: undefined,
       workspaceFile: undefined,
@@ -84,21 +84,19 @@ describe("run", () => {
   });
 
   it("rejects a missing workspace file value", async () => {
-    await expect(run(["generate-site", "-w"])).rejects.toThrow("missing value for -w");
+    await expect(run(["generate", "-w"])).rejects.toThrow("missing value for -w");
   });
 
   it("rejects a missing option value", async () => {
-    await expect(run(["generate-site", "-o"])).rejects.toThrow("missing value for -o");
+    await expect(run(["generate", "-o"])).rejects.toThrow("missing value for -o");
   });
 
   it("rejects an unknown option", async () => {
-    await expect(run(["generate-site", "--nope"])).rejects.toThrow('unknown option "--nope"');
+    await expect(run(["generate", "--nope"])).rejects.toThrow('unknown option "--nope"');
   });
 
-  it("rejects a serve-only option for generate-site", async () => {
-    await expect(run(["generate-site", "--port", "9000"])).rejects.toThrow(
-      'unknown option "--port"',
-    );
+  it("rejects a serve-only option for generate", async () => {
+    await expect(run(["generate", "--port", "9000"])).rejects.toThrow('unknown option "--port"');
   });
 
   it("serves the site with default options", async () => {

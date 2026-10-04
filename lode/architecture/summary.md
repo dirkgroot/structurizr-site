@@ -32,7 +32,7 @@ flowchart LR
 
 - **D1 — Client-rendered site.** The site is a web app, not generated HTML. The workspace is consumed as exported
   Structurizr JSON at runtime, not baked into pages at build time.
-- **D2 — CLI produces a deployable directory.** `generate-site` renders diagrams, exports JSON, and assembles the web app
+- **D2 — CLI produces a deployable directory.** `generate` renders diagrams, exports JSON, and assembles the web app
   plus diagrams plus JSON into one directory ready for a static host.
 - **D3 — Hosting is static and external.** NGINX / GitHub Pages / similar. No application server.
 - **D4 — Hash-based routes.** Drill-down links and web app navigation use hash routes (`#/...`), so SVG anchors work
@@ -48,7 +48,7 @@ flowchart LR
   a lockstep version pin. See [repository-layout.md](repository-layout.md).
 - **D8 — Routes are static patterns plus a model-derived index.** Route patterns are declared in code; the model→URL
   mapping is derived from `workspace.json` at load. No `routes.json`. See [routing.md](routing.md).
-- **D9 — `serve` is a static preview server.** `serve` runs `generate-site` and then serves the output directory over a
+- **D9 — `serve` is a static preview server.** `serve` runs `generate` and then serves the output directory over a
   dependency-free HTTP server (Node's `node:http`, which Bun provides in the compiled binary; default port 8080).
   Unknown extensionless paths fall back to `index.html`; requests are confined to the output directory. Watch + live
   rebuild are deferred.
@@ -58,16 +58,16 @@ flowchart LR
 - **D11 — Vendored UI is exempt from the lint and coverage gates.** Generated components are excluded from
   `react/only-export-components` / `react/set-state-in-effect` and from coverage; our own layout code is not. See
   [ui.md](ui.md).
-- **D12 — The workspace JSON is the CLI/web contract, typed from Structurizr's OpenAPI spec.** `generate-site -w` exports
+- **D12 — The workspace JSON is the CLI/web contract, typed from Structurizr's OpenAPI spec.** `generate -w` exports
   it via the Structurizr backend; the web app fetches it at load and derives the site name from the workspace name. Types
   are generated with `openapi-typescript` from a vendored spec. See [workspace-types.md](workspace-types.md) and
   [workspace-loading.md](workspace-loading.md).
 
 ## Known constraints
 
-- Consumes a Structurizr DSL workspace (optionally a Git repository with multiple branches). `generate-site` requires
+- Consumes a Structurizr DSL workspace (optionally a Git repository with multiple branches). `generate` requires
   `-w/--workspace-file` to export `workspace.json`; without it, it emits the web app only.
-- Exposes two commands: `generate-site` emits the deployable directory; `serve` generates and serves it over HTTP
+- Exposes two commands: `generate` emits the deployable directory; `serve` generates and serves it over HTTP
   (port 8080 by default). Watch + live rebuild are not implemented yet.
 - Behavior matches the reference tool unless the owner decides otherwise. The reference tool's output behavior
   (navigation, documentation, ADRs) is now the web app's responsibility. See [../terminology.md](../terminology.md).
@@ -98,7 +98,7 @@ flowchart LR
 - **D9** — captured 2026-10-03: `serve` is a static preview server (generate + serve, port 8080, no watch/rebuild yet).
 - **D10–D11** — captured 2026-10-03 from owner direction: shadcn/ui on Base UI with Tailwind v4 (vendored components,
   build-time only), and the vendored-UI lint/coverage exemption. See [ui.md](ui.md).
-- **D12** — captured 2026-10-03: workspace JSON types generated from Structurizr's OpenAPI spec; `generate-site -w`
+- **D12** — captured 2026-10-03: workspace JSON types generated from Structurizr's OpenAPI spec; `generate -w`
   exports `workspace.json`; the web app derives the site name from the workspace. See
   [workspace-types.md](workspace-types.md) and [workspace-loading.md](workspace-loading.md).
 - vNext pipeline verified 2026-10-03 against `structurizr` 2026.09.19 / libraries 6.2.3; see

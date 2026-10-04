@@ -41,6 +41,6 @@ jobs:
           arch="arm64"; [ "$(uname -m)" = "x86_64" ] && arch="x64" || true
           bin="dist/binaries/structurizr-site-darwin-${arch}"
           test "$("$bin" --version)" = "$(node -p "require('./package.json').version")"
-          "$bin" generate-site -o "$RUNNER_TEMP/site"
+          "$bin" generate -o "$RUNNER_TEMP/site"
           test -f "$RUNNER_TEMP/site/index.html"
           test -f "$RUNNER_TEMP/site/assets"/*.js

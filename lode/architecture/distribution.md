@@ -42,7 +42,7 @@ version; there are no runtime dependencies.
   `packaging/binary/entitlements.plist`) and verifies it with `codesign --verify --strict`.
 - **Sizes** are ~59 MB (darwin-arm64) to ~78 MB (linux). The binary embeds the Bun runtime.
 
-`src/cli` still compiles to `dist/cli` via `tsc` for `npm run generate-site`/`serve` from source; that path is dev-only
+`src/cli` still compiles to `dist/cli` via `tsc` for `npm run generate`/`serve` from source; that path is dev-only
 and not shipped.
 
 ## Versioning
@@ -58,7 +58,7 @@ published release rather than the `package.json` version.
 
 - **CI** (`.github/workflows/ci.yml`) has two jobs. `verify` runs on Ubuntu: `npm ci`, `format:check`, `lint`,
   `typecheck`, `npm test`. `binary` runs on `macos-latest`: `build:web`, `build:binary` (native target, which signs and
-  verifies on macOS), then runs the compiled binary for `--version` and `generate-site`. Node and Bun both come from
+  verifies on macOS), then runs the compiled binary for `--version` and `generate`. Node and Bun both come from
   `mise.toml` via `jdx/mise-action`.
 - **Release** (`.github/workflows/release.yml`) triggers on `v*` tags, on `macos-latest`. It verifies the tag equals the
   `package.json` version, runs the checks, builds all four binaries (`build:binary:all`), smoke-tests the native binary,

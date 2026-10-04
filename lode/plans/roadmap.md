@@ -7,7 +7,7 @@ Current state and next steps. Update in place; this is not a changelog.
 - Git repository initialized on branch `main`. Build tooling is pinned with `mise.toml` (Node LTS `24.21.0`, Krypton).
 - Minimal scaffold in place: a TypeScript CLI (`src/cli`) emits a `build/` directory by copying the prebuilt
   React + Vite web app (`src/web`); `src/shared` holds runtime-agnostic values used by both. The CLI exposes
-  `generate-site` and `serve` (generate + static HTTP preview on port 8080), each accepting `-w/--workspace-file`.
+  `generate` and `serve` (generate + static HTTP preview on port 8080), each accepting `-w/--workspace-file`.
   See [../architecture/repository-layout.md](../architecture/repository-layout.md).
 - Architecture top-level shape defined: CLI emits a deployable directory (rendered diagrams + exported Structurizr
   JSON + web app bundle); the web app renders the site client-side from the JSON. See
@@ -34,7 +34,7 @@ Current state and next steps. Update in place; this is not a changelog.
   lands. See [../architecture/ui.md](../architecture/ui.md).
 - Structurizr workspace JSON types generated from the vendored OpenAPI spec (`openapi-typescript`), gated in CI. See
   [../architecture/workspace-types.md](../architecture/workspace-types.md).
-- First vertical slice in place: `generate-site -w <workspace.dsl>` exports `workspace.json` via the Structurizr backend,
+- First vertical slice in place: `generate -w <workspace.dsl>` exports `workspace.json` via the Structurizr backend,
   and the web app derives the site name from the workspace name (placeholder fallback). Backend defaults to `structurizr`
   on `PATH`; `--structurizr` overrides it. `npm run watch` serves an exported `workspace.json` for the dev server (config
   via `VITE_WORKSPACE_FILE` / `VITE_STRUCTURIZR`). See
@@ -42,7 +42,7 @@ Current state and next steps. Update in place; this is not a changelog.
 
 ## Next
 
-1. Extend `generate-site` to render diagram assets and inject drill-down links (the rest of the pipeline in
+1. Extend `generate` to render diagram assets and inject drill-down links (the rest of the pipeline in
    [../architecture/diagrams.md](../architecture/diagrams.md)).
 2. Wire react-router v7 into the App shell and drive the sidebar navigation from the model-derived route index.
 3. Record build/run/verify as a skill.
@@ -54,4 +54,4 @@ Current state and next steps. Update in place; this is not a changelog.
 - `generatr.*` property mapping into the new design.
 - Whether to pre-render anything for SEO / no-JS.
 - Target platform.
-- Whether generate-site should default the workspace file (e.g. `workspace.dsl` in the cwd) instead of requiring `-w`.
+- Whether generate should default the workspace file (e.g. `workspace.dsl` in the cwd) instead of requiring `-w`.

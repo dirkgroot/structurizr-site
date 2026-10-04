@@ -18,7 +18,7 @@ web app routing decided (see [architecture/repository-layout.md](architecture/re
 containing the prebuilt web app. Structurizr functionality is not implemented yet — component details and scope are still
 open. See [plans/roadmap.md](plans/roadmap.md). Structurizr workspace JSON types are generated from the vendored
 OpenAPI spec (see [architecture/workspace-types.md](architecture/workspace-types.md)). The first vertical slice is in
-place: `generate-site -w <workspace.dsl>` exports `workspace.json` via the Structurizr backend, and the web app derives
+place: `generate -w <workspace.dsl>` exports `workspace.json` via the Structurizr backend, and the web app derives
 the site name from the workspace name (see [architecture/workspace-loading.md](architecture/workspace-loading.md)).
 
 **Source of truth:** code once it exists; until then, the project owner's stated decisions.

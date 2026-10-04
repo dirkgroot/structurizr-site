@@ -17,7 +17,7 @@ function readVersion(): string {
 const USAGE = `Usage: structurizr-site <command> [options]
 
 Commands:
-  generate-site    Emit a deployable directory containing the prebuilt web app.
+  generate         Emit a deployable directory containing the prebuilt web app.
   serve            Generate the site and serve it on http://localhost:8080.
 
 Options:
@@ -35,7 +35,7 @@ export async function run(argv: string[]): Promise<void> {
 
   switch (command) {
     case undefined:
-    case "generate-site": {
+    case "generate": {
       const options = parseOptions(rest, { allowPort: false });
       await generateSite({
         output: options.output,

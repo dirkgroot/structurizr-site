@@ -47,7 +47,7 @@ structurizr-site/
 │   │   └── config/              # generatr.* keys + defaults
 │   ├── cli/
 │   │   ├── bin.ts               # -> dist/cli/bin.js
-│   │   ├── commands/            # generate-site, serve
+│   │   ├── commands/            # generate, serve
 │   │   ├── backend/             # Structurizr resolution + spawn
 │   │   │   ├── resolve.ts       # --structurizr override, else structurizr on PATH
 │   │   │   └── run.ts           # spawn wrapper (injectable seam)

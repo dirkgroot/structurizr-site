@@ -46,7 +46,7 @@ describe("serveSite", () => {
     expect(serve).toHaveBeenCalledWith(resolve("out/site"), { port: 9000 });
   });
 
-  it("forwards the workspace file and backend override to generate-site", async () => {
+  it("forwards the workspace file and backend override to generate", async () => {
     await serveSite({ workspaceFile: "workspace.dsl", structurizr: "my-structurizr" });
 
     expect(generateSite).toHaveBeenCalledWith({

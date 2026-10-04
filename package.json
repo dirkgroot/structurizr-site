@@ -42,7 +42,7 @@
     "clean": "rm -rf dist build",
     "changelog": "git cliff --output CHANGELOG.md",
     "changelog:release": "git cliff --tag \"v$(node -p \"require('./package.json').version\")\" --output CHANGELOG.md",
-    "generate-site": "node dist/cli/bin.js generate-site"
+    "generate": "node dist/cli/bin.js generate"
   },
   "devDependencies": {
     "@base-ui/react": "^1.8.0",
