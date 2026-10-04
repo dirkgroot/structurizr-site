@@ -83,7 +83,7 @@ structurizr-site/
     │   └── build.mjs            # bun build --compile + sign
     └── homebrew/
         ├── structurizr-site.rb.template  # per-platform url/sha256 placeholders
-        ├── structurizr-site.rb           # rendered formula (copied to the tap)
+        ├── structurizr-site.rb           # git-ignored; rendered formula (copied to the tap)
         └── update-formula.mjs            # fills the template from release assets
 ```
 

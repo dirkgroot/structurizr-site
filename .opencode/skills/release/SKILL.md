@@ -145,7 +145,7 @@ gh release view "v<version>" --json url,assets --jq '.url'
 node packaging/homebrew/update-formula.mjs
 ```
 
-`update-formula.mjs` downloads the four release assets and fills `packaging/homebrew/structurizr-site.rb` with per-platform `url`/`sha256`. Then copy it into the tap (tap path from `lode/architecture/distribution.md`: `dirkgroot/homebrew-structurizr-site`, formula at `Formula/structurizr-site.rb`).
+`update-formula.mjs` downloads the four release assets and fills `packaging/homebrew/structurizr-site.rb` (git-ignored) with per-platform `url`/`sha256`. Then copy it into the tap (tap path from `lode/architecture/distribution.md`: `dirkgroot/homebrew-structurizr-site`, formula at `Formula/structurizr-site.rb`).
 
 Locate the tap checkout and commit the formula. The tap is a separate git repo; do not guess its local path. Ask the user for it if `brew --repository dirkgroot/structurizr-site` does not resolve, or clone it:
 

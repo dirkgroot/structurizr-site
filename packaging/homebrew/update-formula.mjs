@@ -13,7 +13,8 @@
 // The assets are public, so Homebrew installs them without registry
 // credentials and without notarization (formulas are not quarantined).
 //
-// The formula is then copied into the Homebrew tap.
+// The formula is then copied into the Homebrew tap. The rendered file is
+// git-ignored; the tap is its only home.
 import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";

@@ -118,7 +118,7 @@ non-conforming commits land under `Other`. The same history produces each releas
 - `src/shared/` — runtime-agnostic code imported by both.
 - `.github/workflows/` — CI and release automation.
 - `packaging/binary/` — the compiled-binary entry point, entitlements, and build script.
-- `packaging/homebrew/` — the Homebrew formula template, rendered formula, and updater.
+- `packaging/homebrew/` — the Homebrew formula template and updater (the rendered formula is git-ignored and copied into the tap).
 - `THIRD-PARTY-NOTICES.md` — licenses for the runtime embedded in the binary.
 
 See `lode/architecture/repository-layout.md` for the full layout.
