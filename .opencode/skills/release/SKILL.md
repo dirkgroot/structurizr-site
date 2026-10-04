@@ -17,6 +17,7 @@ The human owns the version decision; this skill proposes one and waits for expli
 - **Do not rewrite history.** No `--amend` after pushing, no rebasing published commits.
 - **Regression gate failure stops the release.** Do not tag a red tree. Report the failure and stop.
 - **Do not install the formula.** Never run `brew install`/`brew upgrade`; that modifies the user's machine. Report and let the user verify the tap.
+- **Never write inside a Homebrew-owned directory.** Do tap work in a clone under `lode/tmp/`; paths under `brew --repository` are off-limits.
 
 ## Invariants this repo relies on
 
@@ -143,28 +144,23 @@ Only after the workflow succeeds and the GitHub release exists (step 8 reads the
 
 ```sh
 gh release view "v<version>" --json url,assets --jq '.url'
-node packaging/homebrew/update-formula.mjs
 ```
 
-`update-formula.mjs` downloads the four release assets and fills the template with per-platform `url`/`sha256`. It writes the rendered formula to a temp file; pass `--output <path>` to choose the location. Copy it into the tap (tap path from `lode/architecture/distribution.md`: `dirkgroot/homebrew-structurizr-site`, formula at `Formula/structurizr-site.rb`).
+`update-formula.mjs` downloads the four release assets and fills the template with per-platform `url`/`sha256`. Work in a clone of the tap under the git-ignored `lode/tmp/`, **never** inside a Homebrew-owned directory (e.g. the path `brew --repository` returns) — those are read-only to the sandbox and not the project's to write. The tap is `dirkgroot/homebrew-structurizr-site`, formula at `Formula/structurizr-site.rb` (from `lode/architecture/distribution.md`).
 
-Locate the tap checkout and commit the formula. The tap is a separate git repo; do not guess its local path. Ask the user for it if `brew --repository dirkgroot/structurizr-site` does not resolve, or clone it:
-
-```sh
-brew --repository dirkgroot/structurizr-site
-```
-
-Then render to a temp file, copy it into the tap, and remove it:
+Clone it if absent, otherwise pull, then render, commit, and push from there:
 
 ```sh
-formula="$(mktemp -t structurizr-site.rb)"
-node packaging/homebrew/update-formula.mjs --output "$formula"
-cp "$formula" <tap-repo>/Formula/structurizr-site.rb
-rm -f "$formula"
-cd <tap-repo>
-git add Formula/structurizr-site.rb
-git commit -m "structurizr-site <version>"
-git push
+tap="lode/tmp/homebrew-structurizr-site"
+if [ -d "$tap/.git" ]; then
+  git -C "$tap" pull --ff-only
+else
+  git clone https://github.com/dirkgroot/homebrew-structurizr-site "$tap"
+fi
+node packaging/homebrew/update-formula.mjs --output "$tap/Formula/structurizr-site.rb"
+git -C "$tap" add Formula/structurizr-site.rb
+git -C "$tap" commit -m "structurizr-site <version>"
+git -C "$tap" push
 ```
 
 ### 9. Report
