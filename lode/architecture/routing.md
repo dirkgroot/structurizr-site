@@ -42,6 +42,9 @@ flowchart LR
 uses for link injection, and returns `Map<route, viewKey>`. Each view component parses its params, resolves the view
 key through the index, and loads the matching diagram asset.
 
+**Current state:** the index does not exist yet. The home page renders the system landscape view directly by reading
+`systemLandscapeViews[0].key` from the workspace (`src/shared/diagrams.ts`); there is no routing or drill-down.
+
 ## Why no routes.json
 
 - Redundant: the web app already fetches `workspace.json`, from which the index is a cheap pure computation.
@@ -50,8 +53,9 @@ key through the index, and loads the matching diagram asset.
 
 ## Diagram asset addressing
 
-The CLI's `assembly` step names each rendered diagram `<viewKey>.svg`. The web app addresses assets by view key, which is
-already present in `workspace.json`. No sidecar mapping is needed.
+The CLI's `renderLandscape` step names the rendered landscape diagram `<viewKey>.svg` under `diagrams/`. The web app
+addresses it by view key via `src/shared/diagrams.ts` (`diagramPath`, `systemLandscapeViewKey`), which the CLI uses to
+pick the same file. No sidecar mapping is needed. Other views will be addressed the same way once they are rendered.
 
 ## Framework
 
@@ -64,6 +68,9 @@ needs.
 
 For any element, the drill-down route the CLI injects into the SVG equals the route the web app resolves for that element.
 Both sides call the same `normalize()` and drill-down rules in `src/shared/routes`.
+
+Diagram asset naming is shared too: `diagramFileName`/`diagramPath` in `src/shared/diagrams.ts` are the single source, so
+the CLI writes and the web app reads the same file name.
 
 ## Related
 

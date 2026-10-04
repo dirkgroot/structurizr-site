@@ -22,9 +22,16 @@ describe("App", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Structurizr Site");
   });
 
-  it("renders the placeholder notice", () => {
-    render(<App />);
-    expect(screen.getByText(/workspace rendering is not implemented yet/i)).toBeInTheDocument();
+  it("renders the system landscape diagram when the workspace defines one", () => {
+    const workspace: Workspace = {
+      views: { systemLandscapeViews: [{ key: "SystemLandscape-001" }] },
+    };
+    render(<App workspace={workspace} />);
+
+    expect(screen.getByRole("img", { name: /system landscape/i })).toHaveAttribute(
+      "src",
+      "diagrams/SystemLandscape-001.svg",
+    );
   });
 
   it("renders the sidebar navigation groups", () => {

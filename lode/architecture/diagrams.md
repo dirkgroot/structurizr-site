@@ -22,6 +22,49 @@ _before_ rendering:
 Do not subclass the exporter. Drive links through the workspace JSON's `url` field and let the Structurizr backend plus
 PlantUML do the rendering. This reuses the existing exporter instead of reimplementing it.
 
+**Current state: plain rendering only.** The CLI renders the workspace's **system landscape view** to
+`<outputDir>/diagrams/<viewKey>.svg` and the web app shows it as a plain `<img>` on the home page. Link injection and
+origin stripping (the steps below) are **not implemented yet**. The exporter is hard-coded to `c4plantuml`; making it
+configurable (`generatr.site.exporter`) comes later.
+
+### Implemented slice
+
+```mermaid
+flowchart LR
+    DSL[workspace.dsl] -->|structurizr export -f json| WJ[build/workspace.json]
+    DSL -->|structurizr export -f plantuml/c4plantuml| PUML[temp/*.puml]
+    WJ -->|read systemLandscapeViews[0].key| KEY[viewKey]
+    KEY --> PUML
+    PUML -->|plantuml -tsvg| SVG[temp/structurizr-viewKey.svg]
+    SVG -->|write| OUT["build/diagrams/viewKey.svg"]
+    WJ --> OUT
+    WEB[web app bundle] --> OUT
+```
+
+Steps (`src/cli/pipeline/`):
+
+1. `exportJson` → `outputDir/workspace.json` (also the web app's runtime data source).
+2. `renderLandscape` reads `outputDir/workspace.json`, resolves the system landscape view key, and is a **no-op when the
+   workspace has no landscape view**.
+3. `exportPlantUml` runs `structurizr export -w <file> -f plantuml/c4plantuml -o <temp>`; Structurizr has no single-view
+   export, so this writes `.puml` for every view into a temp dir. The `c4plantuml` exporter emits no `-key.puml` legend
+   (the plain `plantuml` exporter does).
+4. `runPlantUml` runs `plantuml -tsvg <temp>/structurizr-<viewKey>.puml`, which writes
+   `structurizr-<viewKey>.svg` in place.
+5. The SVG is moved to `outputDir/diagrams/<viewKey>.svg`; the temp dir is removed.
+
+The web app addresses the asset by view key via `src/shared/diagrams.ts` (`diagramPath`, `systemLandscapeViewKey`), so
+CLI and web naming cannot drift (see [routing.md](routing.md)). `PlantUML stays an external dependency`
+(`plantuml` on `PATH`, overridable with `--plantuml`); see [distribution.md](distribution.md).
+
+Plain SVGs contain **no** `<a>` anchors; nothing is injected or stripped. `generate` runs `assemble` (wipes the dir),
+then `exportJson`, then `renderLandscape`.
+
+### Full pipeline (design; link injection not yet built)
+
+The remainder of the pipeline drives clickable drill-down links through the workspace JSON's `url` field, reusing the
+existing exporter instead of reimplementing it. Not implemented yet.
+
 ```mermaid
 flowchart LR
     DSL[workspace.dsl] -->|structurizr export -f json| JSON[workspace.json]

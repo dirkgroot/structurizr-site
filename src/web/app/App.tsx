@@ -10,6 +10,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { siteName } from "../../shared/site";
 import type { Workspace } from "../../shared/workspace/index.js";
+import { LandscapeDiagram } from "../diagram/LandscapeDiagram";
 
 export interface AppProps {
   workspace?: Workspace;
@@ -36,9 +37,7 @@ export function App({ workspace }: AppProps) {
           </header>
           <main className="flex flex-1 flex-col gap-4 p-4">
             <h1 className="text-2xl font-semibold">{name}</h1>
-            <p className="text-muted-foreground">
-              web app bundle is running. Workspace rendering is not implemented yet.
-            </p>
+            <LandscapeDiagram workspace={workspace} />
           </main>
         </SidebarInset>
       </SidebarProvider>

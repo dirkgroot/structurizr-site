@@ -4,9 +4,11 @@ import { generateSite } from "./generate-site.js";
 
 const { assemble } = vi.hoisted(() => ({ assemble: vi.fn() }));
 const { exportJson } = vi.hoisted(() => ({ exportJson: vi.fn() }));
+const { renderLandscape } = vi.hoisted(() => ({ renderLandscape: vi.fn() }));
 
 vi.mock("../assembly/assemble.js", () => ({ assemble }));
 vi.mock("../pipeline/export-json.js", () => ({ exportJson }));
+vi.mock("../pipeline/render-landscape.js", () => ({ renderLandscape }));
 
 describe("generateSite", () => {
   beforeEach(() => {
@@ -14,6 +16,8 @@ describe("generateSite", () => {
     assemble.mockResolvedValue(undefined);
     exportJson.mockReset();
     exportJson.mockResolvedValue(undefined);
+    renderLandscape.mockReset();
+    renderLandscape.mockResolvedValue(undefined);
     vi.spyOn(process.stdout, "write").mockReturnValue(true);
   });
 
@@ -41,6 +45,7 @@ describe("generateSite", () => {
   it("does not export a workspace when none is given", async () => {
     await generateSite({ output: "out" });
     expect(exportJson).not.toHaveBeenCalled();
+    expect(renderLandscape).not.toHaveBeenCalled();
   });
 
   it("exports the workspace JSON into the output directory when a workspace file is given", async () => {
@@ -53,7 +58,18 @@ describe("generateSite", () => {
     });
   });
 
-  it("assembles before exporting, so the export lands in the deployed directory", async () => {
+  it("renders the landscape diagram after exporting the workspace", async () => {
+    await generateSite({ output: "out", workspaceFile: "workspace.dsl", plantuml: "pu" });
+
+    expect(renderLandscape).toHaveBeenCalledWith({
+      workspaceFile: "workspace.dsl",
+      outputDir: resolve("out"),
+      structurizr: undefined,
+      plantuml: "pu",
+    });
+  });
+
+  it("assembles before exporting and rendering, so both land in the deployed directory", async () => {
     const order: string[] = [];
     assemble.mockImplementation(async () => {
       order.push("assemble");
@@ -61,10 +77,13 @@ describe("generateSite", () => {
     exportJson.mockImplementation(async () => {
       order.push("exportJson");
     });
+    renderLandscape.mockImplementation(async () => {
+      order.push("renderLandscape");
+    });
 
     await generateSite({ output: "out", workspaceFile: "workspace.dsl" });
 
-    expect(order).toEqual(["assemble", "exportJson"]);
+    expect(order).toEqual(["assemble", "exportJson", "renderLandscape"]);
   });
 
   it("passes the structurizr override to the export", async () => {
@@ -74,6 +93,12 @@ describe("generateSite", () => {
       workspaceFile: "w.dsl",
       outputDir: resolve("out"),
       structurizr: "my-structurizr",
+    });
+    expect(renderLandscape).toHaveBeenCalledWith({
+      workspaceFile: "w.dsl",
+      outputDir: resolve("out"),
+      structurizr: "my-structurizr",
+      plantuml: undefined,
     });
   });
 });

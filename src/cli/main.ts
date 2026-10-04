@@ -26,6 +26,7 @@ Options:
   -w, --workspace-file <path>   Structurizr workspace file (.dsl or .json) to export;
                                 omit to emit the web app only
       --structurizr <command>   Structurizr backend command (default: structurizr on PATH)
+      --plantuml <command>      PlantUML command for diagram rendering (default: plantuml on PATH)
   -h, --help                    Show this help
   -v, --version                 Show the version
 `;
@@ -41,6 +42,7 @@ export async function run(argv: string[]): Promise<void> {
         output: options.output,
         workspaceFile: options.workspaceFile,
         structurizr: options.structurizr,
+        plantuml: options.plantuml,
       });
       return;
     }
@@ -51,6 +53,7 @@ export async function run(argv: string[]): Promise<void> {
         port: options.port,
         workspaceFile: options.workspaceFile,
         structurizr: options.structurizr,
+        plantuml: options.plantuml,
       });
       return;
     }
@@ -72,6 +75,7 @@ interface ParsedOptions {
   port?: number;
   workspaceFile?: string;
   structurizr?: string;
+  plantuml?: string;
 }
 
 function parseOptions(args: string[], config: { allowPort: boolean }): ParsedOptions {
@@ -90,6 +94,10 @@ function parseOptions(args: string[], config: { allowPort: boolean }): ParsedOpt
       options.structurizr = readValue(args, (i += 1), arg);
     } else if (arg.startsWith("--structurizr=")) {
       options.structurizr = arg.slice("--structurizr=".length);
+    } else if (arg === "--plantuml") {
+      options.plantuml = readValue(args, (i += 1), arg);
+    } else if (arg.startsWith("--plantuml=")) {
+      options.plantuml = arg.slice("--plantuml=".length);
     } else if (config.allowPort && (arg === "-p" || arg === "--port")) {
       options.port = parsePort(readValue(args, (i += 1), arg));
     } else if (config.allowPort && arg.startsWith("--port=")) {

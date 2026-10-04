@@ -10,6 +10,8 @@ export interface ServeSiteOptions {
   workspaceFile?: string;
   /** `--structurizr` backend override. */
   structurizr?: string;
+  /** `--plantuml` backend override. */
+  plantuml?: string;
 }
 
 /**
@@ -22,6 +24,7 @@ export async function serveSite(options: ServeSiteOptions): Promise<void> {
     output: outputDir,
     workspaceFile: options.workspaceFile,
     structurizr: options.structurizr,
+    plantuml: options.plantuml,
   });
 
   const server = await serve(outputDir, { port: options.port ?? DEFAULT_PORT });

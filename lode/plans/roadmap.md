@@ -39,13 +39,18 @@ Current state and next steps. Update in place; this is not a changelog.
   on `PATH`; `--structurizr` overrides it. `npm run watch` serves an exported `workspace.json` for the dev server (config
   via `VITE_WORKSPACE_FILE` / `VITE_STRUCTURIZR`). See
   [../architecture/workspace-loading.md](../architecture/workspace-loading.md).
+- Plain diagram rendering in place: `generate -w` also renders the system landscape view to `diagrams/<viewKey>.svg`
+  via `structurizr export -f plantuml/c4plantuml` + `plantuml -tsvg`, and the web app shows it on the home page as a
+  plain `<img>` (no clickable elements). PlantUML defaults to `plantuml` on `PATH`; `--plantuml` overrides it. The dev
+  server renders and serves the diagram too. See [../architecture/diagrams.md](../architecture/diagrams.md).
 
 ## Next
 
-1. Extend `generate` to render diagram assets and inject drill-down links (the rest of the pipeline in
+1. Extend the pipeline with link injection and drill-down routes (the rest of
    [../architecture/diagrams.md](../architecture/diagrams.md)).
 2. Wire react-router v7 into the App shell and drive the sidebar navigation from the model-derived route index.
-3. Record build/run/verify as a skill.
+3. Make the diagram exporter configurable (`generatr.site.exporter`; `c4plantuml` is hard-coded for now).
+4. Record build/run/verify as a skill.
 
 ## Open
 

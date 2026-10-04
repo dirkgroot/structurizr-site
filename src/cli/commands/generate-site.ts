@@ -2,6 +2,7 @@ import { resolve } from "node:path";
 import { DEFAULT_OUTPUT_DIR } from "../../shared/site.js";
 import { assemble } from "../assembly/assemble.js";
 import { exportJson } from "../pipeline/export-json.js";
+import { renderLandscape } from "../pipeline/render-landscape.js";
 
 export interface GenerateSiteOptions {
   output?: string;
@@ -9,12 +10,15 @@ export interface GenerateSiteOptions {
   workspaceFile?: string;
   /** `--structurizr` backend override. */
   structurizr?: string;
+  /** `--plantuml` backend override. */
+  plantuml?: string;
 }
 
 /**
- * Emit the deployable site directory: the prebuilt web app, plus `workspace.json`
- * exported from the workspace file when one is given. Diagram rendering and link
- * injection come later.
+ * Emit the deployable site directory: the prebuilt web app, `workspace.json`
+ * exported from the workspace file, and the system landscape diagram. Rendering
+ * runs after the export (assemble wipes the directory first) and after the
+ * export so `workspace.json` is available. Link injection comes later.
  */
 export async function generateSite(options: GenerateSiteOptions): Promise<void> {
   const outputDir = resolve(options.output ?? DEFAULT_OUTPUT_DIR);
@@ -25,6 +29,13 @@ export async function generateSite(options: GenerateSiteOptions): Promise<void> 
       workspaceFile: options.workspaceFile,
       outputDir,
       structurizr: options.structurizr,
+    });
+
+    await renderLandscape({
+      workspaceFile: options.workspaceFile,
+      outputDir,
+      structurizr: options.structurizr,
+      plantuml: options.plantuml,
     });
   }
 

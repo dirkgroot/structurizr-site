@@ -6,13 +6,16 @@ How the workspace travels from the DSL file to the web app, and how the site nam
 
 ## Slice
 
-The first vertical slice is deliberately thin: **the site name comes from the workspace name**.
+The first vertical slice is deliberately thin: **the site name comes from the workspace name**, and the **system
+landscape diagram is rendered and shown on the home page** (plain, non-clickable).
 
 ```mermaid
 flowchart LR
     DSL[workspace.dsl] -->|CLI: structurizr export -f json| WJ[build/workspace.json]
+    DSL -->|CLI: render landscape| SVG["build/diagrams/SystemLandscape-001.svg"]
     WJ -->|web: fetch + read .name| APP[App shell]
     APP --> TITLE[document.title + heading + sidebar]
+    APP -->|web: <img> by view key| SVG
 ```
 
 ## Pipeline
@@ -22,11 +25,13 @@ flowchart LR
 1. `assemble(outputDir)` copies the prebuilt web app into the output directory.
 2. `exportJson({ workspaceFile, outputDir, structurizr })` runs `structurizr export -w <file> -f json -o <outputDir>`,
    which writes `workspace.json`.
+3. `renderLandscape({ workspaceFile, outputDir, structurizr, plantuml })` reads `workspace.json` and renders the system
+   landscape view to `diagrams/<viewKey>.svg` (see [diagrams.md](diagrams.md)).
 
 Export runs **after** assemble because Structurizr's JSON export preserves existing files in the output directory;
 `assemble` itself wipes the directory first. Without `-w`, `generate` emits the web app only.
 
-`serve` forwards `-w` and `--structurizr` to `generate`.
+`serve` forwards `-w`, `--structurizr`, and `--plantuml` to `generate`.
 
 ## Backend resolution
 
@@ -36,9 +41,13 @@ Export runs **after** assemble because Structurizr's JSON export preserves exist
   The full resolution order (war/Docker/environment) from [distribution.md](distribution.md) is **deferred**.
 - `run.ts` — `runStructurizr(args, { override }, spawnFn)`; `defaultSpawn` captures stdout/stderr, rejects with the
   backend's output on a non-zero exit, and with an actionable message on `ENOENT` ("not found; install it, or pass
-  `--structurizr <command>`"). `spawnFn` is the injectable IO seam.
+  `<option> <command>`"). `spawnFn` is the injectable IO seam; `resolveCommand` is the shared override-or-default helper.
+- `plantuml.ts` — `runPlantUml(args, { override }, spawnFn)`; the diagram renderer, `plantuml` on `PATH` by default,
+  `--plantuml` overrides it.
 
-`src/cli/pipeline/export-json.ts` is the first pipeline step (see [diagrams.md](diagrams.md) for the rest).
+`src/cli/pipeline/` steps: `export-json.ts` → `workspace.json`; `export-plantuml.ts` (format
+`plantuml/c4plantuml`) → `.puml`; `render-landscape.ts` → `diagrams/<viewKey>.svg`. See
+[diagrams.md](diagrams.md).
 
 ## Web loading
 
@@ -48,6 +57,11 @@ returns `undefined` on a non-OK response or a thrown fetch, so a site built with
 `src/web/main.tsx` awaits `loadWorkspace()` **before** `createRoot().render()`, sets `document.title` from `siteName()`,
 and passes the workspace to `<App>`. Loading before render (rather than in an effect) keeps it free of
 set-state-in-effect and gives a correct title on first paint.
+
+`src/web/app/App.tsx` renders `<LandscapeDiagram workspace={workspace} />` on the home page. The component resolves the
+view key via `src/shared/diagrams.ts` and shows `<img src="diagrams/<viewKey>.svg">`, sized to the SVG's intrinsic
+dimensions (`w-auto self-start max-w-full`, so it neither stretches to the page width nor overflows it). A workspace
+without a system landscape view (or none loaded) shows a short notice instead. Plain rendering: no clickable elements.
 
 `src/shared/site.ts` — `siteName(workspace)` returns `workspace.name` trimmed, or `SITE_NAME` ("Structurizr Site") when
 the workspace is absent or unnamed. `Workspace.name` is optional in the schema, so the fallback is required regardless.

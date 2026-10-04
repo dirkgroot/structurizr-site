@@ -10,6 +10,11 @@ export interface RunResult {
 /** Injectable `spawn` seam so tests can assert invocations without a real backend. */
 export type SpawnFn = (command: string, args: string[]) => Promise<RunResult>;
 
+/** Resolve an external command: an explicit `override` wins, else the default. */
+export function resolveCommand(override: string | undefined, fallback: string): string {
+  return override?.trim() || fallback;
+}
+
 /**
  * Run the Structurizr backend with `args`. The backend command is resolved per
  * `resolveStructurizr`; `override` (the `--structurizr` option) wins when given.
@@ -26,9 +31,14 @@ export async function runStructurizr(
 /**
  * Spawn `command`, capturing stdout/stderr. Rejects on a non-zero exit, with the
  * backend's own output, and with an actionable message when the command is missing.
- * Exported for direct testing of the process seam.
+ * `label` names the tool in the "not found" message. Exported for direct testing
+ * of the process seam.
  */
-export async function defaultSpawn(command: string, args: string[]): Promise<RunResult> {
+export async function defaultSpawn(
+  command: string,
+  args: string[],
+  label = "Structurizr backend",
+): Promise<RunResult> {
   return new Promise<RunResult>((resolvePromise, reject) => {
     const child = spawn(command, args);
     let stdout = "";
@@ -44,9 +54,7 @@ export async function defaultSpawn(command: string, args: string[]): Promise<Run
     child.on("error", (error: NodeJS.ErrnoException) => {
       if (error.code === "ENOENT") {
         reject(
-          new Error(
-            `Structurizr backend "${command}" not found; install it, or pass --structurizr <command>`,
-          ),
+          new Error(`${label} "${command}" not found; install it, or pass --structurizr <command>`),
         );
         return;
       }
@@ -59,7 +67,9 @@ export async function defaultSpawn(command: string, args: string[]): Promise<Run
         return;
       }
       const detail = stderr.trim() || stdout.trim();
-      reject(new Error(`${command} exited with code ${code}${detail ? `: ${detail}` : ""}`));
+      reject(
+        new Error(`${label} "${command}" exited with code ${code}${detail ? `: ${detail}` : ""}`),
+      );
     });
   });
 }

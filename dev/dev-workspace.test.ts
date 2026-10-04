@@ -1,6 +1,11 @@
 import { EventEmitter } from "node:events";
+import { mkdir, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 import { devWorkspace, type DevWorkspaceOptions } from "./dev-workspace.js";
+
+const { renderLandscape } = vi.hoisted(() => ({ renderLandscape: vi.fn() }));
+vi.mock("../src/cli/pipeline/render-landscape.js", () => ({ renderLandscape }));
 
 interface FakeServer {
   watcher: EventEmitter & { add: (path: string) => void };
@@ -14,10 +19,10 @@ type Middleware = (request: { url?: string }, response: FakeResponse, next: () =
 interface FakeResponse {
   statusCode: number;
   headers: Record<string, string>;
-  body: string;
+  body: string | Buffer;
   ended: boolean;
   setHeader(name: string, value: string): void;
-  end(chunk?: string): void;
+  end(chunk?: string | Buffer): void;
 }
 
 function fakeResponse(): FakeResponse {
@@ -64,8 +69,9 @@ describe("devWorkspace", () => {
 
   beforeEach(() => {
     runExport = vi.fn().mockResolvedValue('{"name":"My Architecture"}');
+    renderLandscape.mockReset();
+    renderLandscape.mockResolvedValue(undefined);
   });
-
   it("passes non-workspace requests through", () => {
     const { middleware } = setup(devWorkspace({ workspaceFile: "w.dsl", runExport }));
     const response = fakeResponse();
@@ -105,6 +111,25 @@ describe("devWorkspace", () => {
     middleware({ url: "/workspace.json" }, fakeResponse(), vi.fn());
 
     expect(runExport).toHaveBeenCalledOnce();
+  });
+
+  it("renders and serves diagram SVGs, rendering only once", async () => {
+    renderLandscape.mockImplementation(async ({ outputDir }: { outputDir: string }) => {
+      await mkdir(join(outputDir, "diagrams"), { recursive: true });
+      await writeFile(join(outputDir, "diagrams", "SystemLandscape-001.svg"), "<svg/>");
+    });
+    const { middleware } = setup(devWorkspace({ workspaceFile: "w.dsl", runExport }));
+
+    const first = fakeResponse();
+    middleware({ url: "/diagrams/SystemLandscape-001.svg" }, first, vi.fn());
+    await vi.waitFor(() => expect(first.ended).toBe(true));
+
+    expect(first.headers["content-type"]).toBe("image/svg+xml; charset=utf-8");
+    expect(first.body.toString()).toBe("<svg/>");
+    expect(renderLandscape).toHaveBeenCalledOnce();
+
+    middleware({ url: "/diagrams/SystemLandscape-001.svg" }, fakeResponse(), vi.fn());
+    await vi.waitFor(() => expect(renderLandscape).toHaveBeenCalledOnce());
   });
 
   it("re-exports after the workspace file changes", async () => {
