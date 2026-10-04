@@ -97,7 +97,8 @@ non-conforming commits land under `Other`. The same history produces each releas
    into `CHANGELOG.md`. Commit both.
 2. Tag and push: `git tag v<version> && git push origin v<version>`.
 3. The `Release` workflow verifies the tag matches `package.json`, runs the checks, builds and ad-hoc signs the
-   binaries, generates the release notes from the changelog, and attaches everything to a GitHub release.
+   binaries, generates the release notes from the changelog, attaches everything to a GitHub release, then generates an
+   example site from `test/fixtures/workspace.dsl` and publishes it to GitHub Pages.
 4. Render the Homebrew formula against the release assets, then copy it into the tap:
 
    ```sh
@@ -110,6 +111,11 @@ non-conforming commits land under `Other`. The same history produces each releas
    bun run build:binary:all
    bun packaging/homebrew/update-formula.mjs dist/binaries
    ```
+
+The example site is published to `https://dirkgroot.github.io/structurizr-site/`. GitHub Pages must be enabled once for
+the repository with **GitHub Actions** as the source (Settings → Pages); the workflow's built-in token cannot enable it.
+Because the workflow runs on a tag, the `github-pages` environment must also permit tag deployments (Settings →
+Environments → `github-pages` → Deployment branches and tags); a default-branch-only rule blocks the release tag.
 
 ## Layout
 

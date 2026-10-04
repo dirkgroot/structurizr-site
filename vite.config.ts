@@ -8,6 +8,9 @@ import { devWorkspace } from "./dev/dev-workspace";
 // directory into the generated output (see src/cli/assembly/assemble.ts).
 export default defineConfig({
   root: "src/web",
+  // Relative asset URLs so a generated site works under any static-host base
+  // path (e.g. a GitHub Pages project site at /structurizr-site/), not just "/".
+  base: "./",
   plugins: [react(), tailwindcss(), devWorkspace()],
   resolve: {
     // `@` points at the web app tree so shadcn's `@/components/...` imports resolve

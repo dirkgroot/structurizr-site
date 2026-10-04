@@ -24,6 +24,9 @@ The human owns the version decision; this skill proposes one and waits for expli
 - `CHANGELOG.md` is generated from commit history by git-cliff (`cliff.toml`). The release commit that folds `[Unreleased]` into the version must land **before** the tag, or `git cliff --latest` in the workflow sees an empty range and the GitHub notes come out empty.
 - The tag is `v<package.json version>`. `release.yml` verifies this and fails otherwise.
 - Pre-release versions (containing `-`, like `0.2.0-pre-alpha.1`) are published as GitHub pre-releases, never "Latest".
+- The `pages` job deploys an example site from `test/fixtures/workspace.dsl` to GitHub Pages after `publish` succeeds.
+  GitHub Pages must be enabled once with **GitHub Actions** as the source, and the `github-pages` environment must
+  allow tag deployments (the workflow runs on a tag); the built-in token cannot enable Pages.
 - The Homebrew formula is rendered from the **published release assets**, so the tap update happens only after the workflow finishes successfully.
 
 ## Version scheme (project-specific)
@@ -136,7 +139,11 @@ gh run list --workflow=release.yml --limit 5
 gh run watch <run-id> --exit-status
 ```
 
-If the run fails, report the failing step and its log (`gh run view <run-id> --log-failed`). The tag is already on `origin`; do not delete or move it. Tell the user the release did not publish and what failed.
+The workflow has two jobs: `publish` (binaries + GitHub release) and `pages` (example site to GitHub Pages, `needs:
+publish`). If the run fails, report the failing step and its log (`gh run view <run-id> --log-failed`). The tag is
+already on `origin`; do not delete or move it. Tell the user the release did not publish and what failed. If `publish`
+succeeded but `pages` failed, the release is out; report the Pages failure separately (most often Pages is not enabled
+or the backend download failed).
 
 ### 8. Update the Homebrew tap
 
@@ -165,7 +172,7 @@ git -C "$tap" push
 
 ### 9. Report
 
-Do **not** run `brew install` or otherwise verify the formula yourself — installing modifies the user's machine and is the user's call. Report version, tag, release URL, workflow run URL, and tap commit hash, then hand the user the commands to verify the tap themselves:
+Do **not** run `brew install` or otherwise verify the formula yourself — installing modifies the user's machine and is the user's call. Report version, tag, release URL, workflow run URL, example site URL (`https://dirkgroot.github.io/structurizr-site/`), and tap commit hash, then hand the user the commands to verify the tap themselves:
 
 ```sh
 brew update
