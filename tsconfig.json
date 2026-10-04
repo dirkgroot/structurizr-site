@@ -8,7 +8,11 @@
   ],
   "compilerOptions": {
     "paths": {
-      "@/*": ["./src/web/*"]
+      "@/*": ["./src/web/*"],
+      "@shared/*": ["./src/shared/*"],
+      // `@shared/workspace` is a directory import; tsc's path substitution does not
+      // fall through to its `index.ts`, so map it explicitly for the extensionless form.
+      "@shared/workspace": ["./src/shared/workspace/index.ts"]
     }
   }
 }

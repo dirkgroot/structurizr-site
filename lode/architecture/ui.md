@@ -29,8 +29,8 @@ All of these are build-time only (`devDependencies`); the emitted web app bundle
 ## Alias and layout
 
 `components.json` maps shadcn's aliases onto the web app tree through the `@` alias, which resolves to `src/web`
-(Vite/Vitest `resolve.alias`, plus `paths` in `tsconfig.web.json`, `tsconfig.test.json`, and the root solution
-`tsconfig.json`):
+(Vite/Vitest `resolve.alias`, plus `paths` in `tsconfig.web.json`, `tsconfig.test.json`, `tsconfig.node.json`, and
+the root solution `tsconfig.json`):
 
 ```json
 {
@@ -43,6 +43,16 @@ All of these are build-time only (`devDependencies`); the emitted web app bundle
   }
 }
 ```
+
+**Two aliases.** `@` → `src/web` (shadcn's tree) and `@shared` → `src/shared` (the runtime-agnostic contracts). Both
+are declared in `vite.config.ts` and `vitest.config.ts` (`resolve.alias`) and in the `paths` of every tsconfig whose
+files can reach them: `tsconfig.web.json`, `tsconfig.test.json`, `tsconfig.node.json` (the dev plugin imports web
+code), and the root solution `tsconfig.json` (IDE). `src/web` imports are alias-based, not relative.
+
+One sharp edge: `@shared/workspace` is a _directory_ import, and tsc's `paths` substitution does not fall through to
+`index.ts` the way a relative specifier does, so each config also carries an explicit
+`"@shared/workspace": ["./src/shared/workspace/index.ts"]` entry. Any future `@shared/<dir>` mapping needs the same
+treatment.
 
 ```
 src/web/
