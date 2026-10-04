@@ -46,6 +46,8 @@ jobs:
           shasum -a 256 structurizr-site-* > SHA256SUMS
           cat SHA256SUMS
       - name: Generate release notes
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: git cliff --latest --strip header --output "$RUNNER_TEMP/release-notes.md"
       - name: Publish GitHub release
         env:
