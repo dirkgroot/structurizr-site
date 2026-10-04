@@ -58,10 +58,11 @@ returns `undefined` on a non-OK response or a thrown fetch, so a site built with
 and passes the workspace to `<App>`. Loading before render (rather than in an effect) keeps it free of
 set-state-in-effect and gives a correct title on first paint.
 
-`src/web/app/App.tsx` renders `<LandscapeDiagram workspace={workspace} />` on the home page. The component resolves the
-view key via `src/shared/diagrams.ts` and shows `<img src="diagrams/<viewKey>.svg">`, sized to the SVG's intrinsic
-dimensions (`w-auto self-start max-w-full`, so it neither stretches to the page width nor overflows it). A workspace
-without a system landscape view (or none loaded) shows a short notice instead. Plain rendering: no clickable elements.
+`src/web/app/App.tsx` resolves the landscape view key via `src/shared/diagrams.ts` and renders the generic
+`<Diagram viewKey alt />` component (`src/web/diagram/Diagram.tsx`) on the home page. `Diagram` addresses the SVG the CLI
+emits at `diagrams/<viewKey>.svg` and sizes it to the SVG's intrinsic dimensions (`w-auto self-start max-w-full`, so it
+neither stretches to the page width nor overflows it). Every C4 diagram renders the same way; when the view key is
+absent, a short notice is shown. Plain rendering: no clickable elements.
 
 `src/shared/site.ts` — `siteName(workspace)` returns `workspace.name` trimmed, or `SITE_NAME` ("Structurizr Site") when
 the workspace is absent or unnamed. `Workspace.name` is optional in the schema, so the fallback is required regardless.

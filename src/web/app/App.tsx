@@ -9,8 +9,9 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { siteName } from "../../shared/site";
+import { systemLandscapeViewKey } from "../../shared/diagrams.js";
 import type { Workspace } from "../../shared/workspace/index.js";
-import { LandscapeDiagram } from "../diagram/LandscapeDiagram";
+import { Diagram } from "../diagram/Diagram";
 
 export interface AppProps {
   workspace?: Workspace;
@@ -37,7 +38,7 @@ export function App({ workspace }: AppProps) {
           </header>
           <main className="flex flex-1 flex-col gap-4 p-4">
             <h1 className="text-2xl font-semibold">{name}</h1>
-            <LandscapeDiagram workspace={workspace} />
+            <Diagram viewKey={systemLandscapeViewKey(workspace)} alt="System landscape diagram" />
           </main>
         </SidebarInset>
       </SidebarProvider>
