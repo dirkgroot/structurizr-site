@@ -2,7 +2,7 @@ import { diagramPath } from "../../shared/diagrams.js";
 
 export interface DiagramProps {
   /** Structurizr view key of the diagram to render. */
-  viewKey?: string;
+  viewKey: string;
   /** Accessible alt text. */
   alt: string;
 }
@@ -14,10 +14,6 @@ export interface DiagramProps {
  * lode/architecture/diagrams.md.
  */
 export function Diagram({ viewKey, alt }: DiagramProps) {
-  if (!viewKey) {
-    return <p className="text-muted-foreground">No diagram is defined.</p>;
-  }
-
   return (
     <img src={diagramPath(viewKey)} alt={alt} className="max-w-full h-auto w-auto self-start" />
   );

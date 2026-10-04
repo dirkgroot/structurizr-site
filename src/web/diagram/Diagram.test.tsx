@@ -9,9 +9,4 @@ describe("Diagram", () => {
     const image = screen.getByRole("img", { name: "System landscape diagram" });
     expect(image).toHaveAttribute("src", "diagrams/SystemLandscape-001.svg");
   });
-
-  it("shows a notice when no view key is given", () => {
-    render(<Diagram alt="System landscape diagram" />);
-    expect(screen.getByText(/no diagram is defined/i)).toBeInTheDocument();
-  });
 });

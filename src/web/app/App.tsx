@@ -19,6 +19,7 @@ export interface AppProps {
 
 export function App({ workspace }: AppProps) {
   const name = siteName(workspace);
+  const landscapeViewKey = systemLandscapeViewKey(workspace);
 
   return (
     <TooltipProvider>
@@ -38,7 +39,11 @@ export function App({ workspace }: AppProps) {
           </header>
           <main className="flex flex-1 flex-col gap-4 p-4">
             <h1 className="text-2xl font-semibold">{name}</h1>
-            <Diagram viewKey={systemLandscapeViewKey(workspace)} alt="System landscape diagram" />
+            {landscapeViewKey ? (
+              <Diagram viewKey={landscapeViewKey} alt="System landscape diagram" />
+            ) : (
+              <p className="text-muted-foreground">No system landscape view is defined.</p>
+            )}
           </main>
         </SidebarInset>
       </SidebarProvider>
