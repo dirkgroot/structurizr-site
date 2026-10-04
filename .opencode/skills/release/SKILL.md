@@ -172,7 +172,7 @@ git -C "$tap" push
 
 ### 9. Report
 
-Do **not** run `brew install` or otherwise verify the formula yourself — installing modifies the user's machine and is the user's call. Report version, tag, release URL, workflow run URL, example site URL (`https://dirkgroot.github.io/structurizr-site/`), and tap commit hash, then hand the user the commands to verify the tap themselves:
+Do **not** run `brew install` or otherwise verify the formula yourself — installing modifies the user's machine and is the user's call. Report version, tag, release URL, workflow run URL, example site URL (`https://dirkgroot.nl/structurizr-site/`), and tap commit hash, then hand the user the commands to verify the tap themselves:
 
 ```sh
 brew update

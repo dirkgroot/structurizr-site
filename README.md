@@ -112,7 +112,8 @@ non-conforming commits land under `Other`. The same history produces each releas
    bun packaging/homebrew/update-formula.mjs dist/binaries
    ```
 
-The example site is published to `https://dirkgroot.github.io/structurizr-site/`. GitHub Pages must be enabled once for
+The example site is published to `https://dirkgroot.nl/structurizr-site/` (the GitHub Pages URL
+`https://dirkgroot.github.io/structurizr-site/` redirects to the custom domain). GitHub Pages must be enabled once for
 the repository with **GitHub Actions** as the source (Settings → Pages); the workflow's built-in token cannot enable it.
 Because the workflow runs on a tag, the `github-pages` environment must also permit tag deployments (Settings →
 Environments → `github-pages` → Deployment branches and tags); a default-branch-only rule blocks the release tag.
