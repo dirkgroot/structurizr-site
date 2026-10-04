@@ -27,7 +27,7 @@ Current state and next steps. Update in place; this is not a changelog.
 - Web app routing decided: hash routes, static patterns, a model-derived index, react-router v7. See
   [../architecture/routing.md](../architecture/routing.md).
 - Unit testing in place: Vitest with a Node project (CLI/shared) and a jsdom project (React), React Testing Library,
-  colocated tests, no coverage threshold, and `npm test` gating CI and release. See
+  colocated tests, no coverage threshold, and `bun run test` gating CI and release. See
   [../architecture/testing.md](../architecture/testing.md).
 - Web app shell in place: shadcn/ui on Base UI with Tailwind v4, using the `sidebar-01` block (sidebar nav + inset
   content). The site name comes from the loaded workspace; navigation is placeholder until the model-derived route index
@@ -36,7 +36,7 @@ Current state and next steps. Update in place; this is not a changelog.
   [../architecture/workspace-types.md](../architecture/workspace-types.md).
 - First vertical slice in place: `generate -w <workspace.dsl>` exports `workspace.json` via the Structurizr backend,
   and the web app derives the site name from the workspace name (placeholder fallback). Backend defaults to `structurizr`
-  on `PATH`; `--structurizr` overrides it. `npm run watch` serves an exported `workspace.json` for the dev server (config
+  on `PATH`; `--structurizr` overrides it. `bun run watch` serves an exported `workspace.json` for the dev server (config
   via `VITE_WORKSPACE_FILE` / `VITE_STRUCTURIZR`). See
   [../architecture/workspace-loading.md](../architecture/workspace-loading.md).
 - Plain diagram rendering in place: `generate -w` also renders the system landscape view to `diagrams/<viewKey>.svg`

@@ -36,7 +36,7 @@ export async function assemble(outputDir: string, sourceDir?: string): Promise<v
   try {
     await access(dir);
   } catch {
-    throw new Error(`prebuilt web app not found at ${dir}; run "npm run build:web" first`);
+    throw new Error(`prebuilt web app not found at ${dir}; run "bun run build:web" first`);
   }
 
   await rm(outputDir, { recursive: true, force: true });

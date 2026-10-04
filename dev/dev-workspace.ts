@@ -51,7 +51,7 @@ async function exportAndRead(options: {
 
 /**
  * Dev-server plugin that serves the exported workspace JSON at `/workspace.json`
- * and the rendered system landscape SVG under `/diagrams/`, so `npm run watch`
+ * and the rendered system landscape SVG under `/diagrams/`, so `bun run watch`
  * runs the web app against a real workspace under HMR. Assets are rendered on
  * demand and cached; a change to the workspace file invalidates the cache.
  *

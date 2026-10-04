@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // Build the self-contained binaries.
 //
-//   node packaging/binary/build.mjs                 # native target -> dist/binaries/
-//   node packaging/binary/build.mjs --target darwin-arm64
-//   node packaging/binary/build.mjs --all           # all four release targets
+//   bun packaging/binary/build.mjs                 # native target -> dist/binaries/
+//   bun packaging/binary/build.mjs --target darwin-arm64
+//   bun packaging/binary/build.mjs --all           # all four release targets
 //
-// Requires `npm run build:web` first: dist/web is embedded into the binary.
+// Requires `bun run build:web` first: dist/web is embedded into the binary.
 // macOS binaries are ad-hoc signed (with JIT entitlements) and verified. The
 // tap's formula installs these binaries, so no notarization is needed.
 import { spawnSync } from "node:child_process";
@@ -134,7 +134,7 @@ async function main() {
   const { all, target } = parseArgs(process.argv.slice(2));
 
   if (!(await exists(webDir))) {
-    throw new Error(`prebuilt web app not found at ${webDir}; run "npm run build:web" first`);
+    throw new Error(`prebuilt web app not found at ${webDir}; run "bun run build:web" first`);
   }
 
   const pkg = JSON.parse(await readFile(resolve(repoRoot, "package.json"), "utf8"));

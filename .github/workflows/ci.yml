@@ -18,29 +18,29 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: jdx/mise-action@v4
-      - run: npm ci
-      - run: npm run format:check
-      - run: npm run lint
+      - run: bun install --frozen-lockfile
+      - run: bun run format:check
+      - run: bun run lint
       - name: Verify generated workspace types are current
         run: |
-          npm run generate:workspace-types
+          bun run generate:workspace-types
           git diff --exit-code -- src/shared/workspace/schema.d.ts
-      - run: npm run typecheck
-      - run: npm test
+      - run: bun run typecheck
+      - run: bun run test
 
   binary:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v6
       - uses: jdx/mise-action@v4
-      - run: npm ci
-      - run: npm run build:web
-      - run: npm run build:binary
+      - run: bun install --frozen-lockfile
+      - run: bun run build:web
+      - run: bun run build:binary
       - name: Smoke test the compiled binary
         run: |
           arch="arm64"; [ "$(uname -m)" = "x86_64" ] && arch="x64" || true
           bin="dist/binaries/structurizr-site-darwin-${arch}"
-          test "$("$bin" --version)" = "$(node -p "require('./package.json').version")"
+          test "$("$bin" --version)" = "$(bun -p "require('./package.json').version")"
           "$bin" generate -o "$RUNNER_TEMP/site"
           test -f "$RUNNER_TEMP/site/index.html"
           test -f "$RUNNER_TEMP/site/assets"/*.js

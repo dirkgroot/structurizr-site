@@ -102,5 +102,5 @@ Theme tokens live in `src/web/styles/global.css` (`:root` and `.dark`, oklch val
 ## Invariants
 
 - `src/shared/` stays runtime-agnostic; UI code lives under `src/web`.
-- `src/web/components/ui/` is vendored and edited in place; re-add or refresh with `npx shadcn@latest add <name>`.
+- `src/web/components/ui/` is vendored and edited in place; re-add or refresh with `bunx shadcn@latest add <name>`.
 - Adding a shadcn component must not reintroduce a runtime `dependencies` entry; all UI packages are build-time.

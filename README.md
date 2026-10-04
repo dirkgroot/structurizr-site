@@ -16,36 +16,36 @@ Releases are also downloadable as GitHub release assets, but Homebrew is the sup
 
 ## Requirements
 
-Build tools are pinned with [`mise`](https://mise.jdx.dev/) (Node LTS + Bun). With mise active, `node`, `npm`, and
-`bun` come from `mise.toml`.
+Build tools are pinned with [`mise`](https://mise.jdx.dev/) (Node LTS + Bun). With mise active, `node` and `bun` come
+from `mise.toml`. Bun is the package manager and script runner; Node runs Vite, Vitest, and `tsc`.
 
 ## Develop
 
 ```sh
-npm install
-npm run build          # bun -> dist/cli, vite -> dist/web, bun -> dist/binaries/<platform>
-npm run build:web      # vite -> dist/web (the web app embedded in the binary)
-npm run build:binary   # native platform only
-npm run build:binary:all  # all four release targets (cross-compiles)
-npm run watch          # Vite dev server for src/web (HMR), serving a workspace.json
-npm run typecheck
-npm test               # vitest (node + jsdom projects)
-npm run test:watch
-npm run test:coverage
+bun install
+bun run build          # bun -> dist/cli, vite -> dist/web, bun -> dist/binaries/<platform>
+bun run build:web      # vite -> dist/web (the web app embedded in the binary)
+bun run build:binary   # native platform only
+bun run build:binary:all  # all four release targets (cross-compiles)
+bun run watch          # Vite dev server for src/web (HMR), serving a workspace.json
+bun run typecheck
+bun run test           # vitest (node + jsdom projects)
+bun run test:watch
+bun run test:coverage
 ```
 
-`npm run watch` starts the Vite dev server and serves an exported `workspace.json` at `/workspace.json`, so the app
+`bun run watch` starts the Vite dev server and serves an exported `workspace.json` at `/workspace.json`, so the app
 runs against a real workspace under HMR. The export uses the Structurizr backend; editing the workspace file re-exports
 it and reloads the page. By default it exports `test/fixtures/workspace.dsl`; override with:
 
 ```sh
-VITE_WORKSPACE_FILE=architecture/workspace.dsl npm run watch
-VITE_STRUCTURIZR="java -jar structurizr.war" npm run watch
+VITE_WORKSPACE_FILE=architecture/workspace.dsl bun run watch
+VITE_STRUCTURIZR="java -jar structurizr.war" bun run watch
 ```
 
 The distributed artifact is a self-contained binary: `bun build --compile` embeds the CLI, the web app, and the Bun
-runtime, so users need no Node. Bun is a build-time tool: it bundles the dev CLI and compiles the binary. See
-`lode/architecture/distribution.md`.
+runtime, so users need no Node. Bun is a build-time tool: it manages dependencies, bundles the dev CLI, and compiles the
+binary. See `lode/architecture/distribution.md`.
 
 Unit tests use Vitest; React components are tested with React Testing Library. Tests are colocated with the source as
 `*.test.ts(x)`. See `lode/architecture/testing.md`.
@@ -53,9 +53,9 @@ Unit tests use Vitest; React components are tested with React Testing Library. T
 ## Generate a site
 
 ```sh
-npm run generate                                        # writes ./build (web app only)
-node dist/cli/bin.js generate -w workspace.dsl          # + exported workspace.json
-node dist/cli/bin.js generate -w workspace.dsl --output path/to/out
+bun run generate                                        # writes ./build (web app only)
+bun dist/cli/bin.js generate -w workspace.dsl           # + exported workspace.json
+bun dist/cli/bin.js generate -w workspace.dsl --output path/to/out
 ```
 
 With `-w/--workspace-file`, the CLI exports the workspace as `workspace.json` into the output directory after assembling
@@ -71,9 +71,9 @@ static host. It is git-ignored.
 ## Preview a site
 
 ```sh
-node dist/cli/bin.js serve                    # http://localhost:8080
-node dist/cli/bin.js serve -w workspace.dsl   # export workspace.json, then serve
-node dist/cli/bin.js serve -o path/to/out -p 9000
+bun dist/cli/bin.js serve                    # http://localhost:8080
+bun dist/cli/bin.js serve -w workspace.dsl   # export workspace.json, then serve
+bun dist/cli/bin.js serve -o path/to/out -p 9000
 ```
 
 `serve` generates the site into the output directory, then serves it over HTTP until stopped. Because the web app uses
@@ -93,7 +93,7 @@ pre-release. Tags whose version contains a `-` are published as GitHub pre-relea
 Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) so they are grouped by type;
 non-conforming commits land under `Other`. The same history produces each release's GitHub notes.
 
-1. Bump `version` in `package.json`, then run `npm run changelog:release` to fold the commits since the last release
+1. Bump `version` in `package.json`, then run `bun run changelog:release` to fold the commits since the last release
    into `CHANGELOG.md`. Commit both.
 2. Tag and push: `git tag v<version> && git push origin v<version>`.
 3. The `Release` workflow verifies the tag matches `package.json`, runs the checks, builds and ad-hoc signs the
@@ -101,14 +101,14 @@ non-conforming commits land under `Other`. The same history produces each releas
 4. Render the Homebrew formula against the release assets, then copy it into the tap:
 
    ```sh
-   node packaging/homebrew/update-formula.mjs
+   bun packaging/homebrew/update-formula.mjs
    ```
 
    Before a release exists, pass the local build directory instead:
 
    ```sh
-   npm run build:binary:all
-   node packaging/homebrew/update-formula.mjs dist/binaries
+   bun run build:binary:all
+   bun packaging/homebrew/update-formula.mjs dist/binaries
    ```
 
 ## Layout

@@ -15,27 +15,27 @@ jobs:
         with:
           fetch-depth: 0 # full history + tags for git-cliff
       - uses: jdx/mise-action@v4
-      - run: npm ci
+      - run: bun install --frozen-lockfile
       - name: Verify tag matches package.json version
         run: |
           tag="${GITHUB_REF_NAME#v}"
-          version="$(node -p "require('./package.json').version")"
+          version="$(bun -p "require('./package.json').version")"
           if [ "$tag" != "$version" ]; then
             echo "::error::tag ${GITHUB_REF_NAME} does not match package.json version ${version}"
             exit 1
           fi
-      - run: npm run format:check
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm test
-      - run: npm run build:web
+      - run: bun run format:check
+      - run: bun run lint
+      - run: bun run typecheck
+      - run: bun run test
+      - run: bun run build:web
       - name: Build self-contained binaries
-        run: npm run build:binary:all
+        run: bun run build:binary:all
       - name: Smoke test the native binary
         run: |
           arch="arm64"; [ "$(uname -m)" = "x86_64" ] && arch="x64" || true
           bin="dist/binaries/structurizr-site-darwin-${arch}"
-          test "$("$bin" --version)" = "$(node -p "require('./package.json').version")"
+          test "$("$bin" --version)" = "$(bun -p "require('./package.json').version")"
           "$bin" generate -o "$RUNNER_TEMP/site"
           test -f "$RUNNER_TEMP/site/index.html"
           test -f "$RUNNER_TEMP/site/assets"/*.js
@@ -55,7 +55,7 @@ jobs:
         run: |
           # A semver pre-release (version contains "-") is published as a GitHub pre-release.
           prerelease=""
-          case "$(node -p "require('./package.json').version")" in
+          case "$(bun -p "require('./package.json').version")" in
             *-*) prerelease="--prerelease" ;;
           esac
           if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then

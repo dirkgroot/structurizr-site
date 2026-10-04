@@ -76,7 +76,7 @@ project:
 - `tsconfig.test.json` (referenced from the root solution file) type-checks `src/**/*.test.ts(x)` and `test/**/*.ts`
   with `noEmit`, DOM libs, and `types: ["node", "vite/client"]`.
 - `tsconfig.node.json` also covers `vitest.config.ts`.
-- `npm run typecheck` runs all four projects.
+- `bun run typecheck` runs all four projects.
 
 ## Conventions
 
@@ -94,18 +94,18 @@ project:
 
 | Command                 | Purpose                                                 |
 | ----------------------- | ------------------------------------------------------- |
-| `npm test`              | Run the suite once (`vitest run`).                      |
-| `npm run test:watch`    | Watch mode.                                             |
-| `npm run test:coverage` | Run with v8 coverage; writes `coverage/` (git-ignored). |
+| `bun run test`          | Run the suite once (`vitest run`).                      |
+| `bun run test:watch`    | Watch mode.                                             |
+| `bun run test:coverage` | Run with v8 coverage; writes `coverage/` (git-ignored). |
 
 ## Coverage
 
-v8 coverage is reported with `npm run test:coverage`. There is **no enforced threshold and 100% is not a goal**: the
+v8 coverage is reported with `bun run test:coverage`. There is **no enforced threshold and 100% is not a goal**: the
 standard is that all important functionality is tested, not that every branch is exercised. Do not add tests for
 far-fetched edge cases just to move the number. The `src/web/vite-env.d.ts` declaration is excluded, as are vendored
 shadcn/ui components (`src/web/components/ui/**`) and generated hooks (`src/web/hooks/**`) — see [ui.md](ui.md).
 
 ## CI gate
 
-Both `.github/workflows/ci.yml` and `.github/workflows/release.yml` run `npm run typecheck` and `npm test` alongside
+Both `.github/workflows/ci.yml` and `.github/workflows/release.yml` run `bun run typecheck` and `bun run test` alongside
 `format:check` and `lint`. A failing test blocks merge and release. See [distribution.md](distribution.md).

@@ -23,12 +23,13 @@
   "engines": {
     "node": ">=20"
   },
+  "packageManager": "bun@1.4.2",
   "scripts": {
-    "build": "npm run build:cli && npm run build:web && npm run build:binary",
+    "build": "bun run build:cli && bun run build:web && bun run build:binary",
     "build:cli": "bun build src/cli/bin.ts --target=node --format=esm --sourcemap=linked --outdir=dist/cli",
     "build:web": "vite build",
-    "build:binary": "node packaging/binary/build.mjs",
-    "build:binary:all": "node packaging/binary/build.mjs --all",
+    "build:binary": "bun packaging/binary/build.mjs",
+    "build:binary:all": "bun packaging/binary/build.mjs --all",
     "watch": "vite",
     "typecheck": "tsc -p tsconfig.cli.json && tsc -p tsconfig.web.json && tsc -p tsconfig.node.json && tsc -p tsconfig.test.json",
     "test": "vitest run",
@@ -38,11 +39,11 @@
     "lint:fix": "oxlint --fix",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
-    "generate:workspace-types": "npx --yes openapi-typescript@7.13.0 src/shared/workspace/structurizr.yaml -o src/shared/workspace/schema.d.ts",
+    "generate:workspace-types": "bunx openapi-typescript@7.13.0 src/shared/workspace/structurizr.yaml -o src/shared/workspace/schema.d.ts",
     "clean": "rm -rf dist build",
     "changelog": "git cliff --output CHANGELOG.md",
-    "changelog:release": "git cliff --tag \"v$(node -p \"require('./package.json').version\")\" --output CHANGELOG.md",
-    "generate": "node dist/cli/bin.js generate"
+    "changelog:release": "git cliff --tag \"v$(bun -p 'require(\"./package.json\").version')\" --output CHANGELOG.md",
+    "generate": "bun dist/cli/bin.js generate"
   },
   "devDependencies": {
     "@base-ui/react": "^1.8.0",

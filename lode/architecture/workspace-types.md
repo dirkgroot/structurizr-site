@@ -26,10 +26,10 @@ releases. Re-vendor and regenerate when the supported backend changes (see [dist
   runtime code, which fits `src/shared/` (runtime-agnostic, imports nothing Node/browser). `openapi-generator`'s
   TypeScript targets are API-client generators: models-only still pulls in client scaffolding (`export class`,
   `ObjectSerializer`), which is dead weight for a pure JSON consumer.
-- **Pinned via `npx`, not a devDependency.** `openapi-typescript`'s published versions peer-require `typescript@^5.x`,
-  while this repo is on TypeScript 7. `npm install` fails on the peer conflict; a devDependency would need
-  `legacy-peer-deps` or force. The generator runs only when the spec changes, so it is invoked through
-  `npx openapi-typescript@7.13.0`. Revisit when a TS 7-compatible release exists.
+- **Pinned via `bunx`, not a devDependency.** `openapi-typescript`'s published versions peer-require `typescript@^5.x`,
+  while this repo is on TypeScript 7. Bun tolerates the peer conflict, but the generator runs only when the spec
+  changes, so it is kept out of the dependency tree and invoked through `bunx openapi-typescript@7.13.0`. Revisit when a
+  TS 7-compatible release exists.
 - **Generated output is checked in.** Consumers need it for `tsc` and the IDE; CI regenerates and diffs to catch drift.
 
 ## Layout
@@ -50,11 +50,12 @@ src/shared/workspace/
 ## Regeneration
 
 ```sh
-npm run generate:workspace-types
+bun run generate:workspace-types
 ```
 
-Runs `npx openapi-typescript@7.13.0 src/shared/workspace/structurizr.yaml -o src/shared/workspace/schema.d.ts` (with
-`--yes` so it does not prompt in CI). Regeneration is deterministic: the same spec produces the same file.
+Runs `bunx openapi-typescript@7.13.0 src/shared/workspace/structurizr.yaml -o src/shared/workspace/schema.d.ts`.
+`bunx` installs into a global cache without prompting, so no `--yes` is needed. Regeneration is deterministic: the same
+spec produces the same file.
 
 ## Gates
 

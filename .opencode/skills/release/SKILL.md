@@ -45,7 +45,7 @@ Do **not** use `git cliff --bumped-version` as the source of truth. It computes 
 Run the helper from the repo root:
 
 ```sh
-node .opencode/skills/release/scripts/suggest-version.mjs
+bun .opencode/skills/release/scripts/suggest-version.mjs
 ```
 
 It prints a suggestion plus the commit types since the last tag. The suggestion logic:
@@ -80,12 +80,12 @@ If anything is off, stop and report.
 Set `version` in `package.json` to the approved version (no `v` prefix).
 
 ```sh
-npm version <version> --no-git-tag-version
-npm run changelog:release
-npx oxfmt CHANGELOG.md
+bun pm pkg set version=<version>
+bun run changelog:release
+bunx oxfmt CHANGELOG.md
 ```
 
-`npm version` edits `package.json` (and `package-lock.json`) without tagging. `npm run changelog:release` uses the new `package.json` version as the git-cliff tag, folding `[Unreleased]` into `## [<version>] - <date>`. git-cliff emits emphasis as `*text*` and other Markdown that fails `oxfmt --check`; run `oxfmt` on the generated file so `format:check` stays green (CI enforces it).
+`bun pm pkg set version=<version>` edits `package.json` without creating a git tag (it does not touch `bun.lock`). `bun run changelog:release` uses the new `package.json` version as the git-cliff tag, folding `[Unreleased]` into `## [<version>] - <date>`. git-cliff emits emphasis as `*text*` and other Markdown that fails `oxfmt --check`; run `oxfmt` on the generated file so `format:check` stays green (CI enforces it).
 
 Verify the changelog now has a dated section and no lingering `[Unreleased]` for these commits:
 
@@ -98,10 +98,10 @@ sed -n '1,40p' CHANGELOG.md
 Run exactly what CI runs, in this order, and stop on the first failure:
 
 ```sh
-npm run format:check
-npm run lint
-npm run typecheck
-npm test
+bun run format:check
+bun run lint
+bun run typecheck
+bun run test
 ```
 
 If any step fails, report the failure. Do not commit, tag, or push. Leave the version/changelog edits in the working tree so the user can decide whether to fix and retry or revert.
@@ -109,11 +109,11 @@ If any step fails, report the failure. Do not commit, tag, or push. Leave the ve
 ### 5. Commit
 
 ```sh
-git add package.json package-lock.json CHANGELOG.md
+git add package.json bun.lock CHANGELOG.md
 git commit -m "chore(release): <version>"
 ```
 
-Conventional Commit message. `cliff.toml` skips `chore(release)` commits, so this does not pollute the next changelog. If `package-lock.json` is unchanged, drop it from `git add`.
+Conventional Commit message. `cliff.toml` skips `chore(release)` commits, so this does not pollute the next changelog. If `bun.lock` is unchanged, drop it from `git add`.
 
 ### 6. Tag and push
 
@@ -157,7 +157,7 @@ if [ -d "$tap/.git" ]; then
 else
   git clone https://github.com/dirkgroot/homebrew-structurizr-site "$tap"
 fi
-node packaging/homebrew/update-formula.mjs --output "$tap/Formula/structurizr-site.rb"
+bun packaging/homebrew/update-formula.mjs --output "$tap/Formula/structurizr-site.rb"
 git -C "$tap" add Formula/structurizr-site.rb
 git -C "$tap" commit -m "structurizr-site <version>"
 git -C "$tap" push
@@ -190,5 +190,5 @@ The Lode records durable knowledge (decisions, practices, architecture), **not**
 
 ## When NOT to use this skill
 
-- Dry runs / previews only: run `npm run changelog` (not `:release`) and `git cliff --unreleased --strip header` to preview without changing anything.
+- Dry runs / previews only: run `bun run changelog` (not `:release`) and `git cliff --unreleased --strip header` to preview without changing anything.
 - Hotfix on a non-release branch: this skill assumes `main` and a linear release; refuse and ask.

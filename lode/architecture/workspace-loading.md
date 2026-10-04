@@ -69,7 +69,7 @@ the workspace is absent or unnamed. `Workspace.name` is optional in the schema, 
 
 ## Dev server
 
-`npm run watch` runs Vite against `src/web` with HMR, but the app under dev has no `workspace.json` unless one is
+`bun run watch` runs Vite against `src/web` with HMR, but the app under dev has no `workspace.json` unless one is
 served. `dev/dev-workspace.ts` is a dev-only Vite plugin (`apply: "serve"`) that fills that gap: it serves the workspace
 export at `/workspace.json` by running the same `exportJson` pipeline the CLI uses, into a temp directory.
 

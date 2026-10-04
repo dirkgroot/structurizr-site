@@ -38,7 +38,7 @@ Patterns and practices for working on this project. Split into focused files if 
 
 - Behavior is unit tested. **Vitest** runs the suite; **React Testing Library** drives React DOM assertions.
 - Tests are colocated as `<module>.test.ts(x)` and split by runtime: a Node project for `src/cli` + `src/shared`, a
-  jsdom project for `src/web`. `npm test` is part of the merge and release gate.
+  jsdom project for `src/web`. `bun run test` is part of the merge and release gate.
 - Coverage has no threshold; the goal is testing important behavior, not 100%. Vendored shadcn/ui code is excluded.
 - Query by role/text, not implementation. Mock module boundaries with `vi.mock`; inject IO seams (e.g.
   `assemble(outputDir, sourceDir)`) instead of mocking `node:fs`; do not test constants tautologically.
@@ -49,10 +49,10 @@ Patterns and practices for working on this project. Split into focused files if 
 - `oxlint` lints. Config: `.oxlintrc.json`, Vite's default React preset: plugins `react`, `typescript`, `oxc`;
   `react/rules-of-hooks` at **error**, `react/only-export-components` at **warn**. ESLint core rules still run;
   `unicorn`, `import`, `promise`, `node`, `jsx-a11y`, `react-perf` are not enabled.
-- `npm run lint` runs `oxlint --deny-warnings`, so warnings and errors both fail the gate. `npm run lint:fix`
+- `bun run lint` runs `oxlint --deny-warnings`, so warnings and errors both fail the gate. `bun run lint:fix`
   applies safe fixes.
 - `oxfmt` formats (0.71.0, beta). Config: `.oxfmtrc.json`; `sortPackageJson` is disabled so `package.json` key order
-  stays stable (Prettier does not sort keys either). `npm run format` writes; `npm run format:check` verifies.
+  stays stable (Prettier does not sort keys either). `bun run format` writes; `bun run format:check` verifies.
 - Vendored shadcn/ui code (`src/web/components/ui/**`, `src/web/hooks/**`) gets an `.oxlintrc.json` `overrides` entry
   that disables `react/only-export-components` and `react/set-state-in-effect`; those files export variants/hooks and
   use browser-only effects. See [architecture/ui.md](architecture/ui.md).
@@ -66,8 +66,8 @@ Patterns and practices for working on this project. Split into focused files if 
   `chore:` …). Component scopes are `cli` and `web`. `git-cliff` (config `cliff.toml`) groups them into `CHANGELOG.md`;
   scopes are developer metadata and are **not rendered** in the changelog. Non-conforming messages fall under `Other`
   instead of being dropped.
-- Version-bump, merge, and Homebrew-formula-update commits are skipped by parser rules. `npm run changelog` regenerates the
-  file with an `Unreleased` section; `npm run changelog:release` labels it with the `package.json` version at release
+- Version-bump, merge, and Homebrew-formula-update commits are skipped by parser rules. `bun run changelog` regenerates the
+  file with an `Unreleased` section; `bun run changelog:release` labels it with the `package.json` version at release
   time.
 - Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html); while pre-alpha, releases carry an explicit
   `-pre-alpha.N` pre-release identifier. The current version lives in `package.json` (the tag mirrors it); the Lode does
