@@ -5,6 +5,28 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0-pre-alpha.5] - 2026-10-04
+
+### Features
+
+- Render the system landscape diagram
+- Add @shared alias for src/shared imports
+
+### Refactoring
+
+- [**breaking**] Rename generate-site command to generate
+- Make the diagram component generic
+- Require viewKey on Diagram
+- Reduce sidebar nav to a single home link
+
+### Miscellaneous Tasks
+
+- Hand off Homebrew verification to the user in the release skill
+- Update the Homebrew tap from a clone in lode/tmp
+- Bundle the CLI with bun instead of emitting with tsc
+- Replace npm with bun
+- Publish an example site to GitHub Pages
+
 ## [0.2.0-pre-alpha.4] - 2026-10-04
 
 ### Refactoring
