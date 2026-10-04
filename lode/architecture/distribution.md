@@ -93,9 +93,9 @@ tag.
 ## Homebrew formula
 
 `packaging/homebrew/structurizr-site.rb.template` is the formula source, with per-platform `url`/`sha256` placeholders;
-`packaging/homebrew/update-formula.mjs` fills them from the release assets and writes the rendered formula to
-`packaging/homebrew/structurizr-site.rb`. That file is git-ignored — its only home is the `homebrew-structurizr-site`
-tap, which it is copied into.
+`packaging/homebrew/update-formula.mjs` fills them from the release assets and writes the rendered formula to a temp
+file (`--output <path>` overrides the location). It is copied into the `homebrew-structurizr-site` tap; the repo never
+stores it.
 
 The tap is `dirkgroot/homebrew-structurizr-site` (a public repo; formula at `Formula/structurizr-site.rb`). Installing
 is `brew install dirkgroot/structurizr-site/structurizr-site`, which auto-taps on first use. The tap must stay public,

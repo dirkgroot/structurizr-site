@@ -5,6 +5,12 @@
 //
 //   node packaging/homebrew/update-formula.mjs
 //
+// The rendered formula is written to a temp file and its path is printed; copy
+// that file into the Homebrew tap. Pass `--output <path>` to write it somewhere
+// else instead, such as the tap checkout:
+//
+//   node packaging/homebrew/update-formula.mjs --output <tap>/Formula/structurizr-site.rb
+//
 // Pass a local directory containing the four release assets to hash those
 // instead of downloading them (useful before/without a release):
 //
@@ -12,20 +18,30 @@
 //
 // The assets are public, so Homebrew installs them without registry
 // credentials and without notarization (formulas are not quarantined).
-//
-// The formula is then copied into the Homebrew tap. The rendered file is
-// git-ignored; the tap is its only home.
 import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { tmpdir } from "node:os";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../..");
 
+let outputArg;
+let localDir;
+const args = process.argv.slice(2);
+for (let i = 0; i < args.length; i += 1) {
+  if (args[i] === "--output") {
+    outputArg = args[i + 1];
+    i += 1;
+  } else {
+    localDir = args[i];
+  }
+}
+
 const pkg = JSON.parse(await readFile(resolve(repoRoot, "package.json"), "utf8"));
 const templatePath = resolve(here, "structurizr-site.rb.template");
-const formulaPath = resolve(here, "structurizr-site.rb");
+const formulaPath = resolve(outputArg ?? join(tmpdir(), "structurizr-site.rb"));
 
 const repoMatch = /github\.com[/:]([^/]+)\/([^/.]+)/.exec(pkg.repository.url);
 if (!repoMatch) {
@@ -59,7 +75,6 @@ async function readAsset(platform, localDir) {
   return Buffer.from(await response.arrayBuffer());
 }
 
-const localDir = process.argv[2];
 const replacements = { __VERSION__: pkg.version };
 
 for (const platform of PLATFORMS) {

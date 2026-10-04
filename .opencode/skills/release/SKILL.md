@@ -145,7 +145,7 @@ gh release view "v<version>" --json url,assets --jq '.url'
 node packaging/homebrew/update-formula.mjs
 ```
 
-`update-formula.mjs` downloads the four release assets and fills `packaging/homebrew/structurizr-site.rb` (git-ignored) with per-platform `url`/`sha256`. Then copy it into the tap (tap path from `lode/architecture/distribution.md`: `dirkgroot/homebrew-structurizr-site`, formula at `Formula/structurizr-site.rb`).
+`update-formula.mjs` downloads the four release assets and fills the template with per-platform `url`/`sha256`. It writes the rendered formula to a temp file; pass `--output <path>` to choose the location. Copy it into the tap (tap path from `lode/architecture/distribution.md`: `dirkgroot/homebrew-structurizr-site`, formula at `Formula/structurizr-site.rb`).
 
 Locate the tap checkout and commit the formula. The tap is a separate git repo; do not guess its local path. Ask the user for it if `brew --repository dirkgroot/structurizr-site` does not resolve, or clone it:
 
@@ -153,10 +153,13 @@ Locate the tap checkout and commit the formula. The tap is a separate git repo; 
 brew --repository dirkgroot/structurizr-site
 ```
 
-Then:
+Then render to a temp file, copy it into the tap, and remove it:
 
 ```sh
-cp packaging/homebrew/structurizr-site.rb <tap-repo>/Formula/structurizr-site.rb
+formula="$(mktemp -t structurizr-site.rb)"
+node packaging/homebrew/update-formula.mjs --output "$formula"
+cp "$formula" <tap-repo>/Formula/structurizr-site.rb
+rm -f "$formula"
 cd <tap-repo>
 git add Formula/structurizr-site.rb
 git commit -m "structurizr-site <version>"
