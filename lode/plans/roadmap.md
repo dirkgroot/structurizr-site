@@ -30,8 +30,8 @@ Current state and next steps. Update in place; this is not a changelog.
   colocated tests, no coverage threshold, and `bun run test` gating CI and release. See
   [../architecture/testing.md](../architecture/testing.md).
 - Web app shell in place: shadcn/ui on Base UI with Tailwind v4, using the `sidebar-01` block (sidebar nav + inset
-  content). The site name comes from the loaded workspace; navigation is placeholder until the model-derived route index
-  lands. See [../architecture/ui.md](../architecture/ui.md).
+  content). The site name comes from the loaded workspace; navigation is a single `Home` link until the model-derived
+  route index lands (final menu structure still open). See [../architecture/ui.md](../architecture/ui.md).
 - Structurizr workspace JSON types generated from the vendored OpenAPI spec (`openapi-typescript`), gated in CI. See
   [../architecture/workspace-types.md](../architecture/workspace-types.md).
 - First vertical slice in place: `generate -w <workspace.dsl>` exports `workspace.json` via the Structurizr backend,

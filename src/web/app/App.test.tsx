@@ -34,9 +34,9 @@ describe("App", () => {
     );
   });
 
-  it("renders the sidebar navigation groups", () => {
+  it("renders a minimal sidebar navigation", () => {
     render(<App />);
-    expect(screen.getByText("Views")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "System Context" })).toHaveAttribute("href", "#/");
+    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "#/");
+    expect(screen.queryByRole("link", { name: "System Context" })).not.toBeInTheDocument();
   });
 });
