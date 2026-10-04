@@ -16,6 +16,7 @@ The human owns the version decision; this skill proposes one and waits for expli
 - **Clean tree.** Refuse if `git status --short` is non-empty, unless the user confirms a dirty tree is intentional.
 - **Do not rewrite history.** No `--amend` after pushing, no rebasing published commits.
 - **Regression gate failure stops the release.** Do not tag a red tree. Report the failure and stop.
+- **Do not install the formula.** Never run `brew install`/`brew upgrade`; that modifies the user's machine. Report and let the user verify the tap.
 
 ## Invariants this repo relies on
 
@@ -166,15 +167,15 @@ git commit -m "structurizr-site <version>"
 git push
 ```
 
-### 9. Verify and report
+### 9. Report
+
+Do **not** run `brew install` or otherwise verify the formula yourself — installing modifies the user's machine and is the user's call. Report version, tag, release URL, workflow run URL, and tap commit hash, then hand the user the commands to verify the tap themselves:
 
 ```sh
 brew update
 brew install dirkgroot/structurizr-site/structurizr-site
 structurizr-site --version    # expect <version>
 ```
-
-Report: version, tag, release URL, workflow run URL, and tap commit hash.
 
 ### 10. Update lode
 
