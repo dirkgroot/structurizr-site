@@ -3,8 +3,8 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { defaultSpawn } from "../../src/cli/backend/run.js";
-import { exportJson } from "../../src/cli/pipeline/export-json.js";
+import { defaultSpawn } from "../../src/cli/backend/run";
+import { exportJson } from "../../src/cli/pipeline/export-json";
 
 const fixture = resolve(fileURLToPath(new URL("../fixtures/workspace.dsl", import.meta.url)));
 

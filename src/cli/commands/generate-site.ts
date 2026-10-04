@@ -1,8 +1,8 @@
 import { resolve } from "node:path";
-import { DEFAULT_OUTPUT_DIR } from "../../shared/site.js";
-import { assemble } from "../assembly/assemble.js";
-import { exportJson } from "../pipeline/export-json.js";
-import { renderLandscape } from "../pipeline/render-landscape.js";
+import { DEFAULT_OUTPUT_DIR } from "../../shared/site";
+import { assemble } from "../assembly/assemble";
+import { exportJson } from "../pipeline/export-json";
+import { renderLandscape } from "../pipeline/render-landscape";
 
 export interface GenerateSiteOptions {
   output?: string;

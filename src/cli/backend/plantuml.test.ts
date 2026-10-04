@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { runPlantUml } from "./plantuml.js";
+import { runPlantUml } from "./plantuml";
 
 describe("runPlantUml", () => {
   it("runs plantuml on PATH by default", async () => {

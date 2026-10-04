@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { exportJson } from "./export-json.js";
+import { exportJson } from "./export-json";
 
 describe("exportJson", () => {
   it("invokes structurizr export with the json format and output directory", async () => {

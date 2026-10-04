@@ -5,10 +5,10 @@ import { fileURLToPath } from "node:url";
 const moduleDir = dirname(fileURLToPath(import.meta.url));
 
 /**
- * The prebuilt web app bundle next to the compiled CLI (`dist/cli/assembly/` ->
+ * The prebuilt web app bundle next to the bundled CLI (`dist/cli/bin.js` ->
  * `dist/web/`). Used when running from the build output.
  */
-const builtWebDir = resolve(moduleDir, "../../web");
+const builtWebDir = resolve(moduleDir, "../web");
 
 /**
  * Relative path -> embedded file path for the compiled binary, where Bun embeds

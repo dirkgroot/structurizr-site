@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { loadWorkspace, WORKSPACE_FILE } from "./workspace.js";
+import { loadWorkspace, WORKSPACE_FILE } from "@/data/workspace";
 
 function jsonResponse(body: unknown, init: { ok?: boolean } = {}): Response {
   return {

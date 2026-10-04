@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { runStructurizr } from "./run.js";
+import { runStructurizr } from "./run";
 
 describe("runStructurizr", () => {
   it("runs the resolved backend with the given args", async () => {

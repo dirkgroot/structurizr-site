@@ -1,8 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { siteName } from "../shared/site.js";
-import { App } from "./app/App";
-import { loadWorkspace } from "./data/workspace.js";
+import { siteName } from "@shared/site";
+import { App } from "@/app/App";
+import { loadWorkspace } from "@/data/workspace";
 import "./styles/global.css";
 
 const root = document.getElementById("root");

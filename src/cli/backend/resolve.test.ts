@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_STRUCTURIZR_COMMAND, resolveStructurizr } from "./resolve.js";
+import { DEFAULT_STRUCTURIZR_COMMAND, resolveStructurizr } from "./resolve";
 
 describe("resolveStructurizr", () => {
   it("defaults to structurizr on PATH", () => {

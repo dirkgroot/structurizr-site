@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Workspace } from "../../shared/workspace/index.js";
-import { App } from "./App";
+import type { Workspace } from "@shared/workspace";
+import { App } from "@/app/App";
 
 describe("App", () => {
   it("renders the placeholder site name when no workspace is loaded", () => {

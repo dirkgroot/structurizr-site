@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { resolveStructurizr } from "./resolve.js";
+import { resolveStructurizr } from "./resolve";
 
 /** A spawn result with captured stdout/stderr. */
 export interface RunResult {

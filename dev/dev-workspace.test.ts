@@ -2,7 +2,7 @@ import { EventEmitter } from "node:events";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
-import { devWorkspace, type DevWorkspaceOptions } from "./dev-workspace.js";
+import { devWorkspace, type DevWorkspaceOptions } from "./dev-workspace";
 
 const { renderLandscape } = vi.hoisted(() => ({ renderLandscape: vi.fn() }));
 vi.mock("../src/cli/pipeline/render-landscape.js", () => ({ renderLandscape }));

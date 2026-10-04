@@ -2,10 +2,10 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import type { Plugin } from "vite";
-import { DIAGRAMS_DIR } from "../src/shared/diagrams.ts";
-import { exportJson } from "../src/cli/pipeline/export-json.js";
-import { renderLandscape } from "../src/cli/pipeline/render-landscape.js";
-import { WORKSPACE_FILE } from "../src/web/data/workspace.ts";
+import { DIAGRAMS_DIR } from "../src/shared/diagrams";
+import { exportJson } from "../src/cli/pipeline/export-json";
+import { renderLandscape } from "../src/cli/pipeline/render-landscape";
+import { WORKSPACE_FILE } from "../src/web/data/workspace";
 
 /** Env var holding the workspace file the dev server serves. */
 export const WORKSPACE_FILE_ENV = "VITE_WORKSPACE_FILE";

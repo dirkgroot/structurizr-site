@@ -2,8 +2,8 @@ import { mkdir, mkdtemp, readdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { renderLandscape } from "./render-landscape.js";
-import type { SpawnFn } from "../backend/run.js";
+import { renderLandscape } from "./render-landscape";
+import type { SpawnFn } from "../backend/run";
 
 describe("renderLandscape", () => {
   let outputDir: string;

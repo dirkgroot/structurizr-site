@@ -8,10 +8,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { siteName } from "../../shared/site";
-import { systemLandscapeViewKey } from "../../shared/diagrams.js";
-import type { Workspace } from "../../shared/workspace/index.js";
-import { Diagram } from "../diagram/Diagram";
+import { siteName } from "@shared/site";
+import { systemLandscapeViewKey } from "@shared/diagrams";
+import type { Workspace } from "@shared/workspace";
+import { Diagram } from "@/diagram/Diagram";
 
 export interface AppProps {
   workspace?: Workspace;

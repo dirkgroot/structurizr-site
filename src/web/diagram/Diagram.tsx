@@ -1,4 +1,4 @@
-import { diagramPath } from "../../shared/diagrams.js";
+import { diagramPath } from "@shared/diagrams";
 
 export interface DiagramProps {
   /** Structurizr view key of the diagram to render. */

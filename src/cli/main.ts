@@ -1,6 +1,6 @@
 import { createRequire } from "node:module";
-import { generateSite } from "./commands/generate-site.js";
-import { serveSite } from "./commands/serve-site.js";
+import { generateSite } from "./commands/generate-site";
+import { serveSite } from "./commands/serve-site";
 
 // Injected at build time for the compiled binary (see packaging/binary/build.mjs).
 // When running from source, the guard is false and the version comes from package.json.

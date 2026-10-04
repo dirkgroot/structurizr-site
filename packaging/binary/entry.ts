@@ -4,9 +4,9 @@
 // The web app is embedded into the binary by Bun (see packaging/binary/build.mjs).
 // The assembler copies the embedded files straight into the output directory, so
 // there is no startup extraction step.
-import { setWebBundleAssets } from "../../src/cli/assembly/assemble.ts";
-import { run } from "../../src/cli/main.ts";
-import { webAssets } from "../../dist/binary/web-assets.ts";
+import { setWebBundleAssets } from "../../src/cli/assembly/assemble";
+import { run } from "../../src/cli/main";
+import { webAssets } from "../../dist/binary/web-assets";
 
 setWebBundleAssets(webAssets);
 

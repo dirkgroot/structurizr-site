@@ -23,7 +23,7 @@ Build tools are pinned with [`mise`](https://mise.jdx.dev/) (Node LTS + Bun). Wi
 
 ```sh
 npm install
-npm run build          # tsc -> dist/cli, vite -> dist/web, bun -> dist/binaries/<platform>
+npm run build          # bun -> dist/cli, vite -> dist/web, bun -> dist/binaries/<platform>
 npm run build:web      # vite -> dist/web (the web app embedded in the binary)
 npm run build:binary   # native platform only
 npm run build:binary:all  # all four release targets (cross-compiles)
@@ -44,7 +44,7 @@ VITE_STRUCTURIZR="java -jar structurizr.war" npm run watch
 ```
 
 The distributed artifact is a self-contained binary: `bun build --compile` embeds the CLI, the web app, and the Bun
-runtime, so users need no Node. The `bun` toolchain is only needed to build it. See
+runtime, so users need no Node. Bun is a build-time tool: it bundles the dev CLI and compiles the binary. See
 `lode/architecture/distribution.md`.
 
 Unit tests use Vitest; React components are tested with React Testing Library. Tests are colocated with the source as

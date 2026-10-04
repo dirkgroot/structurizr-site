@@ -1,6 +1,6 @@
 // Runtime-agnostic values shared by the CLI and the web app. This module must not
 // import Node or browser APIs (see lode/architecture/repository-layout.md).
-import type { Workspace } from "./workspace/index.js";
+import type { Workspace } from "./workspace";
 
 /** Display name of the site before a workspace has been loaded (or if loading fails). */
 export const SITE_NAME = "Structurizr Site";

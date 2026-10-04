@@ -1,7 +1,7 @@
 import { resolve } from "node:path";
-import { DEFAULT_OUTPUT_DIR } from "../../shared/site.js";
-import { DEFAULT_PORT, serve } from "../serve/serve.js";
-import { generateSite } from "./generate-site.js";
+import { DEFAULT_OUTPUT_DIR } from "../../shared/site";
+import { DEFAULT_PORT, serve } from "../serve/serve";
+import { generateSite } from "./generate-site";
 
 export interface ServeSiteOptions {
   output?: string;

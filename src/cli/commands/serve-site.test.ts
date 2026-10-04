@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { serveSite } from "./serve-site.js";
+import { serveSite } from "./serve-site";
 
 const { generateSite } = vi.hoisted(() => ({ generateSite: vi.fn() }));
 const { serve } = vi.hoisted(() => ({ serve: vi.fn() }));

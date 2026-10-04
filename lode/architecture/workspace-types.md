@@ -44,8 +44,8 @@ src/shared/workspace/
 
 - `schema.d.ts` exposes `components["schemas"][...]`. Consumers must not index that directly; `index.ts` re-exports
   friendly aliases so the schema shape stays an implementation detail.
-- `schema.d.ts` uses `.js` import specifiers under `NodeNext`, so `import type { components } from "./schema.js"`
-  resolves to `schema.d.ts` in both the CLI (`NodeNext`) and web (`Bundler`) projects. Verified with `tsc`.
+- All projects use `moduleResolution: "Bundler"` and extensionless imports. A type-only import of `./schema` resolves
+  to `schema.d.ts` in both the CLI and web projects. Verified with `tsc`.
 
 ## Regeneration
 

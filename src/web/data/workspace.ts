@@ -1,4 +1,4 @@
-import type { Workspace } from "../../shared/workspace/index.js";
+import type { Workspace } from "@shared/workspace";
 
 /** Deployment-relative path the CLI writes the exported workspace to. */
 export const WORKSPACE_FILE = "workspace.json";

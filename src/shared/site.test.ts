@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { SITE_NAME, siteName } from "./site.js";
+import { SITE_NAME, siteName } from "./site";
 
 describe("siteName", () => {
   it("uses the workspace name when present", () => {

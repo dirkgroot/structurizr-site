@@ -1,4 +1,4 @@
-import { runStructurizr, type SpawnFn } from "../backend/run.js";
+import { runStructurizr, type SpawnFn } from "../backend/run";
 
 export interface ExportJsonOptions {
   /** The workspace file (`.dsl` or `.json`) to export. */

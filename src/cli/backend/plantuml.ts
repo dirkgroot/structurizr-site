@@ -1,4 +1,4 @@
-import { defaultSpawn, resolveCommand, type SpawnFn } from "./run.js";
+import { defaultSpawn, resolveCommand, type SpawnFn } from "./run";
 
 /** PlantUML command used when no `--plantuml` override is given. */
 export const DEFAULT_PLANTUML_COMMAND = "plantuml";

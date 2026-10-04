@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { defaultSpawn } from "./run.js";
+import { defaultSpawn } from "./run";
 
 describe("defaultSpawn", () => {
   it("captures stdout and resolves on exit code 0", async () => {

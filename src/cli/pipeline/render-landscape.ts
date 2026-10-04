@@ -1,11 +1,11 @@
 import { mkdir, mkdtemp, readFile, rename, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { DIAGRAMS_DIR, diagramFileName, systemLandscapeViewKey } from "../../shared/diagrams.js";
-import type { Workspace } from "../../shared/workspace/index.js";
-import { runPlantUml } from "../backend/plantuml.js";
-import type { SpawnFn } from "../backend/run.js";
-import { exportPlantUml } from "./export-plantuml.js";
+import { DIAGRAMS_DIR, diagramFileName, systemLandscapeViewKey } from "../../shared/diagrams";
+import type { Workspace } from "../../shared/workspace";
+import { runPlantUml } from "../backend/plantuml";
+import type { SpawnFn } from "../backend/run";
+import { exportPlantUml } from "./export-plantuml";
 
 export interface RenderLandscapeOptions {
   /** The workspace file used to export PlantUML (`.dsl` or `.json`). */

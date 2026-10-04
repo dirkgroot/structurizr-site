@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { assemble, setWebBundleAssets } from "./assemble.js";
+import { assemble, setWebBundleAssets } from "./assemble";
 
 describe("assemble", () => {
   let workDir: string;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { DIAGRAMS_DIR, diagramFileName, diagramPath, systemLandscapeViewKey } from "./diagrams.js";
-import type { Workspace } from "./workspace/index.js";
+import { DIAGRAMS_DIR, diagramFileName, diagramPath, systemLandscapeViewKey } from "./diagrams";
+import type { Workspace } from "./workspace";
 
 describe("diagram contract", () => {
   it("names a diagram file after the view key", () => {

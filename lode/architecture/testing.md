@@ -71,7 +71,8 @@ export default defineConfig({
 Test files must not enter the build output, so they are excluded from the build projects and checked by their own
 project:
 
-- `tsconfig.cli.json` / `tsconfig.web.json` `exclude` `**/*.test.ts(x)`, so `tsc` never emits test JS into `dist/`.
+- `tsconfig.cli.json` / `tsconfig.web.json` `exclude` `**/*.test.ts(x)`; the CLI bundle is built from `bin.ts`, so test
+  code never enters `dist/`.
 - `tsconfig.test.json` (referenced from the root solution file) type-checks `src/**/*.test.ts(x)` and `test/**/*.ts`
   with `noEmit`, DOM libs, and `types: ["node", "vite/client"]`.
 - `tsconfig.node.json` also covers `vitest.config.ts`.
@@ -80,9 +81,9 @@ project:
 ## Conventions
 
 - **Mock at module boundaries** with `vi.mock` plus `vi.hoisted` for the mock value, e.g. `run` in `main.test.ts`
-  mocks `./commands/generate-site.js`; `generate-site.test.ts` mocks `../assembly/assemble.js`.
+  mocks `./commands/generate-site`; `generate-site.test.ts` mocks `../assembly/assemble`.
 - **Inject IO seams instead of mocking `node:fs`.** `assemble(outputDir, sourceDir)` takes the source bundle as an
-  optional parameter (default `spaBundleDir`); the test copies real temp directories with `mkdtemp`.
+  optional parameter (default `builtWebDir`); the test copies real temp directories with `mkdtemp`.
 - **Do not test constants tautologically.** Shared constants in `src/shared/site.ts` are covered through behavior:
   `App.test.tsx` asserts the rendered `SITE_NAME`, `generate-site.test.ts` asserts the resolved `DEFAULT_OUTPUT_DIR`.
   Generated code (`src/shared/workspace/schema.d.ts`) has no test; it is type-only and exercised by compilation.

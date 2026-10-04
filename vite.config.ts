@@ -2,7 +2,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
-import { devWorkspace } from "./dev/dev-workspace.ts";
+import { devWorkspace } from "./dev/dev-workspace";
 
 // The web app lives in src/web and is emitted to dist/web. The CLI copies that
 // directory into the generated output (see src/cli/assembly/assemble.ts).
@@ -11,9 +11,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), devWorkspace()],
   resolve: {
     // `@` points at the web app tree so shadcn's `@/components/...` imports resolve
-    // (see components.json and lode/architecture/ui.md).
+    // (see components.json and lode/architecture/ui.md). `@shared` points at the
+    // runtime-agnostic contracts the web app and CLI both import.
     alias: {
       "@": fileURLToPath(new URL("./src/web", import.meta.url)),
+      "@shared": fileURLToPath(new URL("./src/shared", import.meta.url)),
     },
   },
   build: {

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { Diagram } from "./Diagram";
+import { Diagram } from "@/diagram/Diagram";
 
 describe("Diagram", () => {
   it("renders the SVG for the given view key", () => {

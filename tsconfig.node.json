@@ -5,8 +5,14 @@
     "moduleResolution": "Bundler",
     "lib": ["ES2023"],
     "types": ["node"],
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@/*": ["./src/web/*"],
+      "@shared/*": ["./src/shared/*"],
+      // `@shared/workspace` is a directory import; tsc's path substitution does not
+      // fall through to its `index.ts`, so map it explicitly for the extensionless form.
+      "@shared/workspace": ["./src/shared/workspace/index.ts"]
+    }
   },
   "include": ["vite.config.ts", "vitest.config.ts", "dev/**/*.ts"]
 }

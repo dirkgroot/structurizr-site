@@ -25,7 +25,7 @@ describe("bin", () => {
   it("runs the CLI with the process arguments", async () => {
     run.mockResolvedValue(undefined);
 
-    await import("./bin.js");
+    await import("./bin");
     await flush();
 
     expect(run).toHaveBeenCalledWith(process.argv.slice(2));
@@ -35,7 +35,7 @@ describe("bin", () => {
   it("reports an Error rejection and sets a failing exit code", async () => {
     run.mockRejectedValue(new Error("boom"));
 
-    await import("./bin.js");
+    await import("./bin");
     await flush();
 
     expect(console.error).toHaveBeenCalledWith("structurizr-site: boom");
@@ -45,7 +45,7 @@ describe("bin", () => {
   it("stringifies a non-Error rejection", async () => {
     run.mockRejectedValue("boom");
 
-    await import("./bin.js");
+    await import("./bin");
     await flush();
 
     expect(console.error).toHaveBeenCalledWith("structurizr-site: boom");

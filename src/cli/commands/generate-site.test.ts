@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { generateSite } from "./generate-site.js";
+import { generateSite } from "./generate-site";
 
 const { assemble } = vi.hoisted(() => ({ assemble: vi.fn() }));
 const { exportJson } = vi.hoisted(() => ({ exportJson: vi.fn() }));

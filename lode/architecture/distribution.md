@@ -42,8 +42,8 @@ version; there are no runtime dependencies.
   `packaging/binary/entitlements.plist`) and verifies it with `codesign --verify --strict`.
 - **Sizes** are ~59 MB (darwin-arm64) to ~78 MB (linux). The binary embeds the Bun runtime.
 
-`src/cli` still compiles to `dist/cli` via `tsc` for `npm run generate`/`serve` from source; that path is dev-only
-and not shipped.
+`src/cli` is bundled to `dist/cli/bin.js` via `bun build` for `npm run generate`/`serve` from source; that path is
+dev-only and not shipped.
 
 ## Versioning
 

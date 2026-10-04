@@ -29,7 +29,7 @@ structurizr-site/
 ├── package.json                 # single package; build scripts
 ├── tsconfig.json                # solution file; references the projects below
 ├── tsconfig.base.json
-├── tsconfig.cli.json            # Node libs
+├── tsconfig.cli.json            # Node libs (typecheck only)
 ├── tsconfig.web.json            # DOM libs
 ├── tsconfig.node.json           # vite.config.ts + vitest.config.ts
 ├── tsconfig.test.json           # test files (noEmit)
@@ -73,7 +73,7 @@ structurizr-site/
 │   ├── fixtures/                # sample .dsl workspaces + expected JSON
 │   └── e2e/                     # DSL -> JSON -> puml -> svg -> anchor assertions
 ├── dist/                        # git-ignored; build output
-│   ├── cli/                     # tsc output (dev only)
+│   ├── cli/                     # bun bundle output (dev only)
 │   ├── web/                     # vite output (embedded into the binary)
 │   └── binaries/                # compiled self-contained binaries
 └── packaging/
@@ -109,18 +109,20 @@ structurizr-site/
 ## Build and packaging
 
 - Build tools are managed by `mise` (`mise.toml`): Node `24.21.0` (Krypton), Bun `1.4.2`, and git-cliff `2.14.2`.
-- `tsc -p tsconfig.cli.json` → `dist/cli/` (plus `dist/shared/`), dev only; `vite build` → `dist/web/`;
+- `bun build src/cli/bin.ts` → `dist/cli/bin.js` (a single bundle; dev only); `vite build` → `dist/web/`;
   `node packaging/binary/build.mjs` → `dist/binaries/` (the self-contained binaries). `dist/` is git-ignored.
 - `package.json` has no `bin`/`files`/`prepack` — nothing is published to a registry. Scripts: `build:web`,
   `build:binary`, `build:binary:all`, `changelog`, `changelog:release`.
 - `assembly/` copies the web app into the output directory at generate time. From `dist/cli` it resolves `dist/web`; in the
   compiled binary `packaging/binary/entry.ts` registers the embedded asset map via `setWebBundleAssets()`, and the
   assembler copies each embedded file straight into the output directory.
-- Four project tsconfigs: `tsconfig.cli.json` (Node libs) and `tsconfig.web.json` (DOM libs) — both including
-  `src/shared` and excluding test files — plus `tsconfig.node.json` for `vite.config.ts` + `vitest.config.ts` and
-  `tsconfig.test.json` (`noEmit`) for tests. A root `tsconfig.json` with `"files": []` references them (the Vite
-  "solution file" pattern) so the IDE's TypeScript language server discovers each project; the language server only
-  auto-discovers files literally named `tsconfig.json`. See [testing.md](testing.md).
+- Four project tsconfigs, all `noEmit` typecheck projects on `moduleResolution: "Bundler"`: `tsconfig.cli.json`
+  (Node libs) and `tsconfig.web.json` (DOM libs) — both including `src/shared` and excluding test files — plus
+  `tsconfig.node.json` for `vite.config.ts` + `vitest.config.ts` and `tsconfig.test.json` for tests. Because nothing
+  emits, relative imports are **extensionless** repo-wide; the CLI is bundled by Bun (`bun build`), which resolves
+  them. A root `tsconfig.json` with `"files": []` references them (the Vite "solution file" pattern) so the IDE's
+  TypeScript language server discovers each project; the language server only auto-discovers files literally named
+  `tsconfig.json`. See [testing.md](testing.md).
 
 ## Invariants
 

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { run } from "./main.js";
+import { run } from "./main";
 
 const { generateSite } = vi.hoisted(() => ({ generateSite: vi.fn() }));
 const { serveSite } = vi.hoisted(() => ({ serveSite: vi.fn() }));
