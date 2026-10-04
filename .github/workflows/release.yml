@@ -94,11 +94,16 @@ jobs:
           java-version: "21"
       - name: Install Structurizr backend and PlantUML
         run: |
+          # Ubuntu's plantuml package is far too old for Structurizr's C4 output,
+          # so install the current jar behind a `plantuml` wrapper. graphviz is
+          # kept for PlantUML's layout engine.
           sudo apt-get update
-          sudo apt-get install -y plantuml
+          sudo apt-get install -y graphviz
           curl -fsSL --retry 3 --retry-delay 5 -o "$RUNNER_TEMP/structurizr.war" https://download.structurizr.com/structurizr.war
+          curl -fsSL --retry 3 --retry-delay 5 -o "$RUNNER_TEMP/plantuml.jar" https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
           printf '#!/usr/bin/env bash\nexec java -jar "%s" "$@"\n' "$RUNNER_TEMP/structurizr.war" > "$RUNNER_TEMP/structurizr"
-          chmod +x "$RUNNER_TEMP/structurizr"
+          printf '#!/usr/bin/env bash\nexec java -jar "%s" "$@"\n' "$RUNNER_TEMP/plantuml.jar" > "$RUNNER_TEMP/plantuml"
+          chmod +x "$RUNNER_TEMP/structurizr" "$RUNNER_TEMP/plantuml"
           echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
       - name: Generate example site
         run: |
