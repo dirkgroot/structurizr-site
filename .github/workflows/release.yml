@@ -8,8 +8,23 @@ permissions:
   contents: write
 
 jobs:
+  create-release:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Create release if missing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $GITHUB_REF_NAME already exists — reusing."
+          else
+            gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME"
+          fi
+
   upload:
+    needs: create-release
     strategy:
+      fail-fast: false
       matrix:
         include:
           - { os: macos-26, target: aarch64-apple-darwin }
