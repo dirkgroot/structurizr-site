@@ -1,6 +1,6 @@
 # Open Questions
 
-Forks to resolve while building the architecture incrementally. None are decided; each records the question, known constraints (facts), and candidate options with one-line trade-offs. Roughly ordered by how soon they bite.
+Forks to resolve while building the architecture incrementally. Each records the question, known constraints (facts), and candidate options with one-line trade-offs. Roughly ordered by how soon they bite. Resolved forks keep their analysis for history.
 
 ## 1. Input contract
 
@@ -13,10 +13,10 @@ Forks to resolve while building the architecture incrementally. None are decided
 
 **Options:**
 - CLI accepts JSON only — simplest; pushes DSL work to the user or to `structurizr-cli`.
-- CLI shells out to `structurizr-cli` (JVM) for DSL → JSON — full DSL parity; JVM dependency at build time.
+- CLI shells out to `structurizr-cli` (JVM) for DSL → JSON — full DSL parity; JVM dependency at build time. **← decided**
 - CLI ports the DSL parser to Rust — single tool, no JVM; large effort, plugin/script parity impossible.
 
-**Status:** open.
+**Status:** resolved 2026-10-15 — the CLI shells out to the `structurizr` CLI (`generate` runs `structurizr export -w <input> -f json -o <output>` and renames the export to `workspace.json`). This also covers `!docs`/`!adrs`, since export processes the DSL with filesystem access. See [summary.md](summary.md), decision 4.
 
 ## 2. Diagram layout
 
@@ -44,7 +44,7 @@ Forks to resolve while building the architecture incrementally. None are decided
 
 **Options:** static-host only with a separate dev-server story; CLI `serve` subcommand doubling as dev server; third-party dev server for SPA work only.
 
-**Status:** open.
+**Status:** open. For now: static hosting only; `pnpm --dir web dev` covers SPA development (drop a `workspace.json` into `web/public/`).
 
 ## 4. SPA stack
 
@@ -54,9 +54,12 @@ Forks to resolve while building the architecture incrementally. None are decided
 - The work is mostly rendering content (diagrams, docs, ADRs, search) — heavy on libraries, light on app logic.
 - Docs rendering alone implies Markdown + AsciiDoc + KaTeX support in the browser; search implies a client-side index library.
 
-**Status:** open.
+**Options:**
+- React — largest ecosystem for the library-heavy roadmap (Markdown/AsciiDoc renderers, KaTeX, search UIs, diagram wrappers). **← decided**
+- Svelte / Solid / Vue — smaller bundles or different reactivity models, thinner ecosystems for the niche rendering libraries.
+- Hand-rolled — rejected at decision time.
 
-## 5. Parity order
+**Status:** resolved 2026-10-15 — Vite + React + TypeScript, in `web/`, embedded into the CLI binary via rust-embed. See [summary.md](summary.md), decision 5.
 
 **Question:** In what order do we rebuild the original feature set? Checklist in [../plans/rewrite.md](../plans/rewrite.md).
 

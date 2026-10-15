@@ -7,6 +7,7 @@ Official and community tooling relevant to the rewrite. Researched 2026-10-15.
 `structurizr-cli export -format static-site` generates a static site (diagrams only, no docs/ADRs) whose client-side viewer reads workspace JSON at runtime — an existence proof for our SPA-reads-JSON architecture.
 
 - Accepts both DSL and JSON workspaces and processes them the same way.
+- `export -f json -o <dir>` writes `<input basename>.json` into the output dir (verified locally, structurizr 2026.09.19); consumers must normalize the file name.
 - Embedding via iframe + `structurizr-embed.js`; `postMessage()` used for iframe height.
 - Introduction modal suppressed via a `structurizr.introduction` workspace property.
 

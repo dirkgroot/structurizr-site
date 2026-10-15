@@ -22,5 +22,9 @@ Repository of short (term - meaning) lines describing the domain language.
 ## New system
 
 - SPA - the single-page application UI (locked decision; replaces generated static HTML).
-- CLI - the Rust command-line tool (locked decision).
-- Site bundle - tentative name for what the CLI emits (SPA assets + workspace JSON per branch + manifest). Naming not yet agreed.
+- CLI - the Rust command-line tool, binary `structurizr-site` (locked decision).
+- `generate` - the CLI subcommand: exports the workspace via the `structurizr` CLI, then copies the SPA into the output directory. Flags: `--workspace` (default `workspace.dsl`), `--output` (default `build`).
+- Output directory - where `generate` writes the site; default `build`. Not cleaned between runs.
+- `workspace.json` - the exported workspace JSON placed next to `index.html`; the SPA fetches it as `./workspace.json`. The `structurizr` CLI names exports after the input file, so `generate` renames them.
+- `web/` - the Vite + React + TypeScript SPA project; built into `web/dist` and embedded into the binary via rust-embed.
+- Site bundle - the contents of the output directory (SPA assets + workspace.json). Realized by `generate`; the earlier tentative name for the CLI output.

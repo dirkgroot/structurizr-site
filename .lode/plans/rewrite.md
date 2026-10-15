@@ -17,10 +17,10 @@ Goal: reach feature parity with the original tool on the new architecture (SPA +
 - [ ] Diagram key
 - [ ] Tag filtering UI
 
-## Proposed build order (proposal, not agreed)
+## Proposed build order (agreed as of the walking skeleton)
 
-1. Walking skeleton: CLI emits SPA + one workspace JSON; SPA fetches and renders one diagram.
-2. Input contract resolution (fork #1) — DSL support lands here.
+1. Walking skeleton: CLI emits SPA + one workspace JSON; SPA fetches and renders one diagram. — **done 2026-10-15, minus diagram rendering**: `generate` emits SPA + `workspace.json`; the SPA shows workspace name/description. Diagram rendering is the next step.
+2. Input contract resolution (fork #1) — DSL support lands here. — **resolved early**: the CLI shells out to the `structurizr` CLI from day one.
 3. Docs + ADRs.
 4. Branches.
 5. Search, themes, images, remaining polish.

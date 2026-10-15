@@ -1,37 +1,41 @@
 # Architecture
 
-Current state of the new system's architecture. Status: **design phase — no code exists yet.**
+Current state of the new system. Status: **walking skeleton works** (shows workspace name only; no diagram rendering yet).
 
-## Locked decisions
+## Decisions
 
 1. **SPA, not static HTML generation.** The UI is a single-page application; there is no per-page static HTML pipeline.
-2. **The SPA reads Structurizr workspace JSON from the web server.** The workspace content the SPA renders is fetched over HTTP as JSON.
-3. **The CLI is written in Rust.**
+2. **The SPA reads Structurizr workspace JSON from the web server.** Fetched at runtime as `./workspace.json`, relative to `index.html`.
+3. **The CLI is written in Rust.** Binary and crate name: `structurizr-site`.
+4. **The CLI shells out to the `structurizr` CLI** for workspace processing and JSON export (resolved fork #1). It accepts DSL or JSON input. Consequence: users need Java at build time.
+5. **The SPA is Vite + React + TypeScript** in `web/` (resolved fork #4). Assets are embedded into the binary with `rust-embed` (`#[folder = "web/dist"]`): release builds embed at compile time, debug builds read `web/dist` from disk at runtime.
 
-Nothing else is decided. Open forks: [open-questions.md](open-questions.md).
+Still open: diagram layout (#2), serving model (#3), parity order (#5) — [open-questions.md](open-questions.md).
 
-## Tentative shape (discussion sketch — NOT decided)
+## Shape
 
 ```mermaid
 flowchart LR
-    subgraph cli["Rust CLI"]
-        build["generate"]
-        serve["serve (dev/preview?)"]
+    subgraph cli["structurizr-site (Rust)"]
+        generate["generate --workspace --output"]
     end
-    subgraph dist["output / web server"]
-        spa["SPA (index.html + assets)"]
-        json["workspace JSON (+ branch manifest?)"]
+    sc["structurizr CLI (JVM)"]
+    subgraph dist["output directory (default build)"]
+        spa["SPA assets"]
+        json["workspace.json"]
     end
-    build --> dist
-    serve -.-> dist
-    spa -- "fetch JSON" --> json
+    generate -- "export -w -f json -o" --> sc
+    sc -- "renamed to workspace.json" --> json
+    generate -- "copies embedded web/dist" --> spa
+    spa -- "fetch ./workspace.json" --> json
 ```
 
-- The CLI produces something a web server can host; the SPA fetches workspace JSON at runtime and renders client-side.
-- Component names, responsibilities, and boundaries are deliberately vague until the open forks resolve.
+- Output layout: `index.html`, `assets/` (hashed SPA bundles), `workspace.json`. Vite `base: './'` keeps asset URLs relative, so the output works from any static path.
+- `generate` does not clean the output directory; repeated runs can leave stale hashed assets.
 
 ## Invariants
 
 - The UI is a SPA; no static HTML generation returns.
 - The SPA's data source is Structurizr workspace JSON fetched from the web server — not embedded or generated content.
-- The CLI is Rust.
+- The CLI is Rust; workspace processing happens in the `structurizr` CLI (no DSL parsing in Rust).
+- Release binaries are self-contained; debug builds require `web/dist` to exist, so build the SPA before the first `cargo build`.
