@@ -1,9 +1,17 @@
 import { useEffect, useState } from 'react'
-
-interface Workspace {
-  name: string
-  description?: string
-}
+import { AppSidebar, type Workspace } from '@/components/app-sidebar'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+} from '@/components/ui/breadcrumb'
+import { Separator } from '@/components/ui/separator'
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar'
 
 function App() {
   const [workspace, setWorkspace] = useState<Workspace | null>(null)
@@ -21,14 +29,32 @@ function App() {
       )
   }, [])
 
-  if (error) return <p>Failed to load workspace: {error}</p>
-  if (!workspace) return <p>Loading workspace…</p>
-
   return (
-    <main>
-      <h1>{workspace.name}</h1>
-      {workspace.description && <p>{workspace.description}</p>}
-    </main>
+    <SidebarProvider>
+      <AppSidebar workspace={workspace} />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:h-4"
+          />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbPage>
+                  {error ? 'Error' : (workspace?.name ?? 'Loading workspace…')}
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </header>
+        <main className="flex flex-1 flex-col gap-4 p-4">
+          {error && <p>Failed to load workspace: {error}</p>}
+          {workspace?.description && <p>{workspace.description}</p>}
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }
 
