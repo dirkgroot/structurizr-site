@@ -19,9 +19,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
+      - uses: jdx/mise-action@v2
+
+      - name: Add Rust target
+        run: rustup target add ${{ matrix.target }}
 
       - uses: actions/setup-node@v4
         with:
@@ -31,10 +32,6 @@ jobs:
 
       - run: pnpm --dir web install --frozen-lockfile
       - run: pnpm --dir web build
-
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.target }}
 
       - uses: Swatinem/rust-cache@v2
         with:

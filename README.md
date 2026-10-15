@@ -4,8 +4,8 @@ Rewrite of [structurizr-site-generatr](https://github.com/avisi-cloud/structuriz
 
 ## Prerequisites
 
-- [Rust](https://rustup.rs)
-- [Node.js](https://nodejs.org) with [pnpm](https://pnpm.io)
+- [mise](https://mise.jdx.dev) — `mise install` sets up the pinned Rust toolchain and pnpm from `mise.toml`
+- [Node.js](https://nodejs.org) 24 — runs pnpm and the web build
 - [Java](https://adoptium.net) and the [structurizr CLI](https://docs.structurizr.com/cli), with `structurizr` on your `PATH`
 
 ## Generating a site
