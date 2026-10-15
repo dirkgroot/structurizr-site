@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - run: pnpm --dir web install --frozen-lockfile
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Build web
+        run: pnpm --dir web build
+
+      - name: Lint web
+        run: pnpm --dir web lint
+
+      - name: Lint Rust
+        run: |
+          cargo fmt --check
+          cargo clippy -- -D warnings
+
+      - name: Build Rust
+        run: cargo build --locked
+
+      - name: Check commit messages
+        if: github.event_name == 'pull_request'
+        run: pnpm --dir web exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }}
