@@ -31,6 +31,9 @@ jobs:
       - name: Lint web
         run: pnpm --dir web lint
 
+      - name: Test web
+        run: pnpm --dir web test
+
       - name: Lint Rust
         run: |
           cargo fmt --check

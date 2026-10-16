@@ -66,9 +66,9 @@ function SiteLayout({ workspace: state }: { workspace: PageProps }) {
           />
           <BreadcrumbTrail crumbs={crumbs} />
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-4">
+        <div className="flex flex-1 flex-col gap-4 p-4">
           <Routes>{renderRoutes(state)}</Routes>
-        </main>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   )
