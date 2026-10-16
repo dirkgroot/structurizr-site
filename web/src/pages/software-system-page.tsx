@@ -1,13 +1,8 @@
 import { useParams } from 'react-router'
 
-import type { Workspace } from '@/components/app-sidebar'
+import type { PageProps } from '@/lib/routes'
 
-interface SoftwareSystemPageProps {
-  workspace: Workspace | null
-  error: string | null
-}
-
-export function SoftwareSystemPage({ workspace, error }: SoftwareSystemPageProps) {
+export function SoftwareSystemPage({ workspace, error }: PageProps) {
   const { id } = useParams()
 
   if (error) return <p>Failed to load workspace: {error}</p>

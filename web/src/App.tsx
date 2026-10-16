@@ -1,30 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
-import { BrowserRouter, HashRouter, Route, Routes, Link, matchPath, useLocation } from 'react-router'
-
+import { BrowserRouter, HashRouter, Routes, useLocation } from 'react-router'
 import { AppSidebar, type Workspace } from '@/components/app-sidebar'
+import { BreadcrumbTrail } from '@/components/breadcrumb-trail'
+import { resolveBreadcrumbs, renderRoutes, type PageProps } from '@/lib/routes'
 import { getSiteConfig, type SiteConfig, workspaceUrl } from '@/lib/site'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
 import { Separator } from '@/components/ui/separator'
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
-import { HomePage } from '@/pages/home-page'
-import { NotFoundPage } from '@/pages/not-found-page'
-import { SoftwareSystemPage } from '@/pages/software-system-page'
-
-interface WorkspaceState {
-  workspace: Workspace | null
-  error: string | null
-}
 
 function App() {
   const site = useMemo(() => getSiteConfig(), [])
@@ -41,8 +26,8 @@ function App() {
   )
 }
 
-function useWorkspace(site: SiteConfig): WorkspaceState {
-  const [state, setState] = useState<WorkspaceState>({
+function useWorkspace(site: SiteConfig): PageProps {
+  const [state, setState] = useState<PageProps>({
     workspace: null,
     error: null,
   })
@@ -65,12 +50,9 @@ function useWorkspace(site: SiteConfig): WorkspaceState {
   return state
 }
 
-function SiteLayout({ workspace: state }: { workspace: WorkspaceState }) {
+function SiteLayout({ workspace: state }: { workspace: PageProps }) {
   const location = useLocation()
-  const systemMatch = matchPath('/software-systems/:id', location.pathname)
-  const system = systemMatch
-    ? state.workspace?.model?.softwareSystems?.find((s) => s.id === systemMatch.params.id)
-    : undefined
+  const crumbs = resolveBreadcrumbs(location.pathname, state.workspace, state.error)
 
   return (
     <SidebarProvider>
@@ -82,58 +64,10 @@ function SiteLayout({ workspace: state }: { workspace: WorkspaceState }) {
             orientation="vertical"
             className="mr-2 data-[orientation=vertical]:h-4"
           />
-          <Breadcrumb>
-            <BreadcrumbList>
-              {state.error ? (
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Error</BreadcrumbPage>
-                </BreadcrumbItem>
-              ) : state.workspace === null ? (
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Loading workspace…</BreadcrumbPage>
-                </BreadcrumbItem>
-              ) : systemMatch && system ? (
-                <>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink asChild>
-                      <Link to="/">{state.workspace.name}</Link>
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>{system.name}</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </>
-              ) : systemMatch ? (
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Software system not found</BreadcrumbPage>
-                </BreadcrumbItem>
-              ) : location.pathname === '/' ? (
-                <BreadcrumbItem>
-                  <BreadcrumbPage>{state.workspace.name}</BreadcrumbPage>
-                </BreadcrumbItem>
-              ) : (
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Page not found</BreadcrumbPage>
-                </BreadcrumbItem>
-              )}
-            </BreadcrumbList>
-          </Breadcrumb>
+          <BreadcrumbTrail crumbs={crumbs} />
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4">
-          <Routes>
-            <Route
-              path="/"
-              element={<HomePage workspace={state.workspace} error={state.error} />}
-            />
-            <Route
-              path="/software-systems/:id"
-              element={
-                <SoftwareSystemPage workspace={state.workspace} error={state.error} />
-              }
-            />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+          <Routes>{renderRoutes(state)}</Routes>
         </main>
       </SidebarInset>
     </SidebarProvider>

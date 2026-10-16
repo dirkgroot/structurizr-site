@@ -1,11 +1,6 @@
-import type { Workspace } from '@/components/app-sidebar'
+import type { PageProps } from '@/lib/routes'
 
-interface HomePageProps {
-  workspace: Workspace | null
-  error: string | null
-}
-
-export function HomePage({ workspace, error }: HomePageProps) {
+export function HomePage({ workspace, error }: PageProps) {
   return (
     <>
       {error && <p>Failed to load workspace: {error}</p>}
