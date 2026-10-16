@@ -19,6 +19,7 @@ How the tool reaches users. Status: **live** (GitHub Release binaries + Homebrew
 
 - **Binary-only**: installs the prebuilt release binary (`bin.install "structurizr-site"`); never builds from source. Rationale: the SPA is embedded with `rust-embed` from `web/dist`, so a source build would need node + pnpm under brew — not viable. Matches the invariant that release binaries are self-contained.
 - One `url` + `sha256` per platform via `on_macos`/`on_linux` + CPU-arch conditionals. The URL only varies by **tag** (`releases/download/v#{version}/…`), not filename, because of the naming scheme above.
+- `depends_on "structurizr"` (homebrew-core): the generated binary shells out to the `structurizr` executable at runtime, so it's a hard runtime dependency. Not the deprecated `structurizr-cli` — that repo is archived and its executable is named `structurizr-cli`, which the shell-out would never find.
 - `test` runs `--version`; `livecheck` uses `strategy :github_latest`.
 - Windows has no formula (no brew on Windows); the zip serves direct downloads.
 

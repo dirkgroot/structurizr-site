@@ -112,6 +112,8 @@ jobs:
             homepage "https://github.com/dirkgroot/structurizr-site"
             version "${version}"
 
+            depends_on "structurizr"
+
             on_macos do
               if Hardware::CPU.arm?
                 url "https://github.com/dirkgroot/structurizr-site/releases/download/v#{version}/structurizr-site-aarch64-apple-darwin.tar.gz"

@@ -10,7 +10,9 @@ Homebrew (macOS and Linux):
 brew install dirkgroot/tap/structurizr-site
 ```
 
-Or download a binary directly from [Releases](https://github.com/dirkgroot/structurizr-site/releases) (macOS arm64/x86_64, Linux x86_64, Windows x64).
+This also installs the [structurizr CLI](https://docs.structurizr.com/cli) that `generate` shells out to — including the Java runtime it needs — unless it is already present.
+
+Or download a binary directly from [Releases](https://github.com/dirkgroot/structurizr-site/releases) (macOS arm64/x86_64, Linux x86_64, Windows x64). Direct downloads do **not** include the structurizr CLI; install it yourself as described in [Generating a site](#generating-a-site).
 
 ## Generating a site
 
