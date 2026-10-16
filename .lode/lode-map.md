@@ -5,6 +5,8 @@ Hierarchical index of all lode files.
 - [summary.md](summary.md) — living one-paragraph snapshot
 - [terminology.md](terminology.md) — domain vocabulary
 - [practices.md](practices.md) — working practices for this project
+- distribution/
+    - [summary.md](distribution/summary.md) — release assets, Homebrew tap, formula automation
 - architecture/
     - [summary.md](architecture/summary.md) — locked decisions + tentative component sketch
     - [cli.md](architecture/cli.md) — CLI module layout
