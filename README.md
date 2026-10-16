@@ -2,6 +2,16 @@
 
 Rewrite of [structurizr-site-generatr](https://github.com/avisi-cloud/structurizr-site-generatr): a Rust CLI that bundles a single-page application with a Structurizr workspace, so any static web server can host the result.
 
+## Install
+
+Homebrew (macOS and Linux):
+
+```sh
+brew install dirkgroot/tap/structurizr-site
+```
+
+Or download a binary directly from [Releases](https://github.com/dirkgroot/structurizr-site/releases) (macOS arm64/x86_64, Linux x86_64, Windows x64).
+
 ## Prerequisites
 
 - [mise](https://mise.jdx.dev) — `mise install` sets up the pinned Rust toolchain and pnpm from `mise.toml`
@@ -41,7 +51,7 @@ The structurizr CLI does the workspace export, which is why Java is needed.
 2. Bump the version in `Cargo.toml`
 3. Commit (`chore(release): vX.Y.Z`), tag `vX.Y.Z`, and `git push --follow-tags`
 
-The release workflow builds binaries for macOS (arm64), Linux (x86_64 musl), and Windows (x64) and publishes a GitHub release with notes from the changelog.
+The release workflow builds binaries for macOS (arm64 and x86_64), Linux (x86_64 musl), and Windows (x64), publishes a GitHub release with notes from the changelog, and updates the Homebrew formula in [dirkgroot/homebrew-tap](https://github.com/dirkgroot/homebrew-tap) (requires the `HOMEBREW_TAP_TOKEN` secret: a fine-grained PAT with `contents:write` on the tap repo).
 
 ## Commit messages
 
