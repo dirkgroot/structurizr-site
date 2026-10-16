@@ -1,4 +1,7 @@
 import * as React from "react"
+import { ChevronRight } from "lucide-react"
+import { Slot } from "radix-ui"
+
 import { cn } from "cn"
 
 function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
@@ -35,6 +38,39 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
   )
 }
 
+function BreadcrumbLink({
+  asChild,
+  className,
+  ...props
+}: React.ComponentProps<"a"> & { asChild?: boolean }) {
+  const Comp = asChild ? Slot.Root : "a"
+  return (
+    <Comp
+      data-slot="breadcrumb-link"
+      className={cn("transition-colors hover:text-foreground", className)}
+      {...props}
+    />
+  )
+}
+
+function BreadcrumbSeparator({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"li">) {
+  return (
+    <li
+      role="presentation"
+      aria-hidden="true"
+      data-slot="breadcrumb-separator"
+      className={cn("[&>svg]:size-3.5", className)}
+      {...props}
+    >
+      {children ?? <ChevronRight />}
+    </li>
+  )
+}
+
 function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
   return (
     <span
@@ -48,4 +84,4 @@ function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
   )
 }
 
-export { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbPage }
+export { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage }

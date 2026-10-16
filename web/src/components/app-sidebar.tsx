@@ -1,5 +1,6 @@
 import * as React from "react"
 import { BoxesIcon } from "lucide-react"
+import { NavLink, useLocation } from "react-router"
 
 import {
   Sidebar,
@@ -14,19 +15,28 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 
-export interface Workspace {
+export interface SoftwareSystem {
+  id: string
   name: string
   description?: string
 }
 
-// Placeholder navigation; views will be wired from the workspace export later.
-const navItems = [{ title: "Overview", url: "#", isActive: true }]
+export interface Workspace {
+  name: string
+  description?: string
+  model?: {
+    softwareSystems?: SoftwareSystem[]
+  }
+}
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   workspace: Workspace | null
 }
 
 export function AppSidebar({ workspace, ...props }: AppSidebarProps) {
+  const softwareSystems = workspace?.model?.softwareSystems ?? []
+  const { pathname } = useLocation()
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -52,19 +62,40 @@ export function AppSidebar({ workspace, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Views</SidebarGroupLabel>
+          <SidebarGroupLabel>General</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={item.isActive}>
-                    <a href={item.url}>{item.title}</a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={pathname === "/"}>
+                  <NavLink to="/" end>
+                    Home
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        {softwareSystems.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Software Systems</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {softwareSystems.map((system) => (
+                  <SidebarMenuItem key={system.id}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === `/software-systems/${system.id}`}
+                    >
+                      <NavLink to={`/software-systems/${system.id}`}>
+                        {system.name}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
