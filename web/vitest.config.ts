@@ -6,6 +6,9 @@ import { defineConfig } from 'vitest/config'
 // `structurizr` CLI and registers dev-server middleware — none of which a
 // fetch-mocked test run needs.
 export default defineConfig({
+  // Pin the root so caches land in web/node_modules even when the command is
+  // invoked from the repository root (`pnpm --dir web test`).
+  root: import.meta.dirname,
   plugins: [react()],
   resolve: {
     alias: {
