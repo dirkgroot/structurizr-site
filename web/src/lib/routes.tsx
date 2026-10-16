@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { matchPath, Route, type Params } from 'react-router'
 
 import type { Workspace } from '@/components/app-sidebar'
+import { kebabCase } from '@/lib/slug'
 import { HomePage } from '@/pages/home-page'
 import { NotFoundPage } from '@/pages/not-found-page'
 import { SoftwareSystemPage } from '@/pages/software-system-page'
@@ -30,10 +31,12 @@ const routes: AppRoute[] = [
     crumbs: (_params, workspace) => [{ label: workspace.name }],
   },
   {
-    path: '/software-systems/:id',
+    path: '/software-systems/:slug',
     Component: SoftwareSystemPage,
     crumbs: (params, workspace) => {
-      const system = workspace.model?.softwareSystems?.find((s) => s.id === params.id)
+      const system = workspace.model?.softwareSystems?.find(
+        (s) => kebabCase(s.name) === params.slug,
+      )
       return [
         { label: workspace.name, to: '/' },
         { label: system?.name ?? 'Software system not found' },

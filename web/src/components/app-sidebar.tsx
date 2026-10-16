@@ -2,6 +2,7 @@ import * as React from "react"
 import { BoxesIcon } from "lucide-react"
 import { NavLink, useLocation } from "react-router"
 
+import { kebabCase } from "@/lib/slug"
 import {
   Sidebar,
   SidebarContent,
@@ -84,9 +85,9 @@ export function AppSidebar({ workspace, ...props }: AppSidebarProps) {
                   <SidebarMenuItem key={system.id}>
                     <SidebarMenuButton
                       asChild
-                      isActive={pathname === `/software-systems/${system.id}`}
+                      isActive={pathname === `/software-systems/${kebabCase(system.name)}`}
                     >
-                      <NavLink to={`/software-systems/${system.id}`}>
+                      <NavLink to={`/software-systems/${kebabCase(system.name)}`}>
                         {system.name}
                       </NavLink>
                     </SidebarMenuButton>
