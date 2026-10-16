@@ -39,7 +39,7 @@ Prerequisite: the `HOMEBREW_TAP_TOKEN` secret — a fine-grained PAT with `conte
 
 ## Releasing (operational)
 
-See README "Releasing" for the full procedure. Sequence requirement: the Intel macOS asset only exists from the first release **after** the matrix gained `x86_64-apple-darwin`; until then the formula intentionally omits that block.
+See README "Releasing" for the full procedure. The formula carries all three platform blocks (macOS arm64, macOS Intel, Linux) since v0.0.1-pre-alpha2; install via the tap is verified working.
 
 ## Invariants
 
