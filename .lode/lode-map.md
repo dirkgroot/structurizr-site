@@ -7,6 +7,7 @@ Hierarchical index of all lode files.
 - [practices.md](practices.md) — working practices for this project
 - architecture/
     - [summary.md](architecture/summary.md) — locked decisions + tentative component sketch
+    - [cli.md](architecture/cli.md) — CLI module layout
     - [open-questions.md](architecture/open-questions.md) — open forks to resolve, with known constraints
 - background/
     - [original-tool.md](background/original-tool.md) — the tool being rewritten: features, stack, distribution

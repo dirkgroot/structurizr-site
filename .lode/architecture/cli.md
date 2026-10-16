@@ -1,0 +1,27 @@
+# CLI
+
+Module layout of the Rust CLI (`src/`). Split from a single 184-line `main.rs` into five focused modules (locked 2026-10-16); behavior-preserving move refactor. See [summary.md](summary.md) for the locked CLI decisions (Rust, shells out to `structurizr`).
+
+## Modules
+
+- `main.rs` — entry point only: parses `Cli`, dispatches `Commands::Generate` to `generate::generate`.
+- `cli.rs` — clap definitions (`Cli`, `Commands`) with the flag docs; the only clap-facing module.
+- `router.rs` — the router-mode domain concept ([terminology](../terminology.md)): `Router` enum (carries the `ValueEnum` derive), `SiteConfig` (the `window.site` payload), `normalize_base_path` (hash mode rejects `--base-path`; path mode requires a leading `/`, forbids `<`, trims to a trailing slash), `rewrite_for_path_router` (rebases `./assets/` onto the base path, injects the `window.site` script before `</head>`).
+- `spa.rs` — the embedded bundle: `Spa` (`RustEmbed` over `web/dist`), `write_assets` (writes all non-index assets, returns the `index.html` content), `write_asset` helper (reused for `index.html`/`404.html`).
+- `generate.rs` — orchestration: validates the workspace, shells out to `structurizr export`, renames `<stem>.json` → `workspace.json`, calls `spa::write_assets`, then writes `index.html` (+ `404.html` in path mode) per router mode.
+
+```mermaid
+flowchart TD
+    main["main.rs"] --> cli["cli.rs (Cli, Commands)"]
+    main --> generate["generate.rs"]
+    generate -- "Router flag" --> router["router.rs"]
+    generate --> spa["spa.rs (RustEmbed web/dist)"]
+    cli -- "imports Router type" --> router
+```
+
+Dependency direction: `cli.rs` imports the `Router` type from `router.rs`, not the reverse — `router.rs` is self-contained domain logic with no clap-facing obligation beyond the derive.
+
+## Invariants
+
+- `normalize_base_path` and `rewrite_for_path_router` are pure functions, unit-testable (no tests yet).
+- The structurizr shell-out lives in `generate.rs`; extract it when branch support grows it (branch support is the next CLI-side parity item, [plans/rewrite.md](../plans/rewrite.md)).
