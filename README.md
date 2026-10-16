@@ -16,7 +16,7 @@ Or download a binary directly from [Releases](https://github.com/dirkgroot/struc
 
 ## Generating a site
 
-`generate` shells out to the [structurizr CLI](https://docs.structurizr.com/cli) to export the workspace, so `structurizr` must be on your `PATH` (which in turn needs [Java](https://adoptium.net)):
+`generate` shells out to the [structurizr CLI](https://docs.structurizr.com/cli) to export the workspace, so `structurizr` must be on your `PATH` (which in turn needs [Java](https://adoptium.net)). Install it with `brew install structurizr` (macOS and Linux; Homebrew also provides the Java runtime), or see the [CLI docs](https://docs.structurizr.com/cli) for other options:
 
 ```sh
 structurizr-site generate --workspace example/workspace.dsl
