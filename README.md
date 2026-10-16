@@ -12,17 +12,12 @@ brew install dirkgroot/tap/structurizr-site
 
 Or download a binary directly from [Releases](https://github.com/dirkgroot/structurizr-site/releases) (macOS arm64/x86_64, Linux x86_64, Windows x64).
 
-## Prerequisites
-
-- [mise](https://mise.jdx.dev) — `mise install` sets up the pinned Rust toolchain and pnpm from `mise.toml`
-- [Node.js](https://nodejs.org) 24 — runs pnpm and the web build
-- [Java](https://adoptium.net) and the [structurizr CLI](https://docs.structurizr.com/cli), with `structurizr` on your `PATH`
-
 ## Generating a site
 
+`generate` shells out to the [structurizr CLI](https://docs.structurizr.com/cli) to export the workspace, so `structurizr` must be on your `PATH` (which in turn needs [Java](https://adoptium.net)):
+
 ```sh
-pnpm --dir web build                                  # build the SPA into web/dist
-cargo run -- generate --workspace example/workspace.dsl
+structurizr-site generate --workspace example/workspace.dsl
 python3 -m http.server -d build                       # then open http://localhost:8000
 ```
 
@@ -30,8 +25,6 @@ python3 -m http.server -d build                       # then open http://localho
 - `--output` — output directory (default: `build`)
 - `--router` — `hash` (default) or `path`; how page URLs are formed (see below)
 - `--base-path` — path the site is hosted under; `--router path` only (default: `/`)
-
-The structurizr CLI does the workspace export, which is why Java is needed.
 
 ### Router modes
 
@@ -41,6 +34,10 @@ The structurizr CLI does the workspace export, which is why Java is needed.
 
 ## Development
 
+[mise](https://mise.jdx.dev) sets up the pinned Rust toolchain and pnpm/Node.js 24 from `mise.toml` (`mise install`).
+
+- Build the SPA: `pnpm --dir web build` (into `web/dist`, embedded by `cargo build`)
+- Run from source: `cargo run -- generate --workspace example/workspace.dsl`
 - SPA dev server: `pnpm --dir web dev` (generates workspace JSON from `example/workspace.dsl` on request; requires `structurizr` on your PATH)
 - SPA lint: `pnpm --dir web lint`
 - Rust: `cargo fmt` and `cargo clippy`
