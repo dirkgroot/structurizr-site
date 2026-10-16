@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Client-side routing: the Home menu item links to a page with the workspace description, and each software system links to a page with its description.
+- `generate --router` (`hash`|`path`) chooses between hash and path page URLs; `--base-path` supports hosting path-URL sites below the domain root.
+
 ## [0.0.1-pre-alpha1] - 2026-10-15
 
 ### Added

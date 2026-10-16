@@ -18,8 +18,16 @@ python3 -m http.server -d build                       # then open http://localho
 
 - `--workspace` — DSL or JSON workspace file (default: `workspace.dsl`)
 - `--output` — output directory (default: `build`)
+- `--router` — `hash` (default) or `path`; how page URLs are formed (see below)
+- `--base-path` — path the site is hosted under; `--router path` only (default: `/`)
 
 The structurizr CLI does the workspace export, which is why Java is needed.
+
+### Router modes
+
+- `--router hash` (default) serves every page from one URL (`index.html#/software-systems/…`) and works on any static web server without configuration.
+- `--router path` uses clean URLs (`/software-systems/…`) and requires the host to serve `index.html` for unknown paths. The generated `404.html` provides that fallback on GitHub Pages project sites; other hosts need an equivalent rewrite rule.
+- Use `--base-path` when a path-URL site is not hosted at the domain root (e.g. `--base-path /docs/`).
 
 ## Development
 
