@@ -30,6 +30,7 @@ jobs:
       matrix:
         include:
           - { os: macos-26, target: aarch64-apple-darwin }
+          - { os: macos-26, target: x86_64-apple-darwin }
           - { os: ubuntu-24.04, target: x86_64-unknown-linux-musl }
           - { os: windows-2025, target: x86_64-pc-windows-msvc }
     runs-on: ${{ matrix.os }}
@@ -80,3 +81,80 @@ jobs:
         run: |
           git cliff --latest --strip header > notes.md
           gh release edit "${{ github.ref_name }}" --notes-file notes.md
+
+  homebrew:
+    needs: upload
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Update Homebrew tap
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          version="${TAG#v}"
+
+          # Download the release assets and compute their checksums
+          workdir="$(mktemp -d)"
+          cd "$workdir"
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "structurizr-site-aarch64-apple-darwin.tar.gz"
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "structurizr-site-x86_64-apple-darwin.tar.gz"
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "structurizr-site-x86_64-unknown-linux-musl.tar.gz"
+          sha_macos_arm="$(sha256sum "structurizr-site-aarch64-apple-darwin.tar.gz" | cut -d ' ' -f1)"
+          sha_macos_intel="$(sha256sum "structurizr-site-x86_64-apple-darwin.tar.gz" | cut -d ' ' -f1)"
+          sha_linux="$(sha256sum "structurizr-site-x86_64-unknown-linux-musl.tar.gz" | cut -d ' ' -f1)"
+
+          # Render the formula
+          cat > formula.rb <<EOF
+          class StructurizrSite < Formula
+            desc "Static-site generator for C4 architecture models from Structurizr DSL"
+            homepage "https://github.com/dirkgroot/structurizr-site"
+            version "${version}"
+
+            on_macos do
+              if Hardware::CPU.arm?
+                url "https://github.com/dirkgroot/structurizr-site/releases/download/v#{version}/structurizr-site-aarch64-apple-darwin.tar.gz"
+                sha256 "${sha_macos_arm}"
+              else
+                url "https://github.com/dirkgroot/structurizr-site/releases/download/v#{version}/structurizr-site-x86_64-apple-darwin.tar.gz"
+                sha256 "${sha_macos_intel}"
+              end
+            end
+
+            on_linux do
+              if Hardware::CPU.intel?
+                url "https://github.com/dirkgroot/structurizr-site/releases/download/v#{version}/structurizr-site-x86_64-unknown-linux-musl.tar.gz"
+                sha256 "${sha_linux}"
+              end
+            end
+
+            def install
+              bin.install "structurizr-site"
+            end
+
+            test do
+              assert_match version.to_s, shell_output("#{bin}/structurizr-site --version")
+            end
+
+            livecheck do
+              url :stable
+              strategy :github_latest
+            end
+          end
+          EOF
+
+          # Publish to the tap
+          git clone --depth 1 "https://x-access-token:${TAP_TOKEN}@github.com/dirkgroot/homebrew-tap.git"
+          cd homebrew-tap
+          mkdir -p Formula
+          cp ../formula.rb Formula/structurizr-site.rb
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/structurizr-site.rb
+          if git diff --cached --quiet; then
+            echo "Formula unchanged; nothing to commit"
+          else
+            git commit -m "structurizr-site ${version}"
+            git push
+          fi
