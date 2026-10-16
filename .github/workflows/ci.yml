@@ -39,6 +39,9 @@ jobs:
       - name: Build Rust
         run: cargo build --locked
 
+      - name: Test Rust
+        run: cargo test --locked
+
       - name: Check commit messages
         if: github.event_name == 'pull_request'
         run: pnpm --dir web exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }}

@@ -36,3 +36,38 @@ pub(crate) fn write_asset(output: &Path, relative: &str, data: &[u8]) -> Result<
     fs::write(&dest, data)?;
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn write_assets_writes_non_index_assets_and_returns_index() {
+        let dir = tempfile::tempdir().unwrap();
+        let index = write_assets(dir.path()).unwrap();
+
+        // index.html is returned, not written; the caller writes it per router mode.
+        assert!(index.contains("./assets/"));
+        assert!(!dir.path().join("index.html").exists());
+        for path in Spa::iter() {
+            if path.as_ref() == "index.html" {
+                continue;
+            }
+            assert!(
+                dir.path().join(path.as_ref()).is_file(),
+                "missing asset {}",
+                path.as_ref()
+            );
+        }
+    }
+
+    #[test]
+    fn write_asset_creates_parent_dirs() {
+        let dir = tempfile::tempdir().unwrap();
+        write_asset(dir.path(), "nested/dir/file.txt", b"hi").unwrap();
+        assert_eq!(
+            fs::read(dir.path().join("nested/dir/file.txt")).unwrap(),
+            b"hi"
+        );
+    }
+}
