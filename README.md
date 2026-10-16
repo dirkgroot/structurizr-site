@@ -23,7 +23,7 @@ The structurizr CLI does the workspace export, which is why Java is needed.
 
 ## Development
 
-- SPA dev server: `pnpm --dir web dev` (drop a `workspace.json` into `web/public/` so the fetch resolves)
+- SPA dev server: `pnpm --dir web dev` (generates workspace JSON from `example/workspace.dsl` on request; requires `structurizr` on your PATH)
 - SPA lint: `pnpm --dir web lint`
 - Rust: `cargo fmt` and `cargo clippy`
 
