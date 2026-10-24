@@ -4,6 +4,7 @@ build
 web/node_modules
 web/dist
 .lode/tmp/
+.opencode/plan/
 .pnpm-store/
 specs-verifier/node_modules
 specs-verifier/test-results
