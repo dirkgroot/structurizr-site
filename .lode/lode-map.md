@@ -10,6 +10,7 @@ Hierarchical index of all lode files.
 - architecture/
     - [summary.md](architecture/summary.md) — locked decisions + tentative component sketch
     - [cli.md](architecture/cli.md) — CLI module layout
+    - [specs.md](architecture/specs.md) — the executable-spec (ESDD) layer: fixtures, site cache, hosting semantics
     - [open-questions.md](architecture/open-questions.md) — open forks to resolve, with known constraints
 - background/
     - [original-tool.md](background/original-tool.md) — the tool being rewritten: features, stack, distribution

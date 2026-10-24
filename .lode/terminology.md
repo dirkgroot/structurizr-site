@@ -33,3 +33,7 @@ Repository of short (term - meaning) lines describing the domain language.
 - `web/` - the Vite + React + TypeScript SPA project; built into `web/dist` and embedded into the binary via rust-embed.
 - `cli/` - the standalone Rust CLI crate (own `Cargo.toml`/`Cargo.lock`; the repo root has no cargo files).
 - Site bundle - the contents of the output directory (SPA assets + workspace.json). Realized by `generate`; the earlier tentative name for the CLI output.
+- Executable spec - a `*.spec.mts` file in `specs/` that is both a specification of end-user-visible behaviour and the test verifying it; authored by the human (ESDD).
+- Fixture - the glue between executable specs and the system under test (`specs-verifier/fixtures/`): drives the app and observes behaviour; never asserts.
+- Sandbox - the per-test scratch directory the CLI fixture runs `generate` in; removed when the test finishes.
+- Site cache - content-keyed cache of generated sites under `specs/.cache/sites/` (workspace content, generate args, web/dist fingerprint, binary fingerprint).

@@ -5,3 +5,7 @@ web/node_modules
 web/dist
 .lode/tmp/
 .pnpm-store/
+specs-verifier/node_modules
+specs-verifier/test-results
+specs-verifier/playwright-report
+specs-verifier/.cache

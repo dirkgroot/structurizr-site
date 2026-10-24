@@ -1,0 +1,17 @@
+{
+  "name": "@structurizr-site/specs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm --dir ../web build && cargo build --locked --manifest-path ../cli/Cargo.toml",
+    "test": "pnpm build && playwright test",
+    "lint": "cd .. && oxlint specs specs-verifier/fixtures specs-verifier/workspaces specs-verifier/playwright.config.ts",
+    "check": "tsc -p ../tsconfig.json"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^24.13.3",
+    "typescript": "~6.0.2",
+    "oxlint": "^1.81.0"
+  }
+}

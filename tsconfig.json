@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "es2023",
+    "lib": [
+      "ES2023"
+    ],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "typeRoots": [
+      "./specs-verifier/node_modules/@types"
+    ],
+    "types": [
+      "node"
+    ],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@/fixtures": [
+        "./specs-verifier/fixtures/index.ts"
+      ],
+      "@/workspaces": [
+        "./specs-verifier/workspaces/index.ts"
+      ]
+    },
+    "allowJs": true
+  },
+  "include": [
+    "specs/**/*.mts",
+    "specs-verifier/**/*.ts"
+  ]
+}

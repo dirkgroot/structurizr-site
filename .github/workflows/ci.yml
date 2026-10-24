@@ -19,7 +19,9 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-          cache-dependency-path: web/pnpm-lock.yaml
+          cache-dependency-path: |
+            web/pnpm-lock.yaml
+            specs-verifier/pnpm-lock.yaml
 
       - run: pnpm --dir web install --frozen-lockfile
 
@@ -49,6 +51,31 @@ jobs:
       - name: Test Rust
         working-directory: cli
         run: cargo test --locked
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install structurizr CLI
+        run: |
+          curl -fL --retry 3 -o /tmp/structurizr-cli.zip https://github.com/structurizr/cli/releases/latest/download/structurizr-cli.zip
+          unzip -q -o /tmp/structurizr-cli.zip -d "$HOME/structurizr-cli"
+          mkdir -p "$HOME/.local/bin"
+          printf '#!/bin/sh\nexec java -cp "%s/lib/*" com.structurizr.cli.StructurizrCliApplication "$@"\n' "$HOME/structurizr-cli" > "$HOME/.local/bin/structurizr"
+          chmod +x "$HOME/.local/bin/structurizr"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install spec dependencies
+        run: |
+          pnpm --dir specs-verifier install --frozen-lockfile
+          pnpm --dir specs-verifier exec playwright install --with-deps chromium
+
+      - name: Lint specs
+        run: pnpm --dir specs-verifier lint
+
+      - name: Test specs
+        run: pnpm --dir specs-verifier test
 
       - name: Check commit messages
         if: github.event_name == 'pull_request'

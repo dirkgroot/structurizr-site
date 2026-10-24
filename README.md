@@ -43,6 +43,7 @@ python3 -m http.server -d build                       # then open http://localho
 - SPA dev server: `pnpm --dir web dev` (generates workspace JSON from `example/workspace.dsl` on request; requires `structurizr` on your PATH)
 - SPA lint: `pnpm --dir web lint`
 - Rust: `cargo fmt --manifest-path cli/Cargo.toml` and `cargo clippy --manifest-path cli/Cargo.toml`
+- Executable specs (CLI + web, Playwright): `pnpm --dir specs-verifier test` — builds the SPA and CLI, then verifies the suite in `specs/`; requires `structurizr` on your `PATH` (see `specs/README.md`)
 
 ## Releasing
 
