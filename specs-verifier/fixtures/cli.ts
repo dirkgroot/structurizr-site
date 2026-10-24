@@ -22,17 +22,21 @@ export function resolveBinary(): string {
   return DEBUG_BINARY;
 }
 
-export interface GenerateOptions {
-  /** The workspace to generate a site from; written into the sandbox. */
-  workspace: Workspace;
-  /** How page URLs are formed. Omitted options keep the CLI's own defaults. */
-  router?: "hash" | "path";
-  /** Hosting prefix for `--router path`. */
-  basePath?: string;
-  /** Output directory, relative to the sandbox (CLI default: `build`). */
-  output?: string;
+/** A run argument: a flag or value as a user types it, or a workspace to run against. */
+type CliArg = string | Workspace;
+
+/** Harness-only run options, passed as a trailing object; everything else is argv. */
+interface RunOptions {
   /** Shell script that stands in for `structurizr` on the CLI's PATH (unix only). */
   structurizr?: string;
+}
+
+function isWorkspace(arg: unknown): arg is Workspace {
+  return typeof arg === "object" && arg !== null && "file" in arg && "content" in arg;
+}
+
+function isRunOptions(arg: unknown): arg is RunOptions {
+  return typeof arg === "object" && arg !== null && "structurizr" in arg;
 }
 
 /** One CLI run; specs observe it through `file`, `json`, and `exists`. */
@@ -72,7 +76,10 @@ export class CliResult {
   }
 }
 
-/** A `structurizr-site generate` run against the real binary, in the sandbox. */
+/**
+ * A `structurizr-site` run against the real binary, in the sandbox. Args are
+ * exactly what a user types: `cli.run("generate", "--workspace", acme)`.
+ */
 export class StructurizrSiteCli {
   private shims = 0;
 
@@ -81,22 +88,27 @@ export class StructurizrSiteCli {
     private readonly sandbox: Sandbox,
   ) {}
 
-  async generate(options: GenerateOptions): Promise<CliResult> {
-    const workspacePath = await this.sandbox.write(options.workspace.file, options.workspace.content);
+  /** Runs the binary in the sandbox; `Workspace` args become files written there. */
+  async run(...args: Array<CliArg | RunOptions>): Promise<CliResult> {
+    const options: RunOptions = isRunOptions(args[args.length - 1])
+      ? (args.pop() as RunOptions)
+      : {};
+    const argv: string[] = [];
+    for (const arg of args) {
+      if (typeof arg === "string") argv.push(arg);
+      else if (isWorkspace(arg)) argv.push(await this.sandbox.write(arg.file, arg.content));
+      else
+        throw new TypeError(
+          `invalid CLI argument: ${JSON.stringify(arg)}; ` +
+            "expected a string, a Workspace, or a trailing { structurizr } options object",
+        );
+    }
     const env: NodeJS.ProcessEnv = { ...process.env };
     if (options.structurizr !== undefined) {
       const shimDir = await this.installStructurizrShim(options.structurizr);
       env.PATH = `${shimDir}:${env.PATH ?? ""}`;
     }
-    return runGenerate({
-      binary: this.binary,
-      cwd: this.sandbox.path,
-      workspacePath,
-      output: options.output,
-      router: options.router,
-      basePath: options.basePath,
-      env,
-    });
+    return runCli({ binary: this.binary, cwd: this.sandbox.path, args: argv, env });
   }
 
   /** Installs a fake `structurizr` and returns its directory (prepended to PATH). */
@@ -111,27 +123,19 @@ export class StructurizrSiteCli {
   }
 }
 
-export interface RunGenerateOptions {
+export interface RunCliOptions {
   binary: string;
-  /** Working directory of the run; `output` resolves against it. */
+  /** Working directory of the run; output paths resolve against it. */
   cwd: string;
-  /** Absolute path of the workspace file. */
-  workspacePath: string;
-  output?: string;
-  router?: "hash" | "path";
-  basePath?: string;
+  /** Full argv, including the subcommand, e.g. `["generate", "--workspace", "acme.dsl"]`. */
+  args: string[];
   env?: NodeJS.ProcessEnv;
 }
 
-/** Runs one `generate`; shared by the CLI fixture and the site cache. */
-export async function runGenerate(options: RunGenerateOptions): Promise<CliResult> {
-  const args = ["generate", "--workspace", options.workspacePath];
-  if (options.output !== undefined) args.push("--output", options.output);
-  if (options.router !== undefined) args.push("--router", options.router);
-  if (options.basePath !== undefined) args.push("--base-path", options.basePath);
-
+/** Runs the binary with the given argv; shared by the CLI fixture and the site cache. */
+export async function runCli(options: RunCliOptions): Promise<CliResult> {
   try {
-    const { stdout, stderr } = await execFileAsync(options.binary, args, {
+    const { stdout, stderr } = await execFileAsync(options.binary, options.args, {
       cwd: options.cwd,
       env: options.env,
       timeout: 60_000,

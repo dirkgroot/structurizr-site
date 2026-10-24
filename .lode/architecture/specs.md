@@ -29,9 +29,10 @@ never edit specs unilaterally (charter: [specs/README.md](../../../specs/README.
 - `sandbox` — per-test `mkdtemp` directory, disposed after the test. Everything a spec writes lives there.
 - `cli` — spawns `cli/target/debug/structurizr-site` (override: `STRUCTURIZR_SITE_BIN`) in the sandbox
   via `child_process`; returns `CliResult` (`ok`, `exitCode`, `stdout`, `stderr`, `file()`, `json()`,
-  `exists()`). `generate({workspace, router, basePath, output, structurizr})` — omitted options keep
-  the CLI's own defaults, so specs exercise them. `structurizr` injects a POSIX shim on the child's
-  PATH (unix only; same technique as `cli/tests/cli.rs`) for export-failure specs.
+  `exists()`). `run(...args)` takes argv exactly as a user types it (`cli.run("generate",
+  "--workspace", acme)`); a `Workspace` argument is written into the sandbox and passed as its path.
+  A trailing `{ structurizr }` options object injects a POSIX shim on the child's PATH (unix only;
+  same technique as `cli/tests/cli.rs`) for export-failure specs.
 - `site` — `serve(workspace, {router, basePath})`: generates via the real CLI (through the site
   cache) and serves the output directory from a hand-rolled Node static server (no dependencies)
   that mirrors the hosting semantics a generated site faces: files served directly, path-mode
@@ -47,11 +48,11 @@ never edit specs unilaterally (charter: [specs/README.md](../../../specs/README.
 
 ```mermaid
 flowchart LR
-    spec -- "cli.generate()" --> cli["cli fixture"]
+    spec -- "cli.run()" --> cli["cli fixture"]
     cli -- "spawn in sandbox" --> bin["structurizr-site debug binary"]
     spec -- "site.serve()" --> site["site fixture"]
     site -- "cachedGenerate" --> cache["specs/.cache/sites"]
-    cache -- "runGenerate" --> bin
+    cache -- "runCli" --> bin
     site -- "serve" --> server["static-server (GitHub Pages semantics)"]
     spec -- "page.goto(site.url())" --> pw["Playwright page"]
     server -- "200 files / 404 fallback" --> pw

@@ -36,11 +36,11 @@ import { acme } from "@/workspaces";
 
 // CLI: run the real binary in a per-test sandbox directory.
 test("generate produces a self-contained site", async ({ cli }) => {
-  const run = await cli.generate({ workspace: acme });
+  const result = await cli.run("generate", "--workspace", acme);
 
-  expect(run).toSucceed();
-  expect(run.file("build/index.html")).toContain("./assets/");
-  expect(run.json("build/workspace.json")).toMatchObject({
+  expect(result).toSucceed();
+  expect(result.file("build/index.html")).toContain("./assets/");
+  expect(result.json("build/workspace.json")).toMatchObject({
     name: "ACME Corporation",
   });
 });
@@ -55,17 +55,17 @@ test("the home page introduces the workspace", async ({ site, page }) => {
 });
 ```
 
-- `cli.generate({ workspace, router?, basePath?, output?, structurizr? })` runs
-  `structurizr-site generate` in a per-test sandbox. `workspace` is content (DSL or JSON); the
-  fixture writes the file. Omitted options keep the CLI's own defaults, so specs exercise them.
-  The `structurizr` option injects a shell-script shim onto the child's PATH for failure paths
+- `cli.run(...args)` runs the binary in a per-test sandbox, with args exactly as a user types
+  them: `cli.run("generate", "--workspace", acme, "--router", "path")`. A `Workspace` argument is
+  written into the sandbox and passed as its file path. A trailing `{ structurizr }` options
+  object injects a shell-script shim onto the child's PATH for failure paths
   (`failingStructurizr()` in `fixtures/structurizr.ts`, unix only).
 - `site.serve(workspace, { router?, basePath? })` generates a site with the real CLI and serves
   it from a static server that mirrors GitHub Pages semantics: files are served directly, path
   mode serves `404.html` (with 404 status) at unknown paths, and `basePath` mounts the site under
   a URL prefix. `site.url(path)` builds absolute URLs; `#` fragments pass through.
-- `run` (a `CliResult`) exposes `ok`, `exitCode`, `stdout`, `stderr`, `file()`, `json()`, and
-  `exists()`, all relative to the sandbox directory. `expect(run).toSucceed()` fails with the
+- `result` (a `CliResult`) exposes `ok`, `exitCode`, `stdout`, `stderr`, `file()`, `json()`, and
+  `exists()`, all relative to the sandbox directory. `expect(result).toSucceed()` fails with the
   run's stdout/stderr attached for diagnosis.
 - Playwright's `page` is available unchanged; query by role and accessible name, never by class.
 

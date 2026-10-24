@@ -2,7 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-import { runGenerate } from "./cli.ts";
+import { runCli } from "./cli.ts";
 
 /** Persistent cache of generated sites; git-ignored. */
 const CACHE_ROOT = path.resolve(import.meta.dirname, "../.cache/sites");
@@ -40,14 +40,10 @@ export async function cachedGenerate(options: CachedGenerateOptions): Promise<st
 
   const staging = `${dir}.${process.pid}-${randomUUID()}.staging`;
   fs.mkdirSync(staging, { recursive: true });
-  const run = await runGenerate({
-    binary: options.binary,
-    cwd: staging,
-    workspacePath: options.workspacePath,
-    output: ".",
-    router: options.router,
-    basePath: options.basePath,
-  });
+  const args = ["generate", "--workspace", options.workspacePath, "--output", "."];
+  if (options.router !== undefined) args.push("--router", options.router);
+  if (options.basePath !== undefined) args.push("--base-path", options.basePath);
+  const run = await runCli({ binary: options.binary, cwd: staging, args });
   if (!run.ok) {
     fs.rmSync(staging, { recursive: true, force: true });
     throw new Error(`generating the site failed:\n${run.stderr || run.stdout}`);
