@@ -24,6 +24,8 @@ jobs:
       - run: pnpm --dir web install --frozen-lockfile
 
       - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
 
       - name: Build web
         run: pnpm --dir web build
@@ -35,14 +37,17 @@ jobs:
         run: pnpm --dir web test
 
       - name: Lint Rust
+        working-directory: cli
         run: |
           cargo fmt --check
           cargo clippy -- -D warnings
 
       - name: Build Rust
+        working-directory: cli
         run: cargo build --locked
 
       - name: Test Rust
+        working-directory: cli
         run: cargo test --locked
 
       - name: Check commit messages

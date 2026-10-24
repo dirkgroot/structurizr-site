@@ -5,7 +5,7 @@ use anyhow::{Context, Result};
 use rust_embed::RustEmbed;
 
 #[derive(RustEmbed)]
-#[folder = "web/dist"]
+#[folder = "../web/dist"]
 struct Spa;
 
 /// Writes every embedded SPA asset except index.html into `output` and

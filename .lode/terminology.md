@@ -31,4 +31,5 @@ Repository of short (term - meaning) lines describing the domain language.
 - Output directory - where `generate` writes the site; default `build`. Not cleaned between runs.
 - `workspace.json` - the exported workspace JSON placed next to `index.html`; the SPA fetches it as `./workspace.json`. The `structurizr` CLI names exports after the input file, so `generate` renames them.
 - `web/` - the Vite + React + TypeScript SPA project; built into `web/dist` and embedded into the binary via rust-embed.
+- `cli/` - the standalone Rust CLI crate (own `Cargo.toml`/`Cargo.lock`; the repo root has no cargo files).
 - Site bundle - the contents of the output directory (SPA assets + workspace.json). Realized by `generate`; the earlier tentative name for the CLI output.

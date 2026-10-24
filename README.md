@@ -39,15 +39,15 @@ python3 -m http.server -d build                       # then open http://localho
 [mise](https://mise.jdx.dev) sets up the pinned Rust toolchain and pnpm/Node.js 24 from `mise.toml` (`mise install`).
 
 - Build the SPA: `pnpm --dir web build` (into `web/dist`, embedded by `cargo build`)
-- Run from source: `cargo run -- generate --workspace example/workspace.dsl`
+- Run from source: `cargo run --manifest-path cli/Cargo.toml -- generate --workspace example/workspace.dsl`
 - SPA dev server: `pnpm --dir web dev` (generates workspace JSON from `example/workspace.dsl` on request; requires `structurizr` on your PATH)
 - SPA lint: `pnpm --dir web lint`
-- Rust: `cargo fmt` and `cargo clippy`
+- Rust: `cargo fmt --manifest-path cli/Cargo.toml` and `cargo clippy --manifest-path cli/Cargo.toml`
 
 ## Releasing
 
 1. Update the changelog: `git cliff --unreleased --prepend CHANGELOG.md`
-2. Bump the version in `Cargo.toml`
+2. Bump the version in `cli/Cargo.toml`
 3. Commit (`chore(release): vX.Y.Z`), tag `vX.Y.Z`, and `git push --follow-tags`
 
 The release workflow builds binaries for macOS (arm64 and x86_64), Linux (x86_64 musl), and Windows (x64), publishes a GitHub release with notes from the changelog, and updates the Homebrew formula in [dirkgroot/homebrew-tap](https://github.com/dirkgroot/homebrew-tap) (requires the `HOMEBREW_TAP_TOKEN` secret: a fine-grained PAT with `contents:write` on the tap repo).

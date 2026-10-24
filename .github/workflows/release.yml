@@ -54,10 +54,12 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           key: ${{ matrix.target }}
+          workspaces: cli
 
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           bin: structurizr-site
+          manifest-path: cli/Cargo.toml
           target: ${{ matrix.target }}
           tar: unix
           zip: windows

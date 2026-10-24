@@ -1,5 +1,5 @@
 .idea/
-/target
+/cli/target
 build
 web/node_modules
 web/dist
