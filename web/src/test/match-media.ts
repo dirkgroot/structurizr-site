@@ -1,9 +1,9 @@
-import { vi } from 'vitest'
+import { vi } from "vitest";
 
 /** jsdom does not implement window.matchMedia; stub it for components that use `useIsMobile`. */
 export function stubMatchMedia(): void {
   vi.stubGlobal(
-    'matchMedia',
+    "matchMedia",
     vi.fn().mockImplementation((query: string) => ({
       matches: false,
       media: query,
@@ -14,5 +14,5 @@ export function stubMatchMedia(): void {
       removeListener: vi.fn(),
       dispatchEvent: vi.fn(),
     })),
-  )
+  );
 }

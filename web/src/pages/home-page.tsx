@@ -1,4 +1,4 @@
-import type { PageProps } from '@/lib/routes'
+import type { PageProps } from "@/lib/routes";
 
 export function HomePage({ workspace, error }: PageProps) {
   return (
@@ -6,5 +6,5 @@ export function HomePage({ workspace, error }: PageProps) {
       {error && <p>Failed to load workspace: {error}</p>}
       {workspace?.description && <p>{workspace.description}</p>}
     </>
-  )
+  );
 }

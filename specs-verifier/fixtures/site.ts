@@ -1,13 +1,13 @@
-import type { Sandbox } from './sandbox.ts'
-import { cachedGenerate } from './site-cache.ts'
-import { StaticServer } from './static-server.ts'
-import type { Workspace } from './workspace.ts'
+import type { Sandbox } from "./sandbox.ts";
+import { cachedGenerate } from "./site-cache.ts";
+import { StaticServer } from "./static-server.ts";
+import type { Workspace } from "./workspace.ts";
 
 export interface ServeOptions {
   /** How page URLs are formed; defaults to hash. */
-  router?: 'hash' | 'path'
+  router?: "hash" | "path";
   /** Path the site is hosted under; path router only. */
-  basePath?: string
+  basePath?: string;
 }
 
 /**
@@ -15,7 +15,7 @@ export interface ServeOptions {
  * the way a static host would serve it.
  */
 export class GeneratedSite {
-  private server: StaticServer | undefined
+  private server: StaticServer | undefined;
 
   constructor(
     private readonly sandbox: Sandbox,
@@ -24,29 +24,29 @@ export class GeneratedSite {
 
   /** Generates the site from the workspace and starts serving it. */
   async serve(workspace: Workspace, options: ServeOptions = {}): Promise<void> {
-    if (this.server) throw new Error('serve() was already called')
-    const workspacePath = await this.sandbox.write(workspace.file, workspace.content)
+    if (this.server) throw new Error("serve() was already called");
+    const workspacePath = await this.sandbox.write(workspace.file, workspace.content);
     const root = await cachedGenerate({
       binary: this.binary,
       workspacePath,
       router: options.router,
       basePath: options.basePath,
-    })
+    });
     this.server = new StaticServer({
       root,
       mount: options.basePath,
-      fallback: options.router === 'path' ? '404.html' : undefined,
-    })
-    await this.server.start()
+      fallback: options.router === "path" ? "404.html" : undefined,
+    });
+    await this.server.start();
   }
 
   /** Absolute URL for a site path, e.g. `site.url('/#/software-systems/acme-core')`. */
-  url(sitePath = '/'): string {
-    if (!this.server) throw new Error('serve() has not been called yet')
-    return this.server.url(sitePath)
+  url(sitePath = "/"): string {
+    if (!this.server) throw new Error("serve() has not been called yet");
+    return this.server.url(sitePath);
   }
 
   async dispose(): Promise<void> {
-    await this.server?.stop()
+    await this.server?.stop();
   }
 }

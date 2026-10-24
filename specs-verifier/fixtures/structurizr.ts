@@ -6,5 +6,5 @@
 
 /** A `structurizr` that writes the given message to stderr and fails. */
 export function failingStructurizr(message: string): string {
-  return `#!/bin/sh\necho '${message}' >&2\nexit 1\n`
+  return `#!/bin/sh\necho '${message}' >&2\nexit 1\n`;
 }

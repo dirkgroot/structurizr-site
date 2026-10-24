@@ -31,26 +31,28 @@ while the loader that reads them lives in `specs-verifier/workspaces/`.
 ## The fixture DSL
 
 ```ts
-import { test, expect } from '@/fixtures'
-import { acme } from '@/workspaces'
+import { test, expect } from "@/fixtures";
+import { acme } from "@/workspaces";
 
 // CLI: run the real binary in a per-test sandbox directory.
-test('generate produces a self-contained site', async ({ cli }) => {
-  const run = await cli.generate({ workspace: acme })
+test("generate produces a self-contained site", async ({ cli }) => {
+  const run = await cli.generate({ workspace: acme });
 
-  expect(run).toSucceed()
-  expect(run.file('build/index.html')).toContain('./assets/')
-  expect(run.json('build/workspace.json')).toMatchObject({ name: 'ACME Corporation' })
-})
+  expect(run).toSucceed();
+  expect(run.file("build/index.html")).toContain("./assets/");
+  expect(run.json("build/workspace.json")).toMatchObject({
+    name: "ACME Corporation",
+  });
+});
 
 // Web: generate with the real CLI and serve the result like a static host would.
-test('the home page introduces the workspace', async ({ site, page }) => {
-  await site.serve(acme, { router: 'path', basePath: '/docs' })
+test("the home page introduces the workspace", async ({ site, page }) => {
+  await site.serve(acme, { router: "path", basePath: "/docs" });
 
-  await page.goto(site.url('/docs')) // hash routes: site.url('/#/software-systems/acme-core')
+  await page.goto(site.url("/docs")); // hash routes: site.url('/#/software-systems/acme-core')
 
-  await expect(page.getByRole('main')).toBeVisible()
-})
+  await expect(page.getByRole("main")).toBeVisible();
+});
 ```
 
 - `cli.generate({ workspace, router?, basePath?, output?, structurizr? })` runs

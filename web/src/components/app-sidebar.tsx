@@ -1,8 +1,8 @@
-import * as React from "react"
-import { BoxesIcon } from "lucide-react"
-import { NavLink, useLocation } from "react-router"
+import * as React from "react";
+import { BoxesIcon } from "lucide-react";
+import { NavLink, useLocation } from "react-router";
 
-import { kebabCase } from "@/lib/slug"
+import { kebabCase } from "@/lib/slug";
 import {
   Sidebar,
   SidebarContent,
@@ -14,29 +14,29 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 export interface SoftwareSystem {
-  id: string
-  name: string
-  description?: string
+  id: string;
+  name: string;
+  description?: string;
 }
 
 export interface Workspace {
-  name: string
-  description?: string
+  name: string;
+  description?: string;
   model?: {
-    softwareSystems?: SoftwareSystem[]
-  }
+    softwareSystems?: SoftwareSystem[];
+  };
 }
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  workspace: Workspace | null
+  workspace: Workspace | null;
 }
 
 export function AppSidebar({ workspace, ...props }: AppSidebarProps) {
-  const softwareSystems = workspace?.model?.softwareSystems ?? []
-  const { pathname } = useLocation()
+  const softwareSystems = workspace?.model?.softwareSystems ?? [];
+  const { pathname } = useLocation();
 
   return (
     <Sidebar {...props}>
@@ -48,13 +48,9 @@ export function AppSidebar({ workspace, ...props }: AppSidebarProps) {
                 <BoxesIcon className="size-4" />
               </div>
               <div className="flex min-w-0 flex-col gap-0.5 leading-none">
-                <span className="truncate font-medium">
-                  {workspace?.name ?? "Structurizr"}
-                </span>
+                <span className="truncate font-medium">{workspace?.name ?? "Structurizr"}</span>
                 {workspace?.description && (
-                  <span className="truncate text-sidebar-foreground/70">
-                    {workspace.description}
-                  </span>
+                  <span className="truncate text-sidebar-foreground/70">{workspace.description}</span>
                 )}
               </div>
             </SidebarMenuButton>
@@ -83,13 +79,8 @@ export function AppSidebar({ workspace, ...props }: AppSidebarProps) {
               <SidebarMenu>
                 {softwareSystems.map((system) => (
                   <SidebarMenuItem key={system.id}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={pathname === `/software-systems/${kebabCase(system.name)}`}
-                    >
-                      <NavLink to={`/software-systems/${kebabCase(system.name)}`}>
-                        {system.name}
-                      </NavLink>
+                    <SidebarMenuButton asChild isActive={pathname === `/software-systems/${kebabCase(system.name)}`}>
+                      <NavLink to={`/software-systems/${kebabCase(system.name)}`}>{system.name}</NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
@@ -100,5 +91,5 @@ export function AppSidebar({ workspace, ...props }: AppSidebarProps) {
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

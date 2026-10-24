@@ -1,63 +1,35 @@
-import * as React from "react"
-import { ChevronRight } from "lucide-react"
-import { Slot } from "radix-ui"
+import * as React from "react";
+import { ChevronRight } from "lucide-react";
+import { Slot } from "radix-ui";
 
-import { cn } from "cn"
+import { cn } from "cn";
 
 function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
-  return (
-    <nav
-      aria-label="breadcrumb"
-      data-slot="breadcrumb"
-      className={cn(className)}
-      {...props}
-    />
-  )
+  return <nav aria-label="breadcrumb" data-slot="breadcrumb" className={cn(className)} {...props} />;
 }
 
 function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
   return (
     <ol
       data-slot="breadcrumb-list"
-      className={cn(
-        "flex flex-wrap items-center gap-1.5 text-sm wrap-break-word text-muted-foreground",
-        className
-      )}
+      className={cn("flex flex-wrap items-center gap-1.5 text-sm wrap-break-word text-muted-foreground", className)}
       {...props}
     />
-  )
+  );
 }
 
 function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
-  return (
-    <li
-      data-slot="breadcrumb-item"
-      className={cn("inline-flex items-center gap-1", className)}
-      {...props}
-    />
-  )
+  return <li data-slot="breadcrumb-item" className={cn("inline-flex items-center gap-1", className)} {...props} />;
 }
 
-function BreadcrumbLink({
-  asChild,
-  className,
-  ...props
-}: React.ComponentProps<"a"> & { asChild?: boolean }) {
-  const Comp = asChild ? Slot.Root : "a"
+function BreadcrumbLink({ asChild, className, ...props }: React.ComponentProps<"a"> & { asChild?: boolean }) {
+  const Comp = asChild ? Slot.Root : "a";
   return (
-    <Comp
-      data-slot="breadcrumb-link"
-      className={cn("transition-colors hover:text-foreground", className)}
-      {...props}
-    />
-  )
+    <Comp data-slot="breadcrumb-link" className={cn("transition-colors hover:text-foreground", className)} {...props} />
+  );
 }
 
-function BreadcrumbSeparator({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<"li">) {
+function BreadcrumbSeparator({ className, children, ...props }: React.ComponentProps<"li">) {
   return (
     <li
       role="presentation"
@@ -68,7 +40,7 @@ function BreadcrumbSeparator({
     >
       {children ?? <ChevronRight />}
     </li>
-  )
+  );
 }
 
 function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
@@ -81,7 +53,7 @@ function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
       className={cn("font-normal text-foreground", className)}
       {...props}
     />
-  )
+  );
 }
 
-export { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage }
+export { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage };

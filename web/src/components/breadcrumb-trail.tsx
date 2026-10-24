@@ -1,5 +1,5 @@
-import { Fragment } from 'react'
-import { Link } from 'react-router'
+import { Fragment } from "react";
+import { Link } from "react-router";
 
 import {
   Breadcrumb,
@@ -8,8 +8,8 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import type { Crumb } from '@/lib/routes'
+} from "@/components/ui/breadcrumb";
+import type { Crumb } from "@/lib/routes";
 
 export function BreadcrumbTrail({ crumbs }: { crumbs: Crumb[] }) {
   return (
@@ -31,5 +31,5 @@ export function BreadcrumbTrail({ crumbs }: { crumbs: Crumb[] }) {
         ))}
       </BreadcrumbList>
     </Breadcrumb>
-  )
+  );
 }
