@@ -5,8 +5,12 @@ on:
     branches: [main]
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  ci:
+  web:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -19,15 +23,9 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-          cache-dependency-path: |
-            web/pnpm-lock.yaml
-            specs-verifier/pnpm-lock.yaml
+          cache-dependency-path: web/pnpm-lock.yaml
 
       - run: pnpm --dir web install --frozen-lockfile
-
-      - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: cli
 
       - name: Build web
         run: pnpm --dir web build
@@ -41,11 +39,53 @@ jobs:
       - name: Test web
         run: pnpm --dir web test
 
+      - name: Check commit messages
+        if: github.event_name == 'pull_request'
+        run: pnpm --dir web exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }}
+
+  rust-lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: jdx/mise-action@v5
+
+      - name: Stub web/dist for rust-embed
+        run: mkdir -p web/dist && printf '<html></html>' > web/dist/index.html
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: lint
+          workspaces: cli
+
       - name: Lint Rust
         working-directory: cli
         run: |
           cargo fmt --check
           cargo clippy -- -D warnings
+
+  rust-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: jdx/mise-action@v5
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - run: pnpm --dir web install --frozen-lockfile
+
+      - name: Build web
+        run: pnpm --dir web build
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: test
+          workspaces: cli
 
       - name: Build Rust
         working-directory: cli
@@ -54,6 +94,37 @@ jobs:
       - name: Test Rust
         working-directory: cli
         run: cargo test --locked
+
+  specs:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: jdx/mise-action@v5
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: |
+            web/pnpm-lock.yaml
+            specs-verifier/pnpm-lock.yaml
+
+      - name: Install spec dependencies
+        run: pnpm --dir specs-verifier install --frozen-lockfile
+
+      - name: Lint specs
+        run: pnpm --dir specs-verifier lint
+
+      - name: Check specs formatting
+        run: pnpm --dir specs-verifier format:check
+
+      - run: pnpm --dir web install --frozen-lockfile
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: specs
+          workspaces: cli
 
       - uses: actions/setup-java@v5
         with:
@@ -69,20 +140,8 @@ jobs:
           chmod +x "$HOME/.local/bin/structurizr"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-      - name: Install spec dependencies
-        run: |
-          pnpm --dir specs-verifier install --frozen-lockfile
-          pnpm --dir specs-verifier exec playwright install --with-deps chromium
-
-      - name: Lint specs
-        run: pnpm --dir specs-verifier lint
-
-      - name: Check specs formatting
-        run: pnpm --dir specs-verifier format:check
+      - name: Install Playwright browsers
+        run: pnpm --dir specs-verifier exec playwright install --with-deps chromium
 
       - name: Test specs
         run: pnpm --dir specs-verifier test
-
-      - name: Check commit messages
-        if: github.event_name == 'pull_request'
-        run: pnpm --dir web exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }}

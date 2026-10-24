@@ -8,11 +8,18 @@ permissions:
   contents: write
 
 jobs:
-  create-release:
+  prepare:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
-
+      - uses: jdx/mise-action@v5
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm --dir web install --frozen-lockfile
+      - run: pnpm --dir web build
       - name: Create release if missing
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -22,9 +29,13 @@ jobs:
           else
             gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME"
           fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: web/dist
 
   upload:
-    needs: create-release
+    needs: prepare
     strategy:
       fail-fast: false
       matrix:
@@ -42,19 +53,15 @@ jobs:
       - name: Add Rust target
         run: rustup target add ${{ matrix.target }}
 
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-          cache: pnpm
-          cache-dependency-path: web/pnpm-lock.yaml
-
-      - run: pnpm --dir web install --frozen-lockfile
-      - run: pnpm --dir web build
-
       - uses: Swatinem/rust-cache@v2
         with:
           key: ${{ matrix.target }}
           workspaces: cli
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: web/dist
 
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
