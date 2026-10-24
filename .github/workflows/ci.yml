@@ -35,6 +35,9 @@ jobs:
       - name: Lint web
         run: pnpm --dir web lint
 
+      - name: Check web formatting
+        run: pnpm --dir web format:check
+
       - name: Test web
         run: pnpm --dir web test
 
@@ -73,6 +76,9 @@ jobs:
 
       - name: Lint specs
         run: pnpm --dir specs-verifier lint
+
+      - name: Check specs formatting
+        run: pnpm --dir specs-verifier format:check
 
       - name: Test specs
         run: pnpm --dir specs-verifier test

@@ -1,0 +1,7 @@
+{
+  "$schema": "./web/node_modules/oxfmt/configuration_schema.json",
+  "semi": true,
+  "singleQuote": false,
+  "printWidth": 120,
+  "sortPackageJson": false
+}
