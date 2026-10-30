@@ -90,9 +90,7 @@ export class StructurizrSiteCli {
 
   /** Runs the binary in the sandbox; `Workspace` args become files written there. */
   async run(...args: Array<CliArg | RunOptions>): Promise<CliResult> {
-    const options: RunOptions = isRunOptions(args[args.length - 1])
-      ? (args.pop() as RunOptions)
-      : {};
+    const options: RunOptions = isRunOptions(args[args.length - 1]) ? (args.pop() as RunOptions) : {};
     const argv: string[] = [];
     for (const arg of args) {
       if (typeof arg === "string") argv.push(arg);
