@@ -1,4 +1,4 @@
 [tools]
-pnpm = "10.30.3"
+pnpm = "12.16.1"
 rust = { version = "1.99.0", profile = "default", components = ["rustfmt", "clippy"] }
 git-cliff = "2.14.2"
