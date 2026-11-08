@@ -3,3 +3,4 @@ java = "temurin-jre-25.0.5+8.0.LTS"
 pnpm = "12.16.1"
 rust = { version = "1.99.0", profile = "default", components = ["rustfmt", "clippy"] }
 git-cliff = "2.14.2"
+"github:structurizr/cli" = { version = "2025.11.09", postinstall = "mv \"$MISE_TOOL_INSTALL_PATH/structurizr.sh\" \"$MISE_TOOL_INSTALL_PATH/structurizr\"" }

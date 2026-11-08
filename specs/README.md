@@ -71,8 +71,8 @@ test("the home page introduces the workspace", async ({ site, page }) => {
 
 ## Running
 
-Prerequisites: [mise](https://mise.jdx.dev) toolchains (`mise install`), plus the
-[structurizr CLI](https://docs.structurizr.com/cli) and Java on your `PATH` (same as the dev loop).
+Prerequisites: the [mise](https://mise.jdx.dev) toolchains from `mise.toml`
+(`mise install`) — they include Java and the structurizr CLI.
 
 ```sh
 pnpm --dir specs-verifier install                        # once

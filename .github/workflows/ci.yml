@@ -126,15 +126,6 @@ jobs:
           key: specs
           workspaces: cli
 
-      - name: Install structurizr CLI
-        run: |
-          curl -fL --retry 3 -o /tmp/structurizr-cli.zip https://github.com/structurizr/cli/releases/latest/download/structurizr-cli.zip
-          unzip -q -o /tmp/structurizr-cli.zip -d "$HOME/structurizr-cli"
-          mkdir -p "$HOME/.local/bin"
-          printf '#!/bin/sh\nexec java -cp "%s/lib/*" com.structurizr.cli.StructurizrCliApplication "$@"\n' "$HOME/structurizr-cli" > "$HOME/.local/bin/structurizr"
-          chmod +x "$HOME/.local/bin/structurizr"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-
       - name: Install Playwright browsers
         run: pnpm --dir specs-verifier exec playwright install --with-deps chromium
 
