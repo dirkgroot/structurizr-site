@@ -36,7 +36,7 @@ python3 -m http.server -d build                       # then open http://localho
 
 ## Development
 
-[mise](https://mise.jdx.dev) sets up the pinned Rust toolchain and pnpm/Node.js 24 from `mise.toml` (`mise install`).
+[mise](https://mise.jdx.dev) sets up the pinned Java, Rust, and pnpm/Node.js 24 toolchains from `mise.toml` (`mise install`).
 
 - Build the SPA: `pnpm --dir web build` (into `web/dist`, embedded by `cargo build`)
 - Run from source: `cargo run --manifest-path cli/Cargo.toml -- generate --workspace example/workspace.dsl`

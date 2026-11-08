@@ -126,11 +126,6 @@ jobs:
           key: specs
           workspaces: cli
 
-      - uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: '21'
-
       - name: Install structurizr CLI
         run: |
           curl -fL --retry 3 -o /tmp/structurizr-cli.zip https://github.com/structurizr/cli/releases/latest/download/structurizr-cli.zip
